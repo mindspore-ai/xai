@@ -97,7 +97,6 @@ class TestGradCAM:
             for x in range(num_classes):
                 target = ms.Tensor([x], ms.int32)
                 attribution = gradcam(self.data, target)
-
                 # intermediate_grad should be reshape of weight of fc2
                 intermediate_grad = self.net.fc2.weight.data[x]
                 avggrad = float(sum_(intermediate_grad).asnumpy() / 16)

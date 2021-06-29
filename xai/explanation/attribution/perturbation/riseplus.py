@@ -19,17 +19,17 @@ import numpy as np
 from mindspore import Tensor
 from mindspore.train._utils import check_value_type
 
-from .perturbation import PerturbationAttribution
 import xai.common.operators as op
 from xai.common.utils import resize
+from .perturbation import PerturbationAttribution
 
 
 class RISEPlus(PerturbationAttribution):
     r"""
-    RISEPlus is a perturbation-based method that generates attribution maps by sampling on multiple random binary masks.
-    An OoD block is adopted to produce an 'inlier score', estimating the probability that a sample is generated from the
-    distribution. Then the inlier score is aggregated to the weighted sum of the random masks, with the weights being
-    the corresponding output on the node of interest:
+    RISEPlus is a perturbation-based method that generates attribution maps by sampling on multiple random binary
+    masks. An OoD block is adopted to produce an 'inlier score', estimating the probability that a sample is generated
+    from the distribution. Then the inlier score is aggregated to the weighted sum of the random masks, with the
+    weights being the corresponding output on the node of interest:
 
     .. math::
         attribution = \sum_{i}s_if_c(I\odot M_i)  M_i
@@ -41,9 +41,9 @@ class RISEPlus(PerturbationAttribution):
         ood_net (Cell): The OoD network to generate inlier score.
         network (Cell): The black-box model to be explained.
         activation_fn (Cell): The activation layer that transforms logits to prediction probabilities. For
-            single label classification tasks, `nn.Softmax` is usually applied. As for multi-label classification tasks,
-            `nn.Sigmoid` is usually be applied. Users can also pass their own customized `activation_fn` as long as
-            when combining this function with network, the final output is the probability of the input.
+            single label classification tasks, `nn.Softmax` is usually applied. As for multi-label classification
+            tasks, `nn.Sigmoid` is usually be applied. Users can also pass their own customized `activation_fn` as
+            long as when combining this function with network, the final output is the probability of the input.
         perturbation_per_eval (int, optional): Number of perturbations for each inference during inferring the
             perturbed samples. Within the memory capacity, usually the larger this number is, the faster the
             explanation is obtained. Default: 32.
@@ -55,7 +55,8 @@ class RISEPlus(PerturbationAttribution):
           should be of shape :math:`(N, l)` (l being the number of labels for each sample) or :math:`(N,)` :math:`()`.
 
     Outputs:
-        Tensor, a 4D tensor of shape :math:`(N, ?, H, W)`.
+        Tensor, a 4D tensor of shape :math:`(N, l, H, W)` when targets is a tensor of shape (N, l), otherwise a tensor
+        of shape (N, 1, H, w), saliency maps.
 
     Examples:
         >>> import numpy as np
@@ -141,10 +142,10 @@ class RISEPlus(PerturbationAttribution):
             max_h_score = None
 
             for j in range(cal_times):
-                bs = min(self._num_masks - j * self._perturbation_per_eval,
-                         self._perturbation_per_eval)
+                batch_size = min(self._num_masks - j * self._perturbation_per_eval,
+                                 self._perturbation_per_eval)
                 data = op.reshape(data, (1, -1, height, width))
-                masks = self._generate_masks(data, bs)
+                masks = self._generate_masks(data, batch_size)
 
                 masked_input = masks * data + (1 - masks) * bg_data
 
@@ -161,14 +162,14 @@ class RISEPlus(PerturbationAttribution):
                 else:
                     min_h_score = min_value
 
-                inlier_scores = max_class_h_scores.reshape((bs, 1, 1, 1))
+                inlier_scores = max_class_h_scores.reshape((batch_size, 1, 1, 1))
                 inlier_scores = Tensor(np.repeat(inlier_scores, self._num_classes, axis=1), data.dtype)
 
                 weights = self._activation_fn(self.network(masked_input))
                 while len(weights.shape) > 2:
                     weights = op.mean(weights, axis=2)
                 weights = op.reshape(weights,
-                                     (bs, self._num_classes, 1, 1))
+                                     (batch_size, self._num_classes, 1, 1))
 
                 attr_np[idx] += op.summation(weights * masks, axis=0).asnumpy()
                 resisted_attr_np[idx] += op.summation(weights * masks * inlier_scores, axis=0).asnumpy()

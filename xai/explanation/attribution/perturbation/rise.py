@@ -55,7 +55,8 @@ class RISE(PerturbationAttribution):
           should be of shape :math:`(N, l)` (l being the number of labels for each sample) or :math:`(N,)` :math:`()`.
 
     Outputs:
-        Tensor, a 4D tensor of shape :math:`(N, ?, H, W)`.
+        Tensor, a 4D tensor of shape :math:`(N, l, H, W)` when targets is a tensor of shape (N, l), otherwise a tensor
+        of shape (N, 1, H, w), saliency maps.
 
     Examples:
         >>> import numpy as np

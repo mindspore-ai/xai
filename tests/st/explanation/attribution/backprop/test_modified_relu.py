@@ -65,9 +65,7 @@ class TestModifiedReLU:
         num_classes = 3
         for x in range(num_classes):
             target = ms.Tensor([x], ms.int32)
-
             attribution = deconv(data, target)
-
             # intermediate_grad should be reshape of weight of fc2
             grad = self.net.fc2.weight.data[x]
             grad = self.abs_(self.relu(self.reshape(grad, (1, 1, 4, 4))))
@@ -82,12 +80,9 @@ class TestModifiedReLU:
         num_classes = 3
         for x in range(num_classes):
             target = ms.Tensor([x], ms.int32)
-
             attribution = explainer(data, target)
-
             # intermediate_grad should be reshape of weight of fc2
             grad = self.net.fc2.weight.data[x]
             grad = self.reshape(grad, (1, 1, 4, 4))
             guided_grad = self.abs_(self.relu(grad * (self.abs_(self.relu(data) / data))))
-
             assert np.allclose(guided_grad.asnumpy(), attribution.asnumpy())

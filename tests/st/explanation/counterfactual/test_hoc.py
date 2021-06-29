@@ -26,12 +26,12 @@ from xai.explanation import hierarchical_occlusion as hoc
 class PseudoNet(nn.Cell):
     """ Pseudo model for the unit test. """
     def __call__(self, x):
-        slice = P.Slice()
+        slice_op = P.Slice()
         batch_size = x.shape[0]
         output = np.zeros((batch_size, 1))
         for i in range(batch_size):
-            sliced0 = slice(x, (i, 0, 0, 0), (1, 3, 2, 4)).asnumpy()
-            sliced1 = slice(x, (i, 0, 8, 6), (1, 3, 2, 4)).asnumpy()
+            sliced0 = slice_op(x, (i, 0, 0, 0), (1, 3, 2, 4)).asnumpy()
+            sliced1 = slice_op(x, (i, 0, 8, 6), (1, 3, 2, 4)).asnumpy()
             output[i, 0] = np.mean((np.mean(sliced0), np.mean(sliced1)))
         return ms.Tensor(output, dtype=ms.float32)
 
@@ -54,7 +54,7 @@ def _assert_result(root_step):
 @pytest.mark.platform_x86_ascend_training
 @pytest.mark.platform_x86_gpu_training
 @pytest.mark.env_onecard
-def test_searcher():
+def test_hoc_searcher():
     """ Unit test for single threaded search. """
 
     net = PseudoNet()

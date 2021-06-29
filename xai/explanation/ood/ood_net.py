@@ -128,7 +128,7 @@ class OODNet(nn.Cell):
 
     def score(self, x, noise_mag=0.08, channel_sd=(0.229, 0.224, 0.225)):
         """
-        Compute OOD scores.
+        Compute OOD scores with noise added to input image tensor.
 
         Args:
             x (Tensor): Image tensor of shape [N,C,H,W]
@@ -155,10 +155,10 @@ class OODNet(nn.Cell):
         noise = self._ge(grad, 0).asnumpy().copy().astype(np.float32)
         noise = (noise - 0.5) * 2
 
-        channel_delta = noise_mag/np.array(channel_sd)
+        channel_delta = noise_mag / np.array(channel_sd)
 
-        for c in range(len(channel_delta)):
-            noise[:, c, :, :] *= channel_delta[c]
+        for c, delta in enumerate(channel_delta):
+            noise[:, c, :, :] *= delta
 
         x = x + ms.Tensor(noise, dtype=ms.float32)
         scores = self(x)

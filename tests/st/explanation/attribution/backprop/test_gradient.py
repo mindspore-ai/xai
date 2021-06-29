@@ -66,9 +66,7 @@ class TestGradient:
         reshape = P.Reshape()
         for x in range(num_classes):
             target = ms.Tensor([x], ms.int32)
-
             attribution = explainer(data, target)
-
             # intermediate_grad should be reshape of weight of fc2
             grad = self.net.fc2.weight.data[x]
             grad = self.abs_(reshape(grad, (1, 1, 4, 4)) * (self.abs_(self.relu(data) / data)))
