@@ -74,16 +74,16 @@ python setup.py install
 
 ```bash
 bash package.sh
-pip install output/xai-{version}-py3-none-any.whl
+pip install output/mindspore_xai-{version}-py3-none-any.whl
 ```
 
 ### Verifying Successful Installation and Version
 
-Upon successful installation, importing 'xai' module in python will cause no error:
+Upon successful installation, importing 'mindspore_xai' module in python will cause no error:
 
 ```python
-import xai
-print(xai.__version__)
+import mindspore_xai
+print(mindspore_xai.__version__)
 ```
 
 ## Note

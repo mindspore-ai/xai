@@ -20,7 +20,7 @@ import mindspore as ms
 import mindspore.ops as P
 from mindspore import nn
 
-from xai.explanation import hierarchical_occlusion as hoc
+from mindspore_xai.explanation.counterfactual import hierarchical_occlusion as hoc
 
 
 class PseudoNet(nn.Cell):

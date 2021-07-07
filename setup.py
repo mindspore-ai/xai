@@ -29,6 +29,9 @@ from setuptools.command.build_py import build_py
 from setuptools.command.install import install
 
 
+package_name = 'mindspore-xai'
+
+
 def get_version():
     """
     Get version.
@@ -37,8 +40,8 @@ def get_version():
         str, xai version.
     """
     machinery = import_module('importlib.machinery')
-    version_path = os.path.join(os.path.dirname(__file__), 'xai', '_version.py')
-    module_name = '__xaiversion__'
+    version_path = os.path.join(os.path.dirname(__file__), 'mindspore_xai', '_version.py')
+    module_name = '__msxaiversion__'
     version_module = types.ModuleType(module_name)
     loader = machinery.SourceFileLoader(module_name, version_path)
     loader.exec_module(version_module)
@@ -76,9 +79,9 @@ def get_description():
     stdout, _ = process.communicate()
     if not process.returncode:
         git_version = stdout.decode()
-        return 'xai platform: %s, cpu: %s, git version: %s' % (os_info, cpu_info, git_version)
+        return '%s platform: %s, cpu: %s, git version: %s' % (package_name, os_info, cpu_info, git_version)
 
-    return 'xai platform: %s, cpu: %s' % (os_info, cpu_info)
+    return '%s platform: %s, cpu: %s' % (package_name, os_info, cpu_info)
 
 
 def get_install_requires():
@@ -130,7 +133,7 @@ class EggInfo(egg_info):
     """Egg info."""
 
     def run(self):
-        egg_info_dir = os.path.join(os.path.dirname(__file__), 'xai.egg-info')
+        egg_info_dir = os.path.join(os.path.dirname(__file__), f'{package_name}.egg-info')
         shutil.rmtree(egg_info_dir, ignore_errors=True)
         super().run()
         update_permissions(egg_info_dir)
@@ -140,7 +143,7 @@ class BuildPy(build_py):
     """Build py files."""
 
     def run(self):
-        xai_lib_dir = os.path.join(os.path.dirname(__file__), 'build', 'lib', 'xai')
+        xai_lib_dir = os.path.join(os.path.dirname(__file__), 'build', 'lib', package_name)
         shutil.rmtree(xai_lib_dir, ignore_errors=True)
         super().run()
         update_permissions(xai_lib_dir)
@@ -153,7 +156,7 @@ class Install(install):
         super().run()
         if sys.argv[-1] == 'install':
             pip = import_module('pip')
-            xai_dir = os.path.join(os.path.dirname(pip.__path__[0]), 'xai')
+            xai_dir = os.path.join(os.path.dirname(pip.__path__[0]), 'mindspore_xai')
             update_permissions(xai_dir)
 
 
@@ -164,9 +167,9 @@ if __name__ == '__main__':
         sys.exit(1)
 
     setup(
-        name='xai',
+        name=package_name,
         version=get_version(),
-        author='The MindExplain Authors',
+        author='The MindSpore XAI Authors',
         author_email='contact@mindspore.cn',
         url='https://www.mindspore.cn',
         download_url='https://gitee.com/mindspore/xai/tags',
@@ -201,5 +204,5 @@ if __name__ == '__main__':
             'Topic :: Software Development :: Libraries :: Python Modules',
         ],
         license='Apache 2.0',
-        keywords='xai',
+        keywords='mindspore machine learning xai',
     )

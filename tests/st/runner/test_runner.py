@@ -26,11 +26,11 @@ import mindspore as ms
 import mindspore.nn as nn
 from mindspore.dataset import GeneratorDataset
 
-from xai.runner import ImageClassificationRunner
-from xai.runner.image_classification_runner import _normalize
-from xai.benchmark import Faithfulness
-from xai.explanation import Gradient
-from xai.summary.summary_writer import SummaryWriter
+from mindspore_xai.runner import ImageClassificationRunner
+from mindspore_xai.runner.image_classification_runner import _normalize
+from mindspore_xai.benchmark import Faithfulness
+from mindspore_xai.explanation import Gradient
+from mindspore_xai.summary.summary_writer import SummaryWriter
 
 
 CONST = random()
@@ -72,19 +72,17 @@ class ActivationFn(nn.Cell):
     """
     Simple activation function for unit test.
     """
-
-    def __init__(self):
-        super(ActivationFn, self).__init__()
-
     def construct(self, x):
         return x
 
 
 def mock_gradient_call(_, inputs, targets):
+    del targets
     return inputs[:, 0:1, :, :]
 
 
 def mock_faithfulness_evaluate(_, explainer, inputs, targets, saliency):
+    del explainer, inputs, saliency
     return CONST * targets
 
 
