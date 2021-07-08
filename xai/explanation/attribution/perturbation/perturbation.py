@@ -13,7 +13,7 @@
 # limitations under the License.
 # ============================================================================
 
-"""Base class `PerturbationAttribtuion`"""
+"""Base class `PerturbationAttribution`"""
 
 from mindspore.train._utils import check_value_type
 from mindspore.nn import Cell
