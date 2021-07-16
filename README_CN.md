@@ -74,17 +74,16 @@ python setup.py install
 
 ```bash
 bash package.sh
-pip install output/xai-{version}-py3-none-any.whl
+pip install output/mindspore_xai-{version}-py3-none-any.whl
 ```
-
 
 ### 验证是否安装成功
 
 成功安装后，在Python运行以下代码会印出已安装的XAI版本：
 
 ```python
-import xai
-print(xai.__version__)
+import mindspore_xai
+print(mindspore_xai.__version__)
 ```
 
 ## 注意事項

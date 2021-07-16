@@ -21,7 +21,7 @@ import mindspore.ops.operations as P
 from mindspore import context
 from mindspore import nn
 
-from xai.explanation import Deconvolution, GuidedBackprop
+from mindspore_xai.explanation import Deconvolution, GuidedBackprop
 
 
 context.set_context(mode=context.PYNATIVE_MODE)

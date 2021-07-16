@@ -21,7 +21,7 @@ import mindspore as ms
 from mindspore import context
 from mindspore import nn
 
-from xai.explanation import RISE, RISEPlus, Occlusion, OODNet, OODUnderlying
+from mindspore_xai.explanation import RISE, RISEPlus, Occlusion, OODNet, OODUnderlying
 
 context.set_context(mode=context.PYNATIVE_MODE)
 

@@ -21,7 +21,7 @@ from mindspore import context
 import mindspore.ops.operations as P
 from mindspore import nn
 
-from xai.explanation import Gradient
+from mindspore_xai.explanation import Gradient
 
 
 context.set_context(mode=context.PYNATIVE_MODE)

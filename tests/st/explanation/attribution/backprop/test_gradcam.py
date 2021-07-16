@@ -22,8 +22,8 @@ from mindspore import context
 import mindspore.ops.operations as op
 from mindspore import nn
 
-from xai.explanation import GradCAM
-from xai.explanation.attribution.backprop.gradcam import _gradcam_aggregation as aggregation
+from mindspore_xai.explanation import GradCAM
+from mindspore_xai.explanation.attribution.backprop.gradcam import _gradcam_aggregation as aggregation
 
 
 context.set_context(mode=context.PYNATIVE_MODE)

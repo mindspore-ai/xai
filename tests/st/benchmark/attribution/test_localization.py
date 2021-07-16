@@ -21,8 +21,8 @@ import mindspore as ms
 from mindspore import context
 from mindspore import nn
 
-from xai.benchmark import Localization
-from xai.explanation import Gradient
+from mindspore_xai.benchmark import Localization
+from mindspore_xai.explanation import Gradient
 
 
 context.set_context(mode=context.PYNATIVE_MODE)
@@ -33,10 +33,6 @@ SALIENCY = ms.Tensor(np.random.rand(1, 1, H, W), ms.float32)
 
 class CustomNet(nn.Cell):
     """Simple net for unit test."""
-
-    def __init__(self):
-        super().__init__()
-
     def construct(self, _):
         return ms.Tensor([[0.1, 0.9]], ms.float32)
 
@@ -50,6 +46,7 @@ class TestLocalization:
     """Test on Localization."""
 
     def setup_method(self):
+        """Setup the testcase."""
         self.net = CustomNet()
         self.data = ms.Tensor(np.random.rand(1, 1, H, W), ms.float32)
         self.target = 1

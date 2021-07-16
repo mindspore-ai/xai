@@ -22,7 +22,7 @@ from mindspore import context
 from mindspore import nn
 import mindspore.dataset as de
 
-from xai.explanation import OODNet, OODUnderlying
+from mindspore_xai.explanation import OODNet, OODUnderlying
 
 context.set_context(mode=context.PYNATIVE_MODE)
 

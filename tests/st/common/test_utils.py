@@ -20,12 +20,12 @@ import mindspore as ms
 from mindspore import context
 import mindspore.nn as nn
 
-from xai.common.utils import (
+from mindspore_xai.common.utils import (
     ForwardProbe,
     rank_pixels,
     retrieve_layer,
     retrieve_layer_by_name)
-from xai.explanation.attribution.backprop.backprop_utils import GradNet, get_bp_weights
+from mindspore_xai.explanation.attribution.backprop.backprop_utils import GradNet, get_bp_weights
 
 
 context.set_context(mode=context.PYNATIVE_MODE)
