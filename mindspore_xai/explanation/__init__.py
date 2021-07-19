@@ -19,10 +19,6 @@ from .attribution.backprop.gradcam import GradCAM
 from .attribution.backprop.modified_relu import Deconvolution, GuidedBackprop
 from .attribution.perturbation.occlusion import Occlusion
 from .attribution.perturbation.rise import RISE
-from .attribution.perturbation.riseplus import RISEPlus
-from .ood.ood_net import OODNet, OODUnderlying
-from .ood.ood_resnet import OODResNet50
-
 
 __all__ = [
     'Gradient',
@@ -30,9 +26,5 @@ __all__ = [
     'GuidedBackprop',
     'GradCAM',
     'Occlusion',
-    'RISE',
-    'RISEPlus',
-    'OODNet',
-    'OODUnderlying',
-    'OODResNet50'
+    'RISE'
 ]

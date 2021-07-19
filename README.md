@@ -45,8 +45,10 @@ This is an explainable AI framework base on [MindSpore](https://www.mindspore.cn
 
 ### Install by pip
 
+Download the `.whl` package from [MindSpore XAI download page](https://www.mindspore.cn/versions/en) and install with `pip`.
+
 ```bash
-pip install xxx
+pip install mindspore_xai-{version}-py3-none-any.whl
 ```
 
 ### Install from Source Code
