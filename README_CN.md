@@ -45,8 +45,10 @@
 
 ### pip安装
 
+从[MindSpore XAI下载页面](https://www.mindspore.cn/versions)下载并安装whl包。
+
 ```bash
-pip install xxx
+pip install mindspore_xai-{version}-py3-none-any.whl
 ```
 
 ### 从源码安装

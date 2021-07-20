@@ -21,7 +21,7 @@ import mindspore as ms
 from mindspore import context
 from mindspore import nn
 
-from mindspore_xai.explanation import RISE, RISEPlus, Occlusion, OODNet, OODUnderlying
+from mindspore_xai.explanation import RISE, Occlusion
 
 context.set_context(mode=context.PYNATIVE_MODE)
 
@@ -47,27 +47,6 @@ class ActivationFn(nn.Cell):
     """Simple activation function for unit test."""
     def construct(self, x):
         return x
-
-
-class CustomOODUnderlying(OODUnderlying):
-    """Simple OOD underlying for unit test."""
-    def __init__(self):
-        super(CustomOODUnderlying, self).__init__()
-        self.flatten = nn.Flatten()
-        self.fc1 = nn.Dense(in_channels=C*H*W, out_channels=5)
-        self.fc2 = nn.Dense(in_channels=5, out_channels=num_classes)
-
-    def construct(self, x):
-        x = self.flatten(x)
-        x = self.fc1(x)
-        if self.output_feature:
-            return x
-        x = self.fc2(x)
-        return x
-
-    @property
-    def feature_count(self):
-        return 5
 
 
 class TestPerturbation:
@@ -106,18 +85,6 @@ class TestPerturbation:
         """Test for RISE."""
         explainer = RISE(self.net, self.activation_fn, perturbation_per_eval=1)
         return self._test_2d(2, explainer)
-
-    @pytest.mark.level0
-    @pytest.mark.platform_arm_ascend_training
-    @pytest.mark.platform_x86_ascend_training
-    @pytest.mark.platform_x86_gpu_training
-    @pytest.mark.env_onecard
-    def test_riseplus_2d(self):
-        """Test for RISEPlus."""
-        explainer = RISEPlus(OODNet(CustomOODUnderlying(), num_classes), self.net,
-                             self.activation_fn, perturbation_per_eval=1)
-        # RISEPlus doesn't support batch size > 1, may need to change in the future
-        return self._test_2d(1, explainer)
 
     @pytest.mark.level0
     @pytest.mark.platform_arm_ascend_training
