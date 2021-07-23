@@ -151,7 +151,7 @@ class NaiveFaithfulness(_FaithfulnessHelper):
         if Decimal(str(saliency.max())) == Decimal(str(saliency.min())):
             log.warning("The saliency map is uniform everywhere. The correlation will be set to zero.")
             correlation = 0
-            return np.array([correlation], np.float)
+            return np.array([correlation], float)
 
         batch_size = inputs.shape[0]
         reference = self._get_reference(inputs)
@@ -167,7 +167,7 @@ class NaiveFaithfulness(_FaithfulnessHelper):
         if Decimal(str(predictions.max())) == Decimal(str(predictions.min())):
             log.warning("The perturbations do not affect the predictions. The correlation will be set to zero.")
             correlation = 0
-            return np.array([correlation], np.float)
+            return np.array([correlation], float)
 
         faithfulness = -np.corrcoef(feature_importance, predictions)
         faithfulness = np.diag(faithfulness[:batch_size, batch_size:])
@@ -249,7 +249,7 @@ class DeletionAUC(_FaithfulnessHelper):
         original_output = model(input_tensor).asnumpy()[:, targets]
 
         auc = calc_auc(original_output.squeeze() - predictions.squeeze())
-        return np.array([1 - auc], np.float)
+        return np.array([1 - auc], float)
 
 
 class InsertionAUC(_FaithfulnessHelper):
@@ -329,7 +329,7 @@ class InsertionAUC(_FaithfulnessHelper):
         base_outputs = model(base_tensor).asnumpy()[:, targets]
 
         auc = calc_auc(predictions.squeeze() - base_outputs.squeeze())
-        return np.array([auc], np.float)
+        return np.array([auc], float)
 
 
 class Faithfulness(LabelSensitiveMetric):

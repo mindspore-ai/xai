@@ -81,4 +81,4 @@ class ClassSensitivity(LabelAgnosticMetric):
                                            min_confidence_saliency[i].reshape(-1))
             normalized_correlation = (-correlation + 1) / 2
             correlations.append(normalized_correlation)
-        return np.array(correlations, np.float)
+        return np.array(correlations, float)

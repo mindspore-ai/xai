@@ -48,7 +48,7 @@ import mindspore.ops.operations as op
 
 _AxisType = Union[int, Tuple[int, ...], List[int]]
 _IdxType = Union[int, mindspore.Tensor, Tuple[int, ...], Tuple[mindspore.Tensor, ...]]
-_NumberType = Union[int, float, np.int, np.float]
+_NumberType = Union[int, float, np.int32, np.float32]
 _ShapeType = Union[int, Tuple[int, ...]]
 
 

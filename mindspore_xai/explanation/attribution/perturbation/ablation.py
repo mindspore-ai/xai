@@ -154,7 +154,7 @@ class AblationWithSaliency(Ablation):
         pixel_per_step, num_perturbations = self._check_and_format_perturb_param(num_pixels)
 
         masks = np.zeros((batch_size, num_perturbations, num_channels, saliency_rank.shape[1], saliency_rank.shape[2]),
-                         dtype=np.bool)
+                         dtype=bool)
 
         # If the perturbation is added accumulately, the factor should be 0 to preserve the low bound of indexing.
         factor = 0 if self._is_accumulate else 1
