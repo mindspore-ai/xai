@@ -84,6 +84,8 @@ class TestPerturbation:
     def test_rise_2d(self):
         """Test for RISE."""
         explainer = RISE(self.net, self.activation_fn, perturbation_per_eval=1)
+        # reduce computation, the test doesn't concern precision
+        explainer._num_masks = 8
         return self._test_2d(2, explainer)
 
     @pytest.mark.level0
@@ -94,4 +96,6 @@ class TestPerturbation:
     def test_occlusion_2d(self):
         """Test for Occlusion."""
         explainer = Occlusion(self.net, self.activation_fn, perturbation_per_eval=1)
+        # reduce computation, the test doesn't concern precision
+        explainer._num_sample_per_dim = 8
         return self._test_2d(1, explainer, test_multi_targets=False)

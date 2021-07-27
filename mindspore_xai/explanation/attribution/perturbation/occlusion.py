@@ -95,7 +95,7 @@ class Occlusion(PerturbationAttribution):
         self._verify_data(inputs, targets)
 
         inputs = inputs.asnumpy()
-        targets = targets.asnumpy() if isinstance(targets, ms.Tensor) else np.array([targets], np.int)
+        targets = targets.asnumpy() if isinstance(targets, ms.Tensor) else np.array([targets], int)
 
         batch_size = inputs.shape[0]
         window_size, strides = self._get_window_size_and_strides(inputs)
@@ -160,7 +160,7 @@ class Occlusion(PerturbationAttribution):
         num_perturbations = indices.shape[0]
         indices = indices.reshape(num_perturbations, -1)
 
-        mask = np.zeros((num_perturbations, total_dim), dtype=np.bool)
+        mask = np.zeros((num_perturbations, total_dim), dtype=bool)
         for i in range(num_perturbations):
             mask[i, indices[i]] = True
         mask = mask.reshape((num_perturbations,) + inputs.shape[1:])

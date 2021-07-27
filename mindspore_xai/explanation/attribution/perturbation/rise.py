@@ -172,12 +172,12 @@ class RISE(PerturbationAttribution):
     def _unify_targets(inputs, targets):
         """To unify targets to be 2D numpy.ndarray."""
         if isinstance(targets, int):
-            return np.array([[targets] for _ in inputs]).astype(np.int)
+            return np.array([[targets] for _ in inputs]).astype(int)
         if isinstance(targets, Tensor):
             if not targets.shape:
-                return np.array([[targets.asnumpy()] for _ in inputs]).astype(np.int)
+                return np.array([[targets.asnumpy()] for _ in inputs]).astype(int)
             if len(targets.shape) == 1:
-                return np.array([[t.asnumpy()] for t in targets]).astype(np.int)
+                return np.array([[t.asnumpy()] for t in targets]).astype(int)
             if len(targets.shape) == 2:
-                return np.array([t.asnumpy() for t in targets]).astype(np.int)
+                return np.array([t.asnumpy() for t in targets]).astype(int)
         return targets

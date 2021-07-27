@@ -1,0 +1,914 @@
+OPEN SOURCE SOFTWARE NOTICE
+
+Please note we provide an open source software notice along with this product and/or this product firmware (in the following just “this product”). The open source software licenses are granted by the respective right holders. And the open source licenses prevail all other license information with regard to the respective open source software contained in the product, including but not limited to End User Software Licensing Agreement. This notice is provided on behalf of Huawei Technologies Co. Ltd. and any of its local subsidiaries which may have provided this product to you in your local country. 
+
+Warranty Disclaimer    
+THE OPEN SOURCE SOFTWARE IN THIS PRODUCT IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE APPLICABLE LICENSES FOR MORE DETAILS.
+
+Copyright Notice and License Texts 
+
+Software: Pillow 7.1.2
+Copyright notice:
+Copyright (c) 2014 Coriolis Systems Limited
+Copyright (c) Fredrik Lundh 1996.
+Copyright (c) 1994-1998 Sun Microsystems, Inc.
+Copyright (c) 1995-2002 by Fredrik Lundh.
+Copyright (c) 1997-2006 by Secret Labs AB
+Copyright (c) 2016 by Mickael Bonfill.
+Copyright (c) Eric Soroos 2016.
+COMMENT  Portions Copyright 1988 Digital Equipment Corporation COMMENT COMMENT  Adobe is a registered trademark of Adobe Systems, Inc.  Permission COMMENT  to use these trademarks is hereby granted only in association with the COMMENT  images described in this file.
+Copyright (c) 2009 Fredrik Lundh Updated to LCMS2
+Copyright (c) Secret Labs AB 1997-98.
+Copyright (c) 1995-2001 by Fredrik Lundh
+Copyright (c) 2004 by Fredrik Lundh.
+Copyright © 2016 Khaled Hosny <khaledhosny@eglug.org>
+Copyright (c) 1997-2006 by Secret Labs AB.
+Copyright (c) Secret Labs AB 1998
+Copyright (c) 1997-1998 by Fredrik Lundh
+Copyright (c) 2014 by Alastair Houghton
+Copyright (c) 2008 by Karsten Hiddemann.
+Copyright (c) 1997-2009 by Secret Labs AB.  All rights reserved.
+Copyright (C) 2002-2003 Kevin Cazabon\n\
+COMMENT  Copyright 1984, 1987 Adobe Systems, Inc.
+Copyright (c) 1995-1996 by Fredrik Lundh
+Copyright (c) 1997-2000 by Secret Labs AB
+Copyright (c) 2014 Alastair Houghton
+Copyright (c) 1996-1997 by Fredrik Lundh
+Copyright (c) 2012 by Brian Crowell
+Copyright (c) 1998-2007 by Secret Labs AB
+"productcopyright", "Copyright International Color Consortium, 2009"
+Copyright (c) Secret Labs AB 1997-2002.  All rights reserved.
+Copyright (c) 2001-2004 by Fredrik Lundh
+Copyright (c) 1998-2003 by Secret Labs AB.
+Copyright (c) Fredrik Lundh 1999.
+Copyright (c) 1998 by Secret Labs AB
+Copyright (c) 1997 by Secret Labs AB.
+If true, "(C) Copyright ..." is shown in the HTML footer. Default is True.
+Copyright (c) 1997-2002 by Secret Labs AB.
+Copyright (c) Secret Labs AB 1997.
+Copyright (c) 1998-2004 by Secret Labs AB.  All rights reserved.
+Copyright (c) 2013 by Eric Soroos
+Copyright (c) Secret Labs AB 1999.
+Copyright (c) Eric Soroos 2017.
+Copyright (c) 1997-2004 by Secret Labs AB
+Copyright (c) 2006 by Secret Labs AB
+Copyright (c) Mickael Bonfill 2017.
+Copyright (c) 2002 by Secret Labs AB
+assert p.copyright == "Copyright International Color Consortium, 2009"
+Copyright (c) 1995-2001 by Fredrik Lundh.
+Copyright (c) 1993-1996 Lucent Technologies.
+Copyright (c) 1995-1997 by Fredrik Lundh.
+Copyright (c) 2009 by Fredrik Lundh
+Copyright (c) 1997 by Fredrik Lundh.
+Copyright (c) 1996-2006 by Fredrik Lundh
+Copyright (c) Secret Labs AB 2008.
+Copyright (c) 2004 by Secret Labs.
+Copyright (c) 1998-2000 Secret Labs AB
+Copyright (c) 2006 by Secret Labs AB.
+Copyright (c) 2014 by Coriolis Systems Limited
+Copyright (c) 1998-2003 by Fredrik Lundh
+Copyright (c) 1995 by Fredrik Lundh.
+Copyright (c) Fredrik Lundh 1994.
+Copyright (c) 2010 Oliver Tonnhofer <olt@bogosoft.com>, Omniscale
+Copyright (c) 1995-2003 by Fredrik Lundh
+Copyright (c) 1997-2005 by Fredrik Lundh
+Copyright (c) Secret Labs AB 1997-2003.
+copyright = "1995-2011 Fredrik Lundh, 2010-2020 Alex Clark and Contributors"
+Copyright (c) 1996-2004 by Fredrik Lundh.
+COPYRIGHT "Copyright (c) 1987 Adobe Systems, Inc., Portions Copyright 1988 Digital Equipment Corp."
+Copyright (c) 2014 by Alastair Houghton.
+Copyright (c) 2002-2004 by Secret Labs AB
+Copyright (c) 1996-2000 by Fredrik Lundh
+Copyright (c) 2006 by Fredrik Lundh
+Copyright (c) Secret Labs AB 1997-2002.
+Copyright (c) 1996-1997 by Fredrik Lundh.
+Copyright (c) 1997-2005 by Secret Labs AB.  All rights reserved.
+Copyright (c) 2001-2002 by Secret Labs AB
+Copyright (c) 1998-2000 by Scriptics Corporation.
+Copyright (c) Secret Labs AB 2002-2004.  All rights reserved.
+Copyright (c) 2001-2004 by Secret Labs AB
+Copyright (c) 2002-2004 by Fredrik Lundh
+Copyright (c) Fredrik Lundh 1995-96.
+Copyright (c) 1997-2003 by Secret Labs AB.
+Copyright © 1997-2011 by Secret Labs AB
+Copyright © 2010-2020 by Alex Clark and contributors
+Copyright (c) Fredrik Lundh 1997.
+Copyright (c) 2005 by Fredrik Lundh
+Copyright (c) 2000-2003 by Fredrik Lundh
+Copyright © 2015 Information Technology Authority (ITA) <foss@ita.gov.om>
+Copyright (C) 2002-2003 Kevin Cazabon kevin@cazabon.com http:www.cazabon.com
+Copyright (C) 2002-2003 Kevin Cazabon
+Copyright (c) 2016 Marcin Kurczewski <rr-@sakuya.pl>
+Copyright (c) 2013 Eric Soroos
+Copyright (c) 1998 by Toby J Sergeant
+Copyright (c) 1995-2009 by Fredrik Lundh.
+Copyright (c) 1995-96 by Fredrik Lundh.
+Copyright (c) 1995-2005 by Fredrik Lundh
+Copyright (c) 1995-2004 by Fredrik Lundh
+Copyright (c) 1997-2004 by Secret Labs AB.  All rights reserved.
+Copyright (C) 2004, Andrey Kiselev <dron@ak4719.spb.edu>
+Copyright (c) 1996 by Fredrik Lundh
+Copyright (c) 1997-2003 by Secret Labs AB
+Copyright (c) 2001-2002 by Fredrik Lundh
+Copyright (c) 1997-2009 by Secret Labs AB
+Copyright (c) 1997-2005 by Secret Labs AB.
+By Kevin Cazabon, copyright 2003 kevincazabon@hotmail.com kevin@cazabon.com /
+Copyright (c) 1996-2000 Fredrik Lundh
+Copyright (c) 1997-1999 by Secret Labs AB
+Copyright (c) 2004 by William Baxter.
+Copyright (c) 2004 by Bob Ippolito.
+Copyright (c) Fredrik Lundh 2009.
+Copyright (c) 1999 by Secret Labs AB.
+Copyright (c) 1995-2006 by Fredrik Lundh
+"Copyright International Color Consortium, 2009",
+Copyright (c) Secret Labs AB 1997-98.  All rights reserved.
+Copyright (c) 1997-2006 by Secret Labs AB.  All rights reserved.
+Copyright (c) 2003 by Fredrik Lundh.
+Copyright (c) 1995-1997 by Fredrik Lundh
+Copyright (c) Fredrik Lundh 1995-2003.
+Copyright (c) 1995-2001 by Secret Labs AB
+Copyright (c) Secret Labs AB 1997-2004.  All rights reserved.
+Copyright (c) Fredrik Lundh 1996-2001.
+Copyright (c) Fredrik Lundh 1995-97.
+Copyright (c) 2002 by Fredrik Lundh
+Copyright (c) 2004 by Secret Labs AB.
+Copyright (c) 1997-2005 by Secret Labs AB
+Copyright (c) 1997-2004 by Secret Labs AB.
+Copyright (c) 1999-2005 by Secret Labs AB
+Copyright (C) 2002-2003 Kevin Cazabon kevin@cazabon.com Adapted/reworked for PIL by Fredrik Lundh
+Copyright (c) Fredrik Lundh 1997-2004.
+Copyright (c) Secret Labs AB 1997-2005.  All rights reserved.
+Copyright (c) 2003 by Secret Labs AB
+Copyright (c) 1995-1996 by Fredrik Lundh.
+Copyright (c) Fredrik Lundh 1996-2003.
+Copyright (c) Secret Labs AB 1997-2001.
+Copyright (c) 1997-1998 by Secret Labs AB
+Copyright (c) 1997-2001 by Secret Labs AB
+Copyright (c) 1995-2004 by Fredrik Lundh.
+Copyright (c) 1997-2003 by Fredrik Lundh.
+Copyright (c) 2003-2005 by Secret Labs AB
+== "Copyright International Color Consortium, 2009"
+Copyright (c) Fredrik Lundh 1995.
+Copyright (c) 2003-2005 by Fredrik Lundh
+Copyright (c) 1998-2005 by Secret Labs AB
+Copyright (c) Fredrik Lundh 1996-97.
+Copyright (c) 1997-98 by Secret Labs AB.
+Copyright © 1995-2011 by Fredrik Lundh
+Copyright (c) Fredrik Lundh 1995-1997.
+Copyright (c) 2002 by Kevin B. Kenny.  All rights reserved.
+Copyright (c) 1997-2001 by Secret Labs AB.
+Copyright (c) 1995-2003 by Fredrik Lundh.
+Copyright (c) 1997-99 by Secret Labs AB.
+Copyright (c) 1987-1994 The Regents of the University of California.
+Copyright (c) Secret Labs AB 1997-99.
+Copyright (c) 2006 by Fredrik Lundh.
+Copyright (c) 1995 by Fredrik Lundh
+Copyright (c) Secret Labs AB 2002.  All rights reserved.
+Copyright (c) 2004 by Health Research Inc. (HRI) RENSSELAER, NY 12144.
+Copyright (c) 1996 by Fredrik Lundh.
+Copyright (c) 2014 Dov Grobgeld <dov.grobgeld@gmail.com>
+Copyright (c) 1996-2003 by Fredrik Lundh
+
+The Python Imaging Library (PIL) is
+
+    Copyright © 1997-2011 by Secret Labs AB
+    Copyright © 1995-2011 by Fredrik Lundh
+
+Pillow is the friendly PIL fork. It is
+
+    Copyright © 2010-2020 by Alex Clark and contributors
+
+Like PIL, Pillow is licensed under the open source PIL Software License:
+
+By obtaining, using, and/or copying this software and/or its associated
+documentation, you agree that you have read, understood, and will comply
+with the following terms and conditions:
+
+Permission to use, copy, modify, and distribute this software and its
+associated documentation for any purpose and without fee is hereby granted,
+provided that the above copyright notice appears in all copies, and that
+both that copyright notice and this permission notice appear in supporting
+documentation, and that the name of Secret Labs AB or the author not be
+used in advertising or publicity pertaining to distribution of the software
+without specific, written prior permission.
+
+SECRET LABS AB AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS
+SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS.
+IN NO EVENT SHALL SECRET LABS AB OR THE AUTHOR BE LIABLE FOR ANY SPECIAL,
+INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+
+Software: numpy 1.17.0
+Copyright notice:
+Copyright (c) 1995, 1996, 1997 Jim Hugunin, hugunin@mit.edu
+Copyright 2014 Melissa O'Neill <oneill@pcg-random.org>
+Copyright (c) 2006, University of Georgia and Pierre G.F. Gerard-Marchant All rights reserved.
+Copyright 1999-2004 Pearu Peterson all rights reserved, Pearu Peterson <pearu@ioc.ee>
+Copyright (c) 2009-2019: Jeff Bezanson, Stefan Karpinski, Viral B. Shah, and other contributors:
+Copyright (c) 2003-2005, Jean-Sebastien Roy (js@jeannot.org)
+copyright = '2008-2019, The SciPy community'
+Copyright 2002 Pearu Peterson all rights reserved, Pearu Peterson <pearu@cens.ioc.ee>
+Copyright (c) 2019 NumPy Developers
+Copyright (c) 2005-2017, NumPy Developers.
+Copyright (c) 2018 Melissa E. O'Neill
+Copyright (c) 2008 Ian Bicking and Contributors
+Copyright (c) 1992-2013 The University of Tennessee and The University of Tennessee Research Foundation.  All rights reserved.
+Copyright 1999, 2000, 2001 Regents of the University of California.
+Copyright (c) 2005, NumPy Developers
+Copyright (c) 2019 Kevin Sheppard. All rights reserved.
+Copyright 2010-2012, D. E. Shaw Research.
+Copyright (c) 2011 by Mark Wiebe (mwwiebe@gmail.com)
+Copyright 2006, Dean Edwards
+Copyright (c) 2014 Ryan Juckett
+Copyright 2001-2005 Pearu Peterson all rights reserved, Pearu Peterson <pearu@cens.ioc.ee>
+copyright = u'2017-2018, NumPy Developers'
+Copyright (C) 2004-2018 Max-Planck-Society \author Martin Reinecke
+Copyright (c) 2010-2011 by Mark Wiebe (mwwiebe@gmail.com)
+Copyright (c) 2012 Stephen Montgomery-Smith <stephen@FreeBSD.ORG>
+Copyright (c) 2005-2019, NumPy Developers.
+Copyright (c) 2011 Enthought, Inc
+Copyright (c) 2007, 2011 David Schultz <das@FreeBSD.ORG>
+Copyright (c) 2000-2013 The University of California Berkeley. All rights reserved.
+Copyright (c) 2015 Pauli Virtanen All rights reserved.
+Copyright 1999,2000 Pearu Peterson all rights reserved, Pearu Peterson <pearu@ioc.ee>
+Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura, All rights reserved.
+Copyright (c) 2005-2015, NumPy Developers.
+Copyright (c) 2011 by Enthought, Inc.
+Copyright (c) 2010 by Mark Wiebe (mwwiebe@gmail.com)
+Copyright 2000 Pearu Peterson all rights reserved, Pearu Peterson <pearu@ioc.ee>
+f90: Copyright Absoft Corporation 1994-1998 mV2; Cray Research, Inc. 1994-1996 CF90 (2.x.x.x  f36t87) Version 2.3 Wed Apr 19, 2006  13:05:16
+Copyright (c) 2006-2013 The University of Colorado Denver.  All rights reserved.
+f90: Copyright Absoft Corporation 1994-2002; Absoft Pro FORTRAN Version 8.0
+Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
+Copyright 1999--2011 Pearu Peterson all rights reserved, Pearu Peterson <pearu@cens.ioc.ee>
+Copyright 1999 - 2011 Pearu Peterson all rights reserved.
+Copyright 2015 Robert Kern <robert.kern@gmail.com>
+Copyright (c) 2015 Melissa E. O'Neill
+
+Copyright (c) 2005-2019, NumPy Developers.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+    * Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+
+    * Redistributions in binary form must reproduce the above
+       copyright notice, this list of conditions and the following
+       disclaimer in the documentation and/or other materials provided
+       with the distribution.
+
+    * Neither the name of the NumPy Developers nor the names of any
+       contributors may be used to endorse or promote products derived
+       from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Software: pytest 1.6.0
+Copyright notice:
+copyright = "2015–2020, holger krekel and pytest-dev team"
+If true, "(C) Copyright ..." is shown in the HTML footer. Default is True.
+Copyright (c) 2010 by Armin Ronacher.
+Copyright (c) 2004-2020 Holger Krekel and others
+Copyright Holger Krekel and others, 2004-2020.
+epubcopyright = "2013-2020, holger krekel et alii"
+
+License: The MIT License (MIT)
+
+Copyright (c) 2004-2020 Holger Krekel and others
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Software: Scipy 1.6.0
+Copyright notice:
+Jamfile.v2: Copyright Daryle Walker, Hubert Holin, John Maddock 2006 - 2007
+Copyright 2002 Gary Strangman.  All rights reserved
+testpareto.cpp: Copyright John Maddock 2006.
+testinstances/realconcepttestinstances1.cpp: Copyright John Maddock 2011.
+Copyright (C)  Tyler Reddy, Ross Hemsley, Edd Edmondson, Nikolai Nowaczyk, Joe Pitt-Francis, 2015.
+testellint2.cpp:  Copyright John Maddock 2006, 2007
+jacobinear1.ipp: Copyright John Maddock 2012.
+compiletest/sfellintrdincltest.cpp:  Copyright John Maddock 2006.
+testdigamma.hpp: Copyright John Maddock 2006.
+testbinomial.cpp: Copyright John Maddock 2006.
+testinstances/ldoubletestinstances6.cpp: Copyright John Maddock 2011.
+Copyright 2005 Travis Oliphant Permission to use, copy, modify, and distribute this software without fee is granted under the SciPy License.
+laguerre3.ipp:  (C) Copyright John Maddock 2006-7.
+ibetainvdata.ipp:  (C) Copyright John Maddock 2006-7.
+testconstants.cpp: Copyright John Maddock 2006, 2011.
+testnegativebinomial.cpp: Copyright John Maddock 2006.
+Copyright (C) 2003, 2007-14 Massachusetts Institute of Technology
+testbernoulli.cpp: Copyright John Maddock 2006.
+Copyright (c) 2007, Damian Eads. All rights reserved.
+testremez.cpp:  Copyright John Maddock 2006
+testibeta.hpp: Copyright Paul A. Bristow 2007, 2009
+Copyright 1984, 1987, 1988, 1992 by Stephen L. Moshier Direct inquiries to 30 Frost Street, Cambridge, MA 02140
+Copyright (c) 2006, Systems Optimization Laboratory All rights reserved.
+besseljlargedata.ipp:  Copyright (c) 2007 John Maddock
+ellintrddata.ipp:  Copyright (c) 2006 John Maddock
+testellint2.hpp: Copyright Paul A. Bristow 2007, 2009
+log1pexpm1test.cpp:  Copyright John Maddock 2005.
+pch.hpp:  Copyright John Maddock 2008.
+testlaguerre.hpp: Copyright John Maddock 2006.
+compiletest/instantiate.hpp:  Copyright John Maddock 2006.
+testnccshooks.hpp:  (C) Copyright John Maddock 2008.
+License: New BSD, (C) 2014
+compiletest/sfnextincltest.cpp:  Copyright John Maddock 2006.
+testnonfiniteio.cpp: Copyright 2011 Paul A. Bristow
+acoshtest.hpp:  (C) Copyright Hubert Holin 2003.
+compiletest/main.cpp:  Copyright John Maddock 2009.
+Copyright 1985 by Stephen L. Moshier Direct inquiries to 30 Frost Street, Cambridge, MA 02140 /
+compiletest/sfbinomialincltest.cpp:  Copyright John Maddock 2006.
+compiletest/sfhypotincltest.cpp:  Copyright John Maddock 2006.
+Copyright 2002 Pearu Peterson all rights reserved, Pearu Peterson <pearu@cens.ioc.ee>
+testinstances/doubletestinstances6.cpp: Copyright John Maddock 2011.
+testinstances/doubletestinstances2.cpp: Copyright John Maddock 2011.
+copyright = '2008-%s, The SciPy community' % date.today().year
+Copyright (C) 2014 Eric Moore
+asinhtest.hpp:  (C) Copyright Hubert Holin 2003.
+complextest.cpp:  (C) Copyright John Maddock 2005.
+testbeta.hpp: Copyright Paul A. Bristow 2007, 2009
+testtr1.cpp:  (C) Copyright John Maddock 2008.
+Copyright (c) Donald Stufft and individual contributors.
+testigamma.cpp:  (C) Copyright John Maddock 2006.
+testzeta.cpp:  (C) Copyright John Maddock 2006.
+Copyright (c) 2005-2015, Michele Simionato All rights reserved.
+nctsmalldelta.ipp: Copyright John Maddock 2012.
+ntlconceptcheck.cpp:  Copyright Paul A. Bristow 2009, 2011
+specialfunctionstest.cpp:    BOOSTTESTMESSAGE("(C) Copyright Hubert Holin 2003-2005.");
+Copyright (c) 2010 Thomas P. Robitaille
+Copyright Anne M. Archibald 2008 Released under the scipy license import numpy as np from heapq import heappush, heappop import scipy.sparse
+ibetalargedata.ipp:  (C) Copyright John Maddock 2006.
+testinstances/ldoubletestinstances10.cpp: Copyright John Maddock 2011.
+testinstances/ldoubletestinstances8.cpp: Copyright John Maddock 2011.
+igammabigdata.ipp:  (C) Copyright John Maddock 2006.
+ellinte2data.ipp:  Copyright (c) 2006 John Maddock
+testexpint.hpp: Copyright Paul A. Bristow 2007, 2009
+Copyright (C)  Tyler Reddy, Richard Gowers, and Max Linked, 2016
+s.ipp: Copyright (c) 2006 Johan Rade
+testinstances/ldoubletestinstances9.cpp: Copyright John Maddock 2011.
+compiletest/sfsphharmincltest.cpp:  Copyright John Maddock 2006.
+log1pexpm1data.ipp:  (C) Copyright John Maddock 2006-7.
+jacobiellipticsmall.ipp: Copyright John Maddock 2012.
+atanhtest.hpp:  (C) Copyright Hubert Holin 2003.
+cbrtdata.ipp:  (C) Copyright John Maddock 2006-7.
+testextremevalue.cpp: Copyright John Maddock 2006.
+ntlconceptcheck.cpp:  Copyright John Maddock 2007-8.
+compiletest/sfcospiincltest.cpp:  Copyright John Maddock 2006.
+Copyright (C) 2003-2005 Peter J. Verveer
+Copyright (C) 2013  Pauli Virtanen
+testskewnormal.cpp: Copyright Benjamin Sobotta 2012
+testdigamma.hpp: Copyright Paul A. Bristow 2007, 2009
+binomialquantile.ipp:  (C) Copyright John Maddock 2006-7.
+Copyright (C) 2013 Kenneth L. Ho
+Copyright (c) 1994 by Xerox Corporation.  All rights reserved.
+digammasmalldata.ipp:  (C) Copyright John Maddock 2006-7.
+testrationalinstances/testrationaldouble5.cpp:  (C) Copyright John Maddock 2006-7.
+testrationals.cpp:  (C) Copyright John Maddock 2006.
+testellint1.cpp:  Copyright Xiaogang Zhang 2006
+gammainvsmalldata.ipp:  (C) Copyright John Maddock 2006-7.
+testgeometric.cpp: Copyright John Maddock 2010.
+testbeta.cpp: Copyright John Maddock 2006.
+ibetaintdata.ipp:  (C) Copyright John Maddock 2006-7.
+digammadata.ipp:  (C) Copyright John Maddock 2006-7.
+testgamma.hpp: Copyright John Maddock 2006.
+legendreplarge.ipp:  (C) Copyright John Maddock 2006-7.
+Copyright (c) 2006-2008 Alexander Chemeris
+testbinomialcoeff.hpp: Copyright Paul A. Bristow 2007, 2009
+Copyright (C) 2010 David Fong and Michael Saunders
+testpareto.cpp: Copyright Paul A. Bristow 2007, 2009.
+testtgammaratio.hpp: Copyright Paul A. Bristow 2007, 2009
+testinversegaussian.cpp: Copyright Paul A. Bristow 2010.
+compiletest/toolstestinctest.cpp:  Copyright John Maddock 2006.
+s.ipp: Copyright (c) 2012 Paul A. Bristow
+testlaguerre.cpp:  (C) Copyright John Maddock 2006.
+compiletest/toolsseriesinctest.cpp:  Copyright John Maddock 2006.
+testbasicnonfinite.cpp: Copyright (c) 2006 Johan Rade
+testinstances/doubletestinstances3.cpp: Copyright John Maddock 2011.
+compiletest/complasinincltest.cpp:  Copyright John Maddock 2006.
+testncf.cpp: Copyright John Maddock 2008.
+ellintpi3largedata.ipp:  Copyright (c) 2006 John Maddock
+betasmalldata.ipp:  (C) Copyright John Maddock 2006.
+Copyright J.S. Roy (js@jeannot.org), 2002-2005 See the LICENSE file for copyright information.
+compiletest/sfsinpiincltest.cpp:  Copyright John Maddock 2006.
+testinstances/floattestinstances7.cpp: Copyright John Maddock 2011.
+testellint1.cpp:  Copyright Paul A. Bristow 2007
+Qhull, Copyright (c) 1993-2019
+handletestresult.hpp:  (C) Copyright John Maddock 2006-7.
+testnonfinitetrap.cpp: Copyright (c) 2011 Paul A. Bristow To incorporate into Boost.Math
+Copyright 1985, 1987 by Stephen L. Moshier Direct inquiries to 30 Frost Street, Cambridge, MA 02140 /
+teststudentst.cpp: Copyright John Maddock 2006.
+testarchive.cpp: Copyright (c) 2011 Paul A. Bristow - filename changes for boost-trunk.
+mprealconceptcheck.cpp:  Copyright John Maddock 2007-8.
+sphneumanndata.ipp:  Copyright (c) 2007 John Maddock
+Copyright (C) 2009 Pauli Virtanen Distributed under the same license as Scipy.
+almostequal.ipp: Copyright (c) 2006 Johan Rade
+testinstances/floattestinstances3.cpp: Copyright John Maddock 2011.
+testrationalinstances/testrationalrealconcept3.cpp:  (C) Copyright John Maddock 2006-7.
+Copyright (c) 2004-2005, Jean-Sebastien Roy (js@jeannot.org)
+tgammadeltaratioint.ipp:  (C) Copyright John Maddock 2006-7.
+testround.cpp:  (C) Copyright John Maddock 2007.
+igammainvadata.ipp:  (C) Copyright John Maddock 2006-7.
+testnct.cpp: Copyright Paul A. Bristow 2012.
+compiletest/complatanhincltest.cpp:  Copyright John Maddock 2006.
+erfinvdata.ipp:  (C) Copyright John Maddock 2006-7.
+!   Copyright (C) 2013 Kenneth L. Ho
+testerf.cpp:  Copyright John Maddock 2006.
+Copyright 1985, 1987, 1989 by Stephen L. Moshier Direct inquiries to 30 Frost Street, Cambridge, MA 02140
+testinstances/Jamfile.v2: Copyright ohn Maddock 2012
+Copyright (c) 2003-2009, The Regents of the University of California, through Lawrence Berkeley National Laboratory (subject to receipt of any required approvals from U.S. Dept. of Energy) All rights reserved.
+compiletest/toolsrationalinctest.cpp:  Copyright John Maddock 2006.
+compiletest/sfellintrjincltest.cpp:  Copyright John Maddock 2006.
+log1pexpm1test.hpp:  Copyright John Maddock 2005.
+testexpint.cpp:  (C) Copyright John Maddock 2007.
+testtriangular.cpp: Copyright Paul Bristow 2006, 2007.
+compiletest/toolstoms748inctest.cpp:  Copyright John Maddock 2006.
+Copyright (C)  Pauli Virtanen, 2010.
+testibetainvab.hpp: Copyright Paul A. Bristow 2007, 2009
+compiletest/constantsincltest.cpp:  Copyright John Maddock 2012.
+log1pexpm1test.hpp:  Copyright Paul A. Bristow 2010
+compiletest/sfroundincltest.cpp:  Copyright John Maddock 2006.
+igammameddata.ipp:  (C) Copyright John Maddock 2006.
+testinstances/testinstances.hpp: Copyright John Maddock 2011.
+testcbrt.hpp: Copyright Paul A. Bristow 2007, 2009
+testbesselairyzeros.cpp:  Copyright Paul A. Bristow 2013.
+expintidatadouble.ipp:  Copyright John Maddock 2008.
+testsignedzero.cpp: Copyright 2011 Paul A. Bristow  To incorporate into Boost.Math
+testellint1.cpp:  Copyright John Maddock 2006, 2007
+zeta1belowdata.ipp:  Copyright John Maddock 2008.
+testgammahooks.hpp:  (C) Copyright John Maddock 2006.
+testbesselairyzeros.cpp:  Copyright John Maddock 2013
+testrationalinstances/testrationalfloat2.cpp:  (C) Copyright John Maddock 2006-7.
+compiletest/stdrealconceptcheck.cpp:  Copyright John Maddock 2006.
+License: BSD, (C) 2011
+testnormal.cpp: Copyright John Maddock 2007.
+testtriangular.cpp: Copyright John Maddock 2006, 2007.
+testldoublesimple.cpp: Copyright John Maddock 2013.
+compiletest/sfexpm1incltest.cpp:  Copyright John Maddock 2006.
+testinstances/realconcepttestinstances6.cpp: Copyright John Maddock 2011.
+expintdata.ipp:  Copyright John Maddock 2008.
+Copyright (c) 1998-2003 by the University of Florida.
+testlegacynonfinite.cpp: Copyright (c) 2011 Paul A. Bristow comments
+testinstances/ldoubletestinstances2.cpp: Copyright John Maddock 2011.
+testmathfwd.cpp:  Copyright Paul A. Bristow 2010.
+nccs.ipp:  Copyright John Maddock 2008.
+testjacobi.cpp:  Copyright John Maddock 2012
+nct.ipp: Copyright John Maddock 2008.
+testigamma.hpp: Copyright Paul A. Bristow 2007, 2009
+ibetainvadata.ipp:  (C) Copyright John Maddock 2006-7.
+Copyright (C) 2015, Pauli Virtanen <pav@iki.fi>
+testellint3.cpp:  Copyright John Maddock 2006, 2007
+assoclegendrep.ipp:  (C) Copyright John Maddock 2006-7.
+testibeta.cpp:  (C) Copyright John Maddock 2006.
+betameddata.ipp:  (C) Copyright John Maddock 2006.
+expintsmalldata.ipp:  Copyright John Maddock 2008.
+nctasym.ipp: Copyright John Maddock 2012.
+License: BSD, (C) 2012
+testpolicy3.cpp: Copyright John Maddock 2007.
+Copyright (c) 2001-2011 - Scilab Enterprises Updated by Allan Cornet, Sylvestre Ledru.
+testinstances/doubletestinstances7.cpp: Copyright John Maddock 2011.
+testinstances/realconcepttestinstances4.cpp: Copyright John Maddock 2011.
+testinstances/floattestinstances2.cpp: Copyright John Maddock 2011.
+testbesselj.cpp:  (C) Copyright John Maddock 2007.
+compiletest/sfsqrt1pm1incltest.cpp:  Copyright John Maddock 2006.
+compiletest/toolspolynomialinctest.cpp:  Copyright John Maddock 2006.
+testsign.cpp:#define BOOSTTESTMAIN Copyright John Maddock 2008
+compiletest/sferfincltest.cpp:  Copyright John Maddock 2006.
+powtest.cpp:  (C) Copyright Bruno Lalande 2008.
+sphericalharmonic.ipp:  (C) Copyright John Maddock 2006-7.
+Copyright (c) 2018 Sylvain Gubian <sylvain.gubian@pmi.com>, Yang Xiang <yang.xiang@pmi.com>
+powm1sqrtp1m1test.hpp:  Copyright John Maddock 2006.
+Copyright (c) 2018, Quansight-Labs All rights reserved.
+jacobielliptic.ipp: Copyright John Maddock 2012.
+testbesselhooks.hpp:  (C) Copyright John Maddock 2007.
+testrationalinstances/testrationalldouble5.cpp:  (C) Copyright John Maddock 2006-7.
+compiletest/sfmodfincltest.cpp:  Copyright John Maddock 2006.
+Copyright (c) 1996-2008 Rice University.
+besseliintdata.ipp:  Copyright (c) 2007 John Maddock
+betaexpdata.ipp:  (C) Copyright John Maddock 2006.
+testellint3.hpp: Copyright Paul A. Bristow 2007, 2009
+compiletest/sfhankelincltest.cpp:  Copyright John Maddock 2012.
+testskewnormal.cpp: Copyright Paul A. Bristow 2012.
+negativebinomialquantile.ipp:  (C) Copyright John Maddock 2006-7.
+compiletest/sfhermiteincltest.cpp:  Copyright John Maddock 2006.
+Copyright (c) 2004 David M. Cooke <cookedm@physics.mcmaster.ca>
+gammainvbigdata.ipp:  (C) Copyright John Maddock 2006-7.
+testibetainv.cpp:  (C) Copyright John Maddock 2006.
+compiletest/sfbetaincltest.cpp:  Copyright John Maddock 2006.
+testerf.hpp: Copyright Paul A. Bristow 2007, 2009
+functor.hpp:  (C) Copyright John Maddock 2007.
+testrationalinstances/testrationalldouble4.cpp:  (C) Copyright John Maddock 2006-7.
+compiletest/complatanincltest.cpp:  Copyright John Maddock 2006.
+binomialdata.ipp:  (C) Copyright John Maddock 2006-7.
+erfsmalldata.ipp:  (C) Copyright John Maddock 2006.
+testigammainva.hpp: Copyright Paul A. Bristow 2007, 2009
+compiletest/sfdigammaincltest.cpp:  Copyright John Maddock 2006.
+Copyright (c) 2002 Travis Oliphant all rights reserved oliphant.travis@ieee.org Permission to use, modify, and distribute this software is given under the terms of the SciPy (BSD style) license. See LICENSE.txt that came with this distribution for specifics.
+compiletest/toolsstatsinctest.cpp:  Copyright John Maddock 2006.
+testgeometric.cpp: Copyright Paul A. Bristow 2010.
+compiletest/sfzetaincltest.cpp:  Copyright John Maddock 2007.
+Copyright 1984, 1987, 2000 by Stephen L. Moshier
+testinstances/realconcepttestinstances9.cpp: Copyright John Maddock 2011.
+testinstances/floattestinstances9.cpp: Copyright John Maddock 2011.
+compiletest/sfbesselincltest.cpp:  Copyright John Maddock 2006.
+testrationalinstances/testrationalrealconcept1.cpp:  (C) Copyright John Maddock 2006-7.
+Copyright Anne M. Archibald 2008 Released under the scipy license
+testinstances/realconcepttestinstances8.cpp: Copyright John Maddock 2011.
+zetanegdata.ipp:  Copyright John Maddock 2008.
+testnegativebinomial.cpp: Copyright Paul A. Bristow 2007.
+erfdata.ipp:  (C) Copyright John Maddock 2006-7.
+Copyright Anne M. Archibald 2008 Additional contributions by Patrick Varilly and Sturla Molden 2012 Revision by Sturla Molden 2015 Balanced kd-tree construction written by Jake Vanderplas for scikit-learn Released under the scipy license
+hypottest.cpp:  (C) Copyright John Maddock 2005.
+(C) Copyright John Maddock 2006.
+compiletest/sfpowm1incltest.cpp:  Copyright John Maddock 2006.
+testinstances/floattestinstances1.cpp: Copyright John Maddock 2011.
+compiletest/toolssolveinctest.cpp:  Copyright John Maddock 2006.
+igammasmalldata.ipp:  (C) Copyright John Maddock 2006.
+testrationalinstances/testrationalldouble1.cpp:  (C) Copyright John Maddock 2006-7.
+jacobilargephi.ipp: Copyright John Maddock 2012.
+compiletest/tr1incltest.cpp:  Copyright John Maddock 2008.
+igammaintdata.ipp:  (C) Copyright John Maddock 2006-7.
+ellintkdata.ipp:  (C) Copyright John Maddock 2006-7.
+compiletest/sflanczosincltest.cpp:  Copyright John Maddock 2006.
+testellint1.hpp: Copyright John Maddock 2006.
+Copyright 1984, 1987, 1989, 2000 by Stephen L. Moshier
+testlegendre.hpp: Copyright John Maddock 2006.
+testfindscale.cpp: Copyright Paul A. Bristow 2007.
+ibetadata.ipp:  (C) Copyright John Maddock 2006.
+testbesseli.hpp:  (C) Copyright John Maddock 2007.
+ellintfdata.ipp:  Copyright (c) 2006 John Maddock
+Copyright (c) 2000-2015 The University of California Berkeley. All rights reserved.
+sphbesseldata.ipp:  Copyright (c) 2007 John Maddock
+besselyndata.ipp:  Copyright (c) 2007 John Maddock
+testrealconceptnegbin.cpp: Copyright John Maddock 2010.
+Copyright 1984, 1987, 1989, 1992, 2000 by Stephen L. Moshier
+erfcinvdata.ipp:  (C) Copyright John Maddock 2006-7.
+compiletest/sfellint1incltest.cpp:  Copyright John Maddock 2006.
+Copyright (C) 2013 Kenneth L. Ho Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+testlegendrehooks.hpp:  (C) Copyright John Maddock 2006.
+testlongdoublesupport.cpp: Copyright John Maddock 2009
+compiletest/sfmathfwdincltest.cpp:  Copyright John Maddock 2006.
+testibetainv.hpp: Copyright Paul A. Bristow 2007, 2009
+testbeta.hpp: Copyright John Maddock 2006.
+compiletest/sfsincincltest.cpp:  Copyright John Maddock 2006.
+compiletest/instantiate.hpp:  Copyright Paul A. Bristow 2007, 2010.
+compiletest/toolsminimainctest.cpp:  Copyright John Maddock 2006.
+testinstantiate2.cpp:  Copyright John Maddock 2006.
+testibetainv.hpp: Copyright John Maddock 2006.
+stdrealconceptcheck.cpp:  Copyright John Maddock 2006.
+ellintpi3data.ipp:  Copyright (c) 2006 John Maddock
+testpolicysf.cpp:  (C) Copyright John Maddock 2007.
+Copyright 1985, 1987 by Stephen L. Moshier Direct inquiries to 30 Frost Street, Cambridge, MA 02140
+bessely01data.ipp:  Copyright (c) 2007 John Maddock
+teststudentst.cpp: Copyright Paul A. Bristow 2006.
+testrationalinstances/testrationalldouble3.cpp:  (C) Copyright John Maddock 2006-7.
+Copyright 2002-2016 The SciPy Developers
+compiletest/toolstestdatainctest.cpp:  Copyright John Maddock 2006.
+testerf.hpp: Copyright John Maddock 2006.
+testinstances/realconcepttestinstances5.cpp: Copyright John Maddock 2011.
+testcommonfactorgmpxx.cpp:  (C) Copyright John Maddock 2010.
+testtoms748solve.cpp:  (C) Copyright John Maddock 2006.
+testbesselj.hpp:  (C) Copyright John Maddock 2007.
+testibetainvab.hpp: Copyright John Maddock 2006.
+testbasicnonfinite.cpp: Copyright (c) 2011 Paul A. Bristow comments
+besselyvdata.ipp:  Copyright (c) 2007 John Maddock
+testconstants.cpp: Copyright Paul Bristow 2007, 2011.
+testtr1.c:/  (C) Copyright John Maddock 2008.
+testellint2.hpp: Copyright John Maddock 2006.
+compiletest/toolsrootsinctest.cpp:  Copyright John Maddock 2006.
+testcauchy.cpp: Copyright John Maddock 2006, 2007.
+testerf.cpp:  Copyright Paul A. Bristow 2007
+ztestmaxdigits10.cpp:  Copyright 2010 Paul A. Bristow
+testzeta.hpp: Copyright John Maddock 2006.
+compiletest/sflog1pincltest.cpp:  Copyright John Maddock 2006.
+Copyright (C) 2008 Damian Eads
+testpolicy8.cpp: Copyright John Maddock 2007.
+testcarlson.hpp: Copyright John Maddock 2006.
+testinstances/floattestinstances5.cpp: Copyright John Maddock 2011.
+testminima.cpp:  Copyright Paul A. Bristow 2007.
+compiletest/sfjacobiincltest.cpp:  Copyright John Maddock 2012.
+tgammadeltaratiodata.ipp:  (C) Copyright John Maddock 2006-7.
+testmathfwd.cpp:  Copyright John Maddock 2010.
+testconstantgenerate.cpp: Copyright John Maddock 2010.
+testrayleigh.cpp: Copyright John Maddock 2006.
+digammanegdata.ipp:  (C) Copyright John Maddock 2006-7.
+sinctest.hpp:  (C) Copyright Hubert Holin 2003.
+testcarlson.cpp:  Copyright 2006 John Maddock
+testinstances/longdoubletestinstances1.cpp: Copyright John Maddock 2011.
+Copyright (c) 2006 Xiaogang Zhang Use, modification and distribution are subject to the Boost Software License, Version 1.0.
+ibetasmalldata.ipp:  (C) Copyright John Maddock 2006.
+testcarlson.hpp: Copyright Paul A. Bristow 2007, 2009
+Copyright (c) 2010 - Jordi Gutiérrez Hermoso (Octave patch)
+Copyright 1984, 1996 by Stephen L. Moshier
+ncbetabig.ipp:  Copyright John Maddock 2008.
+testlaplace.cpp:  Copyright Thijs van den Berg, 2008.
+testarchive.cpp: Copyright (c) 2006 Johan Rade
+testigammainva.cpp:  (C) Copyright John Maddock 2006.
+testlaplace.cpp:  Copyright Paul A. Bristow 2008, 2009.
+testbasicnonfinite.cpp: Copyright (c) 2011 John Maddock
+multiprcconceptcheck1.cpp:  Copyright John Maddock 2013.
+besselkdata.ipp:  Copyright (c) 2007 John Maddock
+testuniform.cpp: Copyright John Maddock 2006.
+Copyright 2013 Andrea Gavana Author: <andrea.gavana@gmail.com>
+testinstances/floattestinstances10.cpp: Copyright John Maddock 2011.
+hypergeometrictestdata.ipp: Copyright Gautam Sewani 2008
+Copyright (c) 2016--2017 Felix Lenders
+pchlight.hpp:  Copyright John Maddock 2008.
+hermite.ipp:  (C) Copyright John Maddock 2006-7.
+testrationalinstances/testrationalldouble2.cpp:  (C) Copyright John Maddock 2006-7.
+binomiallargedata.ipp:  (C) Copyright John Maddock 2006-7.
+testibeta.hpp: Copyright John Maddock 2006.
+Copyright 1984, 1995, 2000 by Stephen L. Moshier
+testpolicy5.cpp: Copyright John Maddock 2007.
+testuniform.cpp: Copyright Paul Bristow 2007.
+zetadata.ipp:  Copyright John Maddock 2008.
+tgammaratiodata.ipp:  (C) Copyright John Maddock 2006-7.
+Copyright (c) 2012 Massachusetts Institute of Technology
+testsign.cpp:  (C) Copyright Paul A. Bristow 2011 (added tests for changesign)
+laguerre2.ipp:  (C) Copyright John Maddock 2006-7.
+zeta1updata.ipp:  Copyright John Maddock 2008.
+testlognormal.cpp: Copyright Paul A. Bristow 2007
+testfindlocation.cpp: Copyright John Maddock 2007.
+compiletest/sfcbrtincltest.cpp:  Copyright John Maddock 2006.
+Copyright (c) 2006-2015 The University of Colorado Denver.  All rights reserved.
+compiletest/sfellintrcincltest.cpp:  Copyright John Maddock 2006.
+testlegendre.cpp:  (C) Copyright John Maddock 2006.
+testremez.cpp:  Copyright Paul A. Bristow 2007
+testinstances/doubletestinstances4.cpp: Copyright John Maddock 2011.
+testclassify.cpp:  Copyright John Maddock 2006.
+Copyright 1984, 1987, 1989 by Stephen L. Moshier Direct inquiries to 30 Frost Street, Cambridge, MA 02140
+compiletest/complabsincltest.cpp:  Copyright John Maddock 2006.
+Copyright 1984, 1987, 1995 by Stephen L. Moshier
+testrationalinstances/testrationaldouble1.cpp:  (C) Copyright John Maddock 2006-7.
+testinstances/realconcepttestinstances7.cpp: Copyright John Maddock 2011.
+besselidata.ipp:  Copyright (c) 2007 John Maddock
+testgammadata.ipp:  (C) Copyright John Maddock 2006.
+tgammadeltaratioint2.ipp:  (C) Copyright John Maddock 2006-7.
+specialfunctionstest.cpp:  (C) Copyright Hubert Holin 2003.
+testinstances/doubletestinstances10.cpp: Copyright John Maddock 2011.
+testminima.cpp:  Copyright John Maddock 2006.
+Copyright (c) 2008 Brian M. Clapper <bmc@clapper.org>, Gael Varoquaux Author: Brian M. Clapper, Gael Varoquaux License: 3-clause BSD
+Copyright (C) Damian Eads, 2007-2008. New BSD License.
+Copyright 1999 Travis Oliphant
+testncbetahooks.hpp:  (C) Copyright John Maddock 2008.
+testrationalinstances/testrationalfloat3.cpp:  (C) Copyright John Maddock 2006-7.
+compiletest/sflegendreincltest.cpp:  Copyright John Maddock 2006.
+log1pexpm1test.cpp:  Copyright Paul A. Bristow 2010
+multiprcconceptcheck4.cpp:  Copyright John Maddock 2013.
+ellintedata.ipp:  Copyright (c) 2006 John Maddock
+Copyright 1985, 1987, 2000 by Stephen L. Moshier
+expintidata.ipp:  Copyright John Maddock 2008.
+erflargedata.ipp:  (C) Copyright John Maddock 2006-7.
+License: BSD, (C) 2011 import warnings
+mpfrconceptcheck.cpp:  Copyright John Maddock 2007-8.
+testrationalinstances/testrationaldouble4.cpp:  (C) Copyright John Maddock 2006-7.
+testibetainvab.cpp:  (C) Copyright John Maddock 2006.
+testbetahooks.hpp:  (C) Copyright John Maddock 2006.
+Copyright (c) 2001-2002 Enthought, Inc.  2003-2019, SciPy Developers.
+compiletest/sfexpintincltest.cpp:  Copyright John Maddock 2007.
+testigammainva.hpp: Copyright John Maddock 2006.
+testzeta.hpp: Copyright Paul A. Bristow 2007, 2009
+ellintrjdata.ipp:  Copyright (c) 2006 John Maddock
+erfcinvbigdata.ipp:  (C) Copyright John Maddock 2006-7.
+testinstances/ldoubletestinstances4.cpp: Copyright John Maddock 2011.
+expint1data.ipp:  Copyright John Maddock 2008.
+testigammainv.hpp: Copyright Paul A. Bristow 2007, 2009
+Copyright (C) 2010-2019 Max-Planck-Society
+Copyright (c) 2016 Wenzel Jakob <wenzel.jakob@epfl.ch>, All rights reserved.
+testrationalinstances/testrationalrealconcept5.cpp:  (C) Copyright John Maddock 2006-7.
+testcbrt.cpp:  Copyright John Maddock 2006.
+testpolicy6.cpp: Copyright John Maddock 2007.
+testsphericalharmonic.cpp:  (C) Copyright John Maddock 2006.
+testbesselk.cpp:  Copyright John Maddock 2006, 2007
+testinstances/realconcepttestinstances10.cpp: Copyright John Maddock 2011.
+Copyright (c) 2006-2007, Robert Hetland <hetland@tamu.edu>
+gammainvdata.ipp:  (C) Copyright John Maddock 2006-7.
+testgamma.cpp:  (C) Copyright John Maddock 2006.
+testnct.cpp: Copyright John Maddock 2008, 2012.
+nccsbig.ipp: Copyright John Maddock 2008.
+atanhdata.ipp: Copyright John Maddock 2008.
+testzetahooks.hpp:  (C) Copyright John Maddock 2006.
+testairy.cpp:  Copyright John Maddock 2012
+compiletest/sfgammaincltest.cpp:  Copyright John Maddock 2006.
+testlognormal.cpp: Copyright John Maddock 2006.
+testdigamma.cpp:  (C) Copyright John Maddock 2006.
+testinstances/floattestinstances6.cpp: Copyright John Maddock 2011.
+testerrorhandling.cpp: Copyright John Maddock 2006-7.
+testinstances/pch.hpp:  Copyright John Maddock 2012.
+testrationalinstances/testrationalfloat4.cpp:  (C) Copyright John Maddock 2006-7.
+Copyright (c) 2007, 2008, Damian Eads
+Copyright 2004-2005 by Enthought, Inc.
+Copyright (C) 2003, 2007-14 Matteo Frigo
+testpolicy.cpp: Copyright John Maddock 2007.
+testrationalinstances/testrationalrealconcept4.cpp:  (C) Copyright John Maddock 2006-7.
+testclassify.cpp:  Copyright Paul A. Bristow 2007
+zztestmaxdigits10.cpp: Copyright 2010 Paul A. Bristow
+testrationalinstances/testrationalrealconcept2.cpp:  (C) Copyright John Maddock 2006-7.
+Copyright 1984, 1987, 1988, 2000 by Stephen L. Moshier
+Copyright (c) 1993-2019 The Geometry Center.
+testigammainv.cpp:  (C) Copyright John Maddock 2006.
+expintidatalong.ipp:  Copyright John Maddock 2008.
+compiletest/sfsinhcincltest.cpp:  Copyright John Maddock 2006.
+testroots.cpp:  (C) Copyright John Maddock 2006.
+Copyright (c) 2007, 2008, Damian Eads. All rights reserved.
+efloatconceptcheck.cpp:  Copyright John Maddock 2011.
+testcauchy.cpp: Copyright Paul A. Bristow 2007
+testtgammaratio.cpp:  (C) Copyright John Maddock 2006.
+testellint2.cpp:  Copyright Paul A. Bristow 2007
+testrationalinstances/testrationaldouble2.cpp:  (C) Copyright John Maddock 2006-7.
+testcarlson.cpp: Copyright Paul A. Bristow 2007.
+Copyright (C) 2010 David Fong and Michael Saunders Distributed under the same license as SciPy
+Copyright 1984, 1987 by Stephen L. Moshier Direct inquiries to 30 Frost Street, Cambridge, MA 02140
+compiletest/sfellint2incltest.cpp:  Copyright John Maddock 2006.
+testigamma.hpp: Copyright John Maddock 2006.
+Copyright (c) 2016 Adrian Veres
+testoutofrange.hpp: Copyright John Maddock 2012.
+besselkintdata.ipp:  Copyright (c) 2007 John Maddock
+testinstances/doubletestinstances8.cpp: Copyright John Maddock 2011.
+testlexicalcast.cpp: Copyright (c) 2011 Paul A. Bristow incorporated Boost.Math
+compiletest/sftruncincltest.cpp:  Copyright John Maddock 2006.
+besseljdata.ipp:  Copyright (c) 2007 John Maddock
+Copyright (c) 2009, Motorola, Inc
+testlexicalcast.cpp: Copyright (c) 2006 Johan Rade
+compiletest/toolsfractioninctest.cpp:  Copyright John Maddock 2006.
+compiletest/sffpclassifyincltest.cpp:  Copyright John Maddock 2006.
+Copyright (c) 2007 - Sébastien Fabbro (gentoo patch)
+testinstances/doubletestinstances9.cpp: Copyright John Maddock 2011.
+testbesselk.hpp:  (C) Copyright John Maddock 2007.
+testrealconcept.cpp: Copyright John Maddock 2010
+Copyright (c) 2003, The Regents of the University of California, through Lawrence Berkeley National Laboratory (subject to receipt of any required approvals from U.S. Dept. of Energy)
+testbinomialcoeff.cpp:  (C) Copyright John Maddock 2006.
+testsignedzero.cpp: Copyright 2006 Johan Rade
+testrationalinstances/testrational.hpp:  (C) Copyright John Maddock 2006-7.
+testinstantiate1.cpp:  Copyright John Maddock 2006.
+compiletest/sfellintrfincltest.cpp:  Copyright John Maddock 2006.
+testellint3.hpp: Copyright John Maddock 2006.
+testinversegaussian.cpp: Copyright John Maddock 2010.
+acoshdata.ipp: Copyright John Maddock 2008.
+Copyright (c) 2002 Travis Oliphant all rights reserved Oliphant.Travis@altavista.net Permission to use, modify, and distribute this software is given under the terms of the SciPy (BSD style) license.  See LICENSE.txt that came with this distribution for specifics.
+testjacobi.hpp: Copyright John Maddock 2006.
+Copyright (C) 2019 Peter Bell
+testbesselk.cpp:  Copyright Paul A. Bristow 2007
+multiprcconceptcheck3.cpp:  Copyright John Maddock 2013.
+Copyright (C) 2010-2019 Max-Planck-Society All rights reserved.
+testellint1.hpp: Copyright Paul A. Bristow 2007, 2009
+tabletype.hpp: Copyright John Maddock 2012.
+testfindscale.cpp: Copyright John Maddock 2007.
+testinstances/floattestinstances8.cpp: Copyright John Maddock 2011.
+testskewnormal.cpp: Copyright John Maddock 2012.
+compiletest/testtraits.cpp:  Copyright John Maddock 2007.
+compiletest/complacosincltest.cpp:  Copyright John Maddock 2006.
+testbernoulli.cpp: Copyright  Paul A. Bristow 2007, 2012.
+testpolicy2.cpp: Copyright John Maddock 2007.
+testellint3.cpp:  Copyright Xiaogang Zhang 2006
+testncbeta.cpp: Copyright John Maddock 2008.
+testsignedzero.cpp: Copyright 2012 Paul A. Bristow with new tests.
+ellintrfdata.ipp:  Copyright (c) 2006 John Maddock
+digammarootdata.ipp:  (C) Copyright John Maddock 2006-7.
+multiprcconceptcheck2.cpp:  Copyright John Maddock 2013.
+compiletest/toolsrealcastinctest.cpp:  Copyright John Maddock 2006.
+testinstances/realconcepttestinstances2.cpp: Copyright John Maddock 2011.
+testbesselairyzeros.cpp:  Copyright Christopher Kormanyos 2013.
+powm1sqrtp1m1test.cpp:  (C) Copyright John Maddock 2006.
+testexpinthooks.hpp:  (C) Copyright John Maddock 2006.
+Copyright 1984, 1995 by Stephen L. Moshier
+testexpint.hpp: Copyright John Maddock 2006.
+Copyright (C) 2009, Pauli Virtanen <pav@iki.fi>
+testlaguerre.hpp: Copyright Paul A. Bristow 2007, 2009
+testinstances/ldoubletestinstances7.cpp: Copyright John Maddock 2011.
+testlegendre.hpp: Copyright Paul A. Bristow 2007, 2009
+testcbrt.cpp:  Copyright Paul A. Bristow 2010
+testjacobi.hpp: Copyright Paul A. Bristow 2007, 2009
+Copyright Benjamin Sobotta 2012
+compiletest/sffactorialsincltest.cpp:  Copyright John Maddock 2006.
+testlaplace.cpp:  Copyright John Maddock 2008.
+testbeta.cpp: Copyright Paul A. Bristow 2007, 2009
+testerrorhandling.cpp: Copyright Paul A. Bristow 2006-7.
+testrationalinstances/testrationaldouble3.cpp:  (C) Copyright John Maddock 2006-7.
+testellint2.cpp:  Copyright Xiaogang Zhang 2006
+testrationalinstances/testrationalfloat1.cpp:  (C) Copyright John Maddock 2006-7.
+compiletest/complacoshincltest.cpp:  Copyright John Maddock 2006.
+Copyright (c) 2002-2005, Jean-Sebastien Roy (js@jeannot.org)
+testrealconceptnegbin.cpp: Copyright Paul A. Bristow 2010.
+Copyright 1984, 1987, 1992, 2000 by Stephen L. Moshier
+testcbrt.hpp: Copyright John Maddock 2006.
+compiletest/toolsremezinctest.cpp:  Copyright John Maddock 2006.
+compiletest/sfairyincltest.cpp:  Copyright John Maddock 2012.
+Copyright (c) 2007, John Travers <jtravs@gmail.com>
+compiletest/sflaguerreincltest.cpp:  Copyright John Maddock 2006.
+Copyright 1984, 1987, 1989, 1995 by Stephen L. Moshier
+Copyright 1984, 1991 by Stephen L. Moshier Direct inquiries to 30 Frost Street, Cambridge, MA 02140
+testerfhooks.hpp:  (C) Copyright John Maddock 2006.
+Copyright (C) Piers Lawrence.
+testbessely.cpp:  (C) Copyright John Maddock 2007.
+testnormal.cpp: Copyright Paul A. Bristow 2010.
+testbinomialcoeff.hpp: Copyright John Maddock 2006.
+Copyright (C) 2019 Max-Planck-Society
+testfindlocation.cpp: Copyright Paul A. Bristow 2007.
+testhankel.cpp:  Copyright John Maddock 2012 testhypergeometricdist.cpp: Copyright Paul A. Bristow testhypergeometricdist.cpp: Copyright Gautam Sewani
+compiletest/sfsignincltest.cpp:  Copyright John Maddock 2006.
+testnonfinitetrap.cpp: Copyright (c) 2006 Johan Rade
+testinstances/ldoubletestinstances5.cpp: Copyright John Maddock 2011.
+asinhdata.ipp: Copyright John Maddock 2008.
+testlegacynonfinite.cpp: Copyright (c) 2006 Johan Rade
+testigammainv.hpp: Copyright John Maddock 2006.
+Copyright 1984, 1987, 1988 by Stephen L. Moshier Direct inquiries to 30 Frost Street, Cambridge, MA 02140
+compiletest/sfellint3incltest.cpp:  Copyright John Maddock 2006.
+testfactorials.cpp:  Copyright John Maddock 2006.
+testinstances/doubletestinstances5.cpp: Copyright John Maddock 2011.
+Copyright 2014, Eric W. Moore
+compiletest/generate.sh:  Copyright John Maddock 2006.
+testpolicy7.cpp: Copyright John Maddock 2007.
+legendrep.ipp:  (C) Copyright John Maddock 2006-7.
+testgamma.hpp: Copyright Paul A. Bristow 2007, 2009
+compiletest/toolsconfiginctest.cpp:  Copyright John Maddock 2006.
+compiletest/complasinhincltest.cpp:  Copyright John Maddock 2006.
+testprintinfoontype.cpp: Copyright John Maddock 2010.
+ellintrcdata.ipp:  Copyright (c) 2006 John Maddock
+besseljintdata.ipp:  Copyright (c) 2007 John Maddock
+compiletest/testcompileresult.hpp:  Copyright John Maddock 2007.
+testnext.cpp:  (C) Copyright John Maddock 2008.
+testinstances/realconcepttestinstances3.cpp: Copyright John Maddock 2011.
+testinstances/ldoubletestinstances3.cpp: Copyright John Maddock 2011.
+testinvhyp.cpp:  (C) Copyright John Maddock 2006.
+testinstances/doubletestinstances1.cpp: Copyright John Maddock 2011.
+testtgammaratio.hpp: Copyright John Maddock 2006.
+Copyright 1984, 1987, 1993 by Stephen L. Moshier Direct inquiries to 30 Frost Street, Cambridge, MA 02140
+testbinomial.cpp: Copyright  Paul A. Bristow 2007.
+testpolicy4.cpp: Copyright John Maddock 2007.
+testbesseli.cpp:  (C) Copyright John Maddock 2007.
+testellint3.cpp:  Copyright Paul A. Bristow 2007
+Copyright (C) 2019 Peter Bell \author Martin Reinecke \author Peter Bell
+Copyright 1984, 1987, 1989, 1992 by Stephen L. Moshier Direct inquiries to 30 Frost Street, Cambridge, MA 02140
+Copyright (c) 2001, 2002 Enthought, Inc.
+ncbeta.ipp:  Copyright John Maddock 2008.
+sinhctest.hpp:  (C) Copyright Hubert Holin 2003.
+testbessely.hpp:  (C) Copyright John Maddock 2007.
+testinstances/floattestinstances4.cpp: Copyright John Maddock 2011.
+Copyright (C)  Tyler Reddy, 2016
+Copyright (c) 1993-2019 C.B. Barber.
+commonfactortest.cpp:  (C) Copyright Daryle Walker 2001, 2006.
+ellintpi2data.ipp:  Copyright (c) 2006 John Maddock
+Copyright (c) 1992-2015 The University of Tennessee and The University of Tennessee Research Foundation.  All rights reserved.
+
+License:
+Copyright (c) 2001-2002 Enthought, Inc.  2003-2019, SciPy Developers.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above
+   copyright notice, this list of conditions and the following
+   disclaimer in the documentation and/or other materials provided
+   with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived
+   from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

@@ -154,7 +154,7 @@ class Localization(LabelSensitiveMetric):
             overlap = np.sum(mask_np.astype(bool) & mask_out_np.astype(bool))
             saliency_area = np.sum(mask_out_np)
             result = overlap / saliency_area.clip(min=1e-10)
-        return np.array([result], np.float)
+        return np.array([result], float)
 
     def _check_evaluate_param_with_mask(self, explainer, inputs, targets, saliency, mask):
         self._check_evaluate_param(explainer, inputs, targets, saliency)
