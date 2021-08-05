@@ -21,7 +21,7 @@ import mindspore as ms
 from mindspore import context
 from mindspore import nn
 
-from mindspore_xai.explanation import RISE, Occlusion
+from mindspore_xai.explanation import RISE, RISEPlus, Occlusion, OoDNet
 
 context.set_context(mode=context.PYNATIVE_MODE)
 
@@ -34,6 +34,8 @@ class CustomNet(nn.Cell):
     """Simple net for unit test."""
     def __init__(self):
         super(CustomNet, self).__init__()
+        self.num_features = num_classes
+        self.output_features = False
         self.flatten = nn.Flatten()
         self.fc = nn.Dense(in_channels=C*H*W, out_channels=num_classes)
 
@@ -86,7 +88,20 @@ class TestPerturbation:
         explainer = RISE(self.net, self.activation_fn, perturbation_per_eval=1)
         # reduce computation, the test doesn't concern precision
         explainer._num_masks = 8
-        return self._test_2d(2, explainer)
+        self._test_2d(2, explainer)
+
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
+    def test_riseplus_2d(self):
+        """Test for RISEPlus."""
+        explainer = RISEPlus(OoDNet(self.net, num_classes), self.net,
+                             self.activation_fn, perturbation_per_eval=1)
+        # reduce computation, the test doesn't concern precision
+        explainer._num_masks = 8
+        self._test_2d(2, explainer)
 
     @pytest.mark.level0
     @pytest.mark.platform_arm_ascend_training
@@ -98,4 +113,4 @@ class TestPerturbation:
         explainer = Occlusion(self.net, self.activation_fn, perturbation_per_eval=1)
         # reduce computation, the test doesn't concern precision
         explainer._num_sample_per_dim = 8
-        return self._test_2d(1, explainer, test_multi_targets=False)
+        self._test_2d(1, explainer, test_multi_targets=False)

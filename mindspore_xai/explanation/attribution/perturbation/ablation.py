@@ -30,7 +30,29 @@ from .replacement import Constant
 
 
 class Ablation:
-    """Base class to ablate image based on given replacement."""
+    """
+    Base class to ablate image based on given replacement.
+
+    Args:
+        perturb_mode (str): Perturbation mode.
+
+    Inputs:
+        inputs (np.ndarray): Input array to perturb. The first dim of inputs is assumed to be the batch size, i.e.,
+            number of samples.
+        reference (np.ndarray or float): Array of values to replace the elements in the original inputs. The shape
+            of reference must match the inputs. If scalar is provided, the perturbed elements will be assigned the
+            given value..
+        masks (np.ndarray): Several boolean array to mark the perturbed positions. True marks the pixels to be
+            perturbed, otherwise the pixels will be kept. The shape of masks is assumed to be
+            [batch_size, num_perturbations, inputs_shape[1:]].
+
+    Returns:
+        np.ndarray, perturbations.
+
+    Raises:
+        TypeError: Be raised for any input type problem.
+        ValueError: Be raised for any input value problem.
+    """
 
     def __init__(self, perturb_mode: str):
         self._perturb_mode = perturb_mode
@@ -164,7 +186,7 @@ class AblationWithSaliency(Ablation):
             up_bound = low_bound + pixel_per_step
             for j in range(num_perturbations):
                 masks[i, j, :, ((saliency_rank[i] >= low_bound) & (saliency_rank[i] < up_bound))] = True
-                low_bound = up_bound + factor
+                low_bound = up_bound * factor
                 up_bound += pixel_per_step
 
         masks = masks if has_channel else np.squeeze(masks, axis=2)
@@ -178,6 +200,9 @@ class AblationWithSaliency(Ablation):
         if self._pixel_per_step:
             pixel_per_step = self._pixel_per_step
             num_perturbations = math.floor(num_pixels * self._perturb_percent / self._pixel_per_step)
+            if not num_perturbations:
+                raise ValueError("Number of perturbations is not valid. Please enlarge the value of perturb_percent or "
+                                 "reduce the value of pixel_per_step when instantiating AblationWithSaliency.")
         elif self._num_perturbations:
             pixel_per_step = math.floor(num_pixels * self._perturb_percent / self._num_perturbations)
             num_perturbations = self._num_perturbations

@@ -69,13 +69,22 @@ class GradCAM(IntermediateLayerAttribution):
           If it is a 1D tensor, its length should be the same as `inputs`.
 
     Outputs:
-        Tensor, a 4D tensor of shape :math:`(N, 1, H, W)`.
+        Tensor, a 4D tensor of shape :math:`(N, 1, H, W)`, saliency maps.
+
+    Raises:
+        TypeError: Be raised for any argument or input type problem.
+        ValueError: Be raised for any input value problem.
+
+    Supported Platforms:
+        ``Ascend`` ``GPU``
 
     Examples:
         >>> import numpy as np
         >>> import mindspore as ms
-        >>> from xai.explanation import GradCAM
+        >>> from mindspore import context
+        >>> from mindspore_xai.explanation import GradCAM
         >>>
+        >>> context.set_context(mode=context.PYNATIVE_MODE)
         >>> # The detail of LeNet5 is shown in model_zoo.official.cv.lenet.src.lenet.py
         >>> net = LeNet5(10, num_channel=3)
         >>> # specify a layer name to generate explanation, usually the layer can be set as the last conv layer.

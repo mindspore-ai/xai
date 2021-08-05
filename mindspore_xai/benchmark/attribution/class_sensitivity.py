@@ -31,6 +31,9 @@ class ClassSensitivity(LabelAgnosticMetric):
     computing the correlation between saliency maps of highest-confidence and lowest-confidence labels. Explainer with
     better class sensitivity will receive lower correlation score. To make the evaluation results intuitive, the
     returned score will take negative on correlation and normalize.
+
+    Supported Platforms:
+        ``Ascend`` ``GPU``
     """
 
     def evaluate(self, explainer, inputs):
@@ -38,18 +41,23 @@ class ClassSensitivity(LabelAgnosticMetric):
         Evaluate class sensitivity on a single data sample.
 
         Args:
-            explainer (Explanation): The explainer to be evaluated, see `xai.explanation`.
+            explainer (Explanation): The explainer to be evaluated, see `mindspore_xai.explanation`.
             inputs (Tensor): A data sample, a 4D tensor of shape :math:`(N, C, H, W)`.
 
         Returns:
             numpy.ndarray, 1D array of shape :math:`(N,)`, result of class sensitivity evaluated on `explainer`.
 
+        Raises:
+            TypeError: Be raised for any argument type problem.
+
         Examples:
             >>> import numpy as np
             >>> import mindspore as ms
+            >>> from mindspore import context
             >>> from mindspore_xai.benchmark import ClassSensitivity
             >>> from mindspore_xai.explanation import Gradient
             >>>
+            >>> context.set_context(mode=context.PYNATIVE_MODE)
             >>> # The detail of LeNet5 is shown in model_zoo.official.cv.lenet.src.lenet.py
             >>> net = LeNet5(10, num_channel=3)
             >>> # prepare your explainer to be evaluated, e.g., Gradient.

@@ -58,6 +58,12 @@ class Localization(LabelSensitiveMetric):
         num_labels (int): Number of classes in the dataset.
         metric (str, optional): Specific metric to calculate localization capability.
             Options: "PointingGame", "IoSR". Default: "PointingGame".
+
+    Raises:
+        TypeError: Be raised for any argument type problem.
+
+    Supported Platforms:
+        ``Ascend`` ``GPU``
     """
 
     def __init__(self,
@@ -91,7 +97,7 @@ class Localization(LabelSensitiveMetric):
              Currently only single sample (:math:`N=1`) at each call is supported.
 
         Args:
-            explainer (Explanation): The explainer to be evaluated, see `xai.explanation`.
+            explainer (Explanation): The explainer to be evaluated, see `mindspore_xai.explanation`.
             inputs (Tensor): A data sample, a 4D tensor of shape :math:`(N, C, H, W)`.
             targets (Tensor, int): The label of interest. It should be a 1D or 0D tensor, or an integer.
                 If `targets` is a 1D tensor, its length should be the same as `inputs`.
@@ -104,12 +110,17 @@ class Localization(LabelSensitiveMetric):
         Returns:
             numpy.ndarray, 1D array of shape :math:`(N,)`, result of localization evaluated on `explainer`.
 
+        Raises:
+            ValueError: Be raised for any argument value problem.
+
         Examples:
             >>> import numpy as np
             >>> import mindspore as ms
+            >>> from mindspore import context
             >>> from mindspore_xai.explanation import Gradient
             >>> from mindspore_xai.benchmark import Localization
             >>>
+            >>> context.set_context(mode=context.PYNATIVE_MODE)
             >>> num_labels = 10
             >>> localization = Localization(num_labels, "PointingGame")
             >>>

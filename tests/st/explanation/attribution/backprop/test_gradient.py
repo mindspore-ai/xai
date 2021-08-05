@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""Tests of Gradient of xai.explanation."""
+"""Tests of Gradient of mindspore_xai.explanation."""
 
 import numpy as np
 import pytest

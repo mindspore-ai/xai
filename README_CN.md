@@ -38,10 +38,10 @@
 
 ### 系统要求
 
-- 操作系统: EulerOS-aarch64, CentOS-aarch64, CentOS-x86, Ubuntu-aarch64 或 Ubuntu-x86
-- 硬件平台: Ascend 910 或 GPU CUDA 10.1
+- 操作系统: EulerOS-aarch64、CentOS-aarch64、CentOS-x86、Ubuntu-aarch64 或 Ubuntu-x86
+- 硬件平台: Ascend 910 或 GPU CUDA 10.1、11.1
 - Python 3.7.5 或以上
-- MindSpore 1.3
+- MindSpore 1.4 或以上
 
 ### pip安装
 
@@ -72,7 +72,7 @@ pip install -r requirements.txt
 python setup.py install
 ```
 
-4. 你也可以打包一个`.whl`安装包:
+4. 你也可以跳过第三步，打包一个`.whl`安装包:
 
 ```bash
 bash package.sh
@@ -90,25 +90,25 @@ print(mindspore_xai.__version__)
 
 ## 注意事項
 
-[MindInsight](https://gitee.com/mindspore/mindinsight/blob/master/README.md) 是一个可选的XAI可视化工具，请参阅[使用教程](<https://www.mindspore.cn/en>)。
+[MindInsight](https://gitee.com/mindspore/mindinsight/blob/master/README.md) 是一个可选的XAI可视化工具，请参阅[使用教程](https://www.mindspore.cn/en)。
 
 ## 快速入门
 
-关于如何快速使用XAI为模型进行解释，请点击查看XAI[使用教程](<https://www.mindspore.cn/en>)。
+关于如何快速使用XAI为模型进行解释，请点击查看XAI[使用教程](https://mindspore.cn/xai/docs/zh-CN/master/index.html)。
 
 ## 文档
 
-有关安装指南、教程和API的更多详细信息，请参阅[用户文档](<https://www.mindspore.cn/cn>)。
+有关安装指南、教程和API的更多详细信息，请参阅[首頁](https://mindspore.cn/xai)。
 
 ## 社区
 
 ### 治理
 
-查看MindSpore如何进行[开放治理](<https://gitee.com/mindspore/community/blob/master/governance.md>)。
+查看MindSpore如何进行[开放治理](https://gitee.com/mindspore/community/blob/master/governance.md)。
 
 ## 贡献
 
-欢迎参与贡献。更多详情，请参阅我们的[贡献者Wiki](<https://gitee.com/mindspore/mindspore/blob/master/CONTRIBUTING.md>)。
+欢迎参与贡献。更多详情，请参阅我们的[贡献者Wiki](https://gitee.com/mindspore/mindspore/blob/master/CONTRIBUTING.md)。
 
 ## 许可证
 

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""Tests of Localization of xai.benchmark."""
+"""Tests of Localization of mindspore_xai.benchmark."""
 
 from unittest.mock import patch
 import numpy as np
