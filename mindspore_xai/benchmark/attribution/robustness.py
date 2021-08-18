@@ -36,6 +36,12 @@ class Robustness(LabelSensitiveMetric):
             single label classification tasks, `nn.Softmax` is usually applied. As for multi-label classification
             tasks, `nn.Sigmoid` is usually be applied. Users can also pass their own customized `activation_fn` as long
             as when combining this function with network, the final output is the probability of the input.
+
+    Raises:
+        TypeError: Be raised for any argument type problem.
+
+    Supported Platforms:
+        ``Ascend`` ``GPU``
     """
 
     def __init__(self, num_labels, activation_fn):
@@ -54,7 +60,7 @@ class Robustness(LabelSensitiveMetric):
             Currently only single sample (:math:`N=1`) at each call is supported.
 
         Args:
-            explainer (Explanation): The explainer to be evaluated, see `xai.explanation`.
+            explainer (Explanation): The explainer to be evaluated, see `mindspore_xai.explanation`.
             inputs (Tensor): A data sample, a 4D tensor of shape :math:`(N, C, H, W)`.
             targets (Tensor, int): The label of interest. It should be a 1D or 0D tensor, or an integer.
                 If `targets` is a 1D tensor, its length should be the same as `inputs`.
@@ -71,10 +77,12 @@ class Robustness(LabelSensitiveMetric):
         Examples:
             >>> import numpy as np
             >>> import mindspore as ms
+            >>> from mindspore import context
             >>> from mindspore import nn
-            >>> from xai.explanation import Gradient
-            >>> from xai.benchmark import Robustness
+            >>> from mindspore_xai.explanation import Gradient
+            >>> from mindspore_xai.benchmark import Robustness
             >>>
+            >>> context.set_context(mode=context.PYNATIVE_MODE)
             >>> # Initialize a Robustness benchmarker passing num_labels of the dataset.
             >>> num_labels = 10
             >>> activation_fn = nn.Softmax()

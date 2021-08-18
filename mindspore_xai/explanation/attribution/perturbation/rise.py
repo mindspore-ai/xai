@@ -58,11 +58,20 @@ class RISE(PerturbationAttribution):
         Tensor, a 4D tensor of shape :math:`(N, l, H, W)` when targets is a tensor of shape (N, l), otherwise a tensor
         of shape (N, 1, H, w), saliency maps.
 
+    Raises:
+        TypeError: Be raised for any argument or input type problem.
+        ValueError: Be raised for any input value problem.
+
+    Supported Platforms:
+        ``Ascend`` ``GPU``
+
     Examples:
         >>> import numpy as np
         >>> import mindspore as ms
+        >>> from mindspore import context
         >>> from mindspore_xai.explanation import RISE
         >>>
+        >>> context.set_context(mode=context.PYNATIVE_MODE)
         >>> # The detail of LeNet5 is shown in model_zoo.official.cv.lenet.src.lenet.py
         >>> net = LeNet5(10, num_channel=3)
         >>> # initialize RISE explainer with the pretrained model and activation function

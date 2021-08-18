@@ -45,6 +45,13 @@ class ModifiedReLU(Gradient):
 
         Returns:
             Tensor, a 4D tensor of shape :math:`(N, 1, H, W)`.
+
+        Raises:
+            TypeError: Be raised for any argument type problem.
+            ValueError: Be raised for any argument value problem.
+
+        Supported Platforms:
+            ``Ascend`` ``GPU``
         """
 
         self._verify_data(inputs, targets)
@@ -98,10 +105,20 @@ class Deconvolution(ModifiedReLU):
     Outputs:
         Tensor, a 4D tensor of shape :math:`(N, 1, H, W)`.
 
+    Raises:
+        TypeError: Be raised for any argument or input type problem.
+        ValueError: Be raised for any input value problem.
+
+    Supported Platforms:
+        ``Ascend`` ``GPU``
+
     Examples:
         >>> import numpy as np
         >>> import mindspore as ms
-        >>> from xai.explanation import Deconvolution
+        >>> from mindspore import context
+        >>> from mindspore_xai.explanation import Deconvolution
+        >>>
+        >>> context.set_context(mode=context.PYNATIVE_MODE)
         >>> # The detail of LeNet5 is shown in model_zoo.official.cv.lenet.src.lenet.py
         >>> net = LeNet5(10, num_channel=3)
         >>> deconvolution = Deconvolution(net)
@@ -141,12 +158,22 @@ class GuidedBackprop(ModifiedReLU):
           If it is a 1D tensor, its length should be the same as `inputs`.
 
     Outputs:
-        Tensor, a 4D tensor of shape :math:`(N, 1, H, W)`.
+        Tensor, a 4D tensor of shape :math:`(N, 1, H, W)`, saliency maps.
+
+    Raises:
+        TypeError: Be raised for any argument or input type problem.
+        ValueError: Be raised for any input value problem.
+
+    Supported Platforms:
+        ``Ascend`` ``GPU``
 
     Examples:
         >>> import numpy as np
         >>> import mindspore as ms
-        >>> from xai.explanation import GuidedBackprop
+        >>> from mindspore import context
+        >>> from mindspore_xai.explanation import GuidedBackprop
+        >>>
+        >>> context.set_context(mode=context.PYNATIVE_MODE)
         >>> # The detail of LeNet5 is shown in model_zoo.official.cv.lenet.src.lenet.py
         >>> net = LeNet5(10, num_channel=3)
         >>> gbp = GuidedBackprop(net)

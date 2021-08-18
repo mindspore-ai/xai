@@ -39,9 +39,9 @@ This is an explainable AI framework base on [MindSpore](https://www.mindspore.cn
 ### System Requirements
 
 - OS: EulerOS-aarch64, CentOS-aarch64, CentOS-x86, Ubuntu-aarch64 or Ubuntu-x86
-- Device: Ascend 910 or GPU CUDA 10.1
+- Device: Ascend 910 or GPU CUDA 10.1, 11.1
 - Python 3.7.5 or above
-- MindSpore 1.3
+- MindSpore 1.4 or above
 
 ### Install by pip
 
@@ -72,7 +72,7 @@ pip install -r requirements.txt
 python setup.py install
 ```
 
-4. Opitonally, you may build a `.whl` package for installation:
+4. Optionally, you may build a `.whl` package for installation without step 3:
 
 ```bash
 bash package.sh
@@ -94,11 +94,11 @@ print(mindspore_xai.__version__)
 
 ## Quick Start
 
-For a quick start of generating model explanations, please checkout [Tutorials](https://www.mindspore.cn/en).
+For a quick start of generating model explanations, please checkout [Tutorials](https://mindspore.cn/xai/docs/en/master/index.html).
 
 ## Docs
 
-For more details about installation, tutorials and APIs, please checkout [User Documentation](https://www.mindspore.cn/en).
+For more details about installation, tutorials and APIs, please checkout [Front Page](https://www.mindspore.cn/xai/en).
 
 ## Community
 

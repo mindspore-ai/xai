@@ -37,7 +37,7 @@ from mindspore_xai.benchmark import Localization
 from mindspore_xai.benchmark.attribution.metric import AttributionMetric
 from mindspore_xai.benchmark.attribution.metric import LabelSensitiveMetric
 from mindspore_xai.benchmark.attribution.metric import LabelAgnosticMetric
-from mindspore_xai.explanation import RISE
+from mindspore_xai.explanation import RISE, RISEPlus
 from mindspore_xai.explanation.attribution import Attribution
 from mindspore_xai.explanation.counterfactual import hierarchical_occlusion as hoc
 
@@ -246,13 +246,20 @@ class ImageClassificationRunner(_Verifier):
             tasks, `nn.Sigmoid` is usually be applied. Users can also pass their own customized `activation_fn` as long
             as when combining this function with network, the final output is the probability of the input.
 
+    Raises:
+        TypeError: Be raised for any argument type problem.
+
+    Supported Platforms:
+        ``Ascend`` ``GPU``
+
     Examples:
         >>> from mindspore.nn import Softmax
-        >>> from mindspore.train.serialization import load_checkpoint, load_param_into_net
+        >>> from mindspore import context, load_checkpoint, load_param_into_net
         >>> from mindspore_xai.runner import ImageClassificationRunner
         >>> from mindspore_xai.explanation import GuidedBackprop, Gradient
         >>> from mindspore_xai.benchmark import Faithfulness
         >>>
+        >>> context.set_context(mode=context.PYNATIVE_MODE)
         >>> # The detail of AlexNet is shown in model_zoo.official.cv.alexnet.src.alexnet.py
         >>> net = AlexNet(10)
         >>> # Load the checkpoint
@@ -336,15 +343,15 @@ class ImageClassificationRunner(_Verifier):
         """
         Register saliency explanation instances.
 
-        Note:
+        .. warning::
             This function can not be invoked more than once on each runner.
 
         Args:
             explainers (list[Attribution]): The explainers to be evaluated,
-                see `xai.explanation`. All explainers' class must be distinct and their network
+                see `mindspore_xai.explanation`. All explainers' class must be distinct and their network
                 must be the exact same instance of the runner's network.
             benchmarkers (list[AttributionMetric], optional): The benchmarkers for scoring the explainers,
-                see `xai.benchmark`. All benchmarkers' class must be distinct.
+                see `mindspore_xai.benchmark`. All benchmarkers' class must be distinct.
 
         Raises:
             ValueError: Be raised for any data or settings' value problem.
@@ -353,7 +360,7 @@ class ImageClassificationRunner(_Verifier):
         """
         check_value_type("explainers", explainers, list)
         if not all(isinstance(ele, Attribution) for ele in explainers):
-            raise TypeError("Argument explainers is not list of xai.explanation .")
+            raise TypeError("Argument explainers is not list of mindspore_xai.explanation .")
 
         if not explainers:
             raise ValueError("Argument explainers is empty.")
@@ -361,7 +368,7 @@ class ImageClassificationRunner(_Verifier):
         if benchmarkers is not None:
             check_value_type("benchmarkers", benchmarkers, list)
             if not all(isinstance(ele, AttributionMetric) for ele in benchmarkers):
-                raise TypeError("Argument benchmarkers is not list of xai.benchmark .")
+                raise TypeError("Argument benchmarkers is not list of mindspore_xai.benchmark .")
 
         if self._explainers is not None:
             raise RuntimeError("Function register_saliency() was invoked already.")
@@ -379,6 +386,9 @@ class ImageClassificationRunner(_Verifier):
     def register_hierarchical_occlusion(self):
         """
         Register hierarchical occlusion instances.
+
+        .. warning::
+            This function can not be invoked more than once on each runner.
 
         Note:
             Input images are required to be in 3 channels formats and the length of side short must be equals to or
@@ -402,6 +412,9 @@ class ImageClassificationRunner(_Verifier):
     def register_uncertainty(self):
         """
         Register uncertainty instance to compute the epistemic uncertainty base on the Bayes' theorem.
+
+        .. warning::
+            This function can not be invoked more than once on each runner.
 
         Note:
             Please refer to the documentation of mindspore.nn.probability.toolbox.uncertainty_evaluation for the
@@ -782,7 +795,7 @@ class ImageClassificationRunner(_Verifier):
 
         batch_label_sets = self._make_label_batch(sample_label_sets)
 
-        if isinstance(explainer, RISE):
+        if isinstance(explainer, (RISE, RISEPlus)):
             batch_saliency_full = explainer(inputs, batch_label_sets)
         else:
             batch_saliency_full = []
