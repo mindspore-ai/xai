@@ -24,7 +24,7 @@
 
 ## What is Explainable AI (XAI)
 
-This is an explainable AI framework base on [MindSpore](https://www.mindspore.cn/en). Currently, most deep learning models are black-box models with good performance but poor explainability. The model explanation module aims to provide users with explanation of the model decision basis, help users better understand the model, trust the model, and improve the model when an error occurs in the model. Besides a variety of explanation methods, we also provide a set of evaluation methods to evaluate the explanation methods from various dimensions. It helps users compare and select the explanation methods that are most suitable for a particular scenario.
+XAI is an explainable AI toolbox based on [MindSpore](https://www.mindspore.cn/en). Currently, most deep learning models are black-box models with good performance but poor explainability. XAI aims to provide users decision explanations of the model, helps users better understand the model, trust the model, and improve the model when an error occurs. Besides a variety of explanation methods, we also provide a set of evaluation methods to evaluate the explanation methods from various dimensions. It helps users compare and select the explanation methods that are most suitable for a particular scenario.
 
 ### System Architecture
 
@@ -56,7 +56,7 @@ pip install mindspore_xai-{version}-py3-none-any.whl
 1. Download source code from gitee.com:
 
 ```bash
-git clone https://giee.com/mindspore/xai.git
+git clone https://gitee.com/mindspore/xai.git
 ```
 
 2. Install the dependency python modules:

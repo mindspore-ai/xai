@@ -24,7 +24,7 @@
 
 ## 什么是可解释AI (XAI)
 
-本软件是一个基于 [MindSpore](https://www.mindspore.cn/en) 的可解释AI框架。当前深度学习模型多为黑盒模型，性能表现好但可解释性较差。模型解释模块旨在为用户提供对模型决策依据的解释，帮助用户更好地理解模型、信任模型，以及当模型出现错误时有针对性地改进模型效果。除了提供多种解释方法，我们还提供了一套对解释方法效果评分的度量方法，从多种维度评估解释方法的效果，从而帮助用户比较和选择最适合于特定场景的解释方法。
+XAI是一个基于 [MindSpore](https://www.mindspore.cn/en) 的可解释AI框架。当前深度学习模型多为黑盒模型，性能表现好但可解释性较差。XAI旨在为用户提供对模型决策依据的解释，帮助用户更好地理解模型、信任模型，以及当模型出现错误时有针对性地改进模型效果。除了提供多种解释方法，还提供了一套对解释方法效果评分的度量方法，从多种维度评估解释方法的效果，从而帮助用户比较和选择最适合于特定场景的解释方法。
 
 ### 系统架构
 
@@ -56,7 +56,7 @@ pip install mindspore_xai-{version}-py3-none-any.whl
 1. 从gitee.com下载源码：
 
 ```bash
-git clone https://giee.com/mindspore/xai.git
+git clone https://gitee.com/mindspore/xai.git
 ```
 
 2. 安装所有依赖的Python包：
