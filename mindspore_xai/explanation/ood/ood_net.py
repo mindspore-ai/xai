@@ -136,16 +136,16 @@ class OoDNet(nn.Cell):
 
         check_value_type('num_classes', num_classes, int)
         if num_classes < 1:
-            raise ValueError(f'num_classes is less then 1!')
+            raise ValueError('num_classes is less then 1!')
         check_value_type('underlying', underlying, nn.Cell)
         try:
             check_value_type('underlying.num_features', underlying.num_features, int)
             if underlying.num_features < 1:
-                raise ValueError(f'underlying.num_features is less then 1!')
+                raise ValueError('underlying.num_features is less then 1!')
             check_value_type('underlying.output_features', underlying.output_features, bool)
             underlying.output_features = False  # assignment test
         except AttributeError:
-            raise AttributeError(f'underlying has no num_features or output_features attribute!')
+            raise AttributeError('underlying has no num_features or output_features attribute!')
 
         self._num_classes = num_classes
         self._underlying = underlying
@@ -216,6 +216,11 @@ class OoDNet(nn.Cell):
         self._underlying.output_features = True
         feat = self._underlying(x)
         self._underlying.output_features = False
+        if len(feat.shape) != 2:
+            raise ValueError('The underlying output features is not 2 dimensional!')
+        if feat.shape[1] != self._num_features:
+            raise ValueError(f'The underlying output feature count:{feat.shape[1]} is different '
+                             f'from underlying.num_features:{self._num_features}.')
         scores = self._ood_scores(feat)
         if self._is_train:
             feat = self._g_fc(feat)
