@@ -1,3 +1,10 @@
+# Explainable AI (XAI) 1.5.0
+
+## Explainable AI (XAI) 1.5.0 Release Notes
+
+* Enhances OoDNet error handling on receiving invalid feature tensor from the underlying.
+* Fixes format issues on README.md and README_CN.md.
+
 # Explainable AI (XAI) 1.4.0
 
 ## Explainable AI (XAI) 1.4.0 Release Notes

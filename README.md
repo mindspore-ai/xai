@@ -9,9 +9,9 @@
     - [Internal Components](#internal-components)
 - [Installation](#installation)
     - [System Requirements](#system-requirements)
-    - [Install by pip](#install-by-pip)
-    - [Install from Source Code](#install-from-source-code)
-    - [Verifying Successful Installation and Version](#verifying-successful-installation-and-version)
+    - [Installing by pip](#installing-by-pip)
+    - [Installing from Source Code](#installing-from-source-code)
+    - [Installation Verification](#installation-verification)
 - [Note](#note)
 - [Quick Start](#quick-start)
 - [Docs](#docs)
@@ -43,7 +43,7 @@ XAI is an explainable AI toolbox based on [MindSpore](https://www.mindspore.cn/e
 - Python 3.7.5 or above
 - MindSpore 1.4 or above
 
-### Install by pip
+### Installing by pip
 
 Download the `.whl` package from [MindSpore XAI download page](https://www.mindspore.cn/versions/en) and install with `pip`.
 
@@ -51,7 +51,7 @@ Download the `.whl` package from [MindSpore XAI download page](https://www.minds
 pip install mindspore_xai-{version}-py3-none-any.whl
 ```
 
-### Install from Source Code
+### Installing from Source Code
 
 1. Download source code from gitee.com:
 
@@ -79,7 +79,7 @@ bash package.sh
 pip install output/mindspore_xai-{version}-py3-none-any.whl
 ```
 
-### Verifying Successful Installation and Version
+### Installation Verification
 
 Upon successful installation, importing 'mindspore_xai' module in python will cause no error:
 
