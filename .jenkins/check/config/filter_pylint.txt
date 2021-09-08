@@ -1,0 +1,12 @@
+# Xai
+
+# Examples
+"xai/examples"                                                                                          "missing-docstring"
+"xai/examples"                                                                                          "unused-argument"
+"xai/examples"                                                                                          "pointless-string-statement"
+"xai/examples"                                                                                          "not-callable"
+
+# Tests
+"xai/tests/st/benchmark/attribution/test_localization.py"                                               "protected-access"
+"xai/tests/st/explanation/attribution/perturbation/test_perturbation.py"                                "protected-access"
+"xai/tests/st/runner/test_runner.py"                                                                    "invalid-sequence-index"

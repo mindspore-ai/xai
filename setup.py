@@ -171,7 +171,7 @@ if __name__ == '__main__':
         version=get_version(),
         author='The MindSpore XAI Authors',
         author_email='contact@mindspore.cn',
-        url='https://www.mindspore.cn',
+        url='https://www.mindspore.cn/xai',
         download_url='https://gitee.com/mindspore/xai/tags',
         project_urls={
             'Sources': 'https://gitee.com/mindspore/xai',
