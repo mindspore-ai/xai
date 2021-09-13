@@ -33,10 +33,10 @@ examples/
 - `xai_examples_data/train`: Example training dataset.
 - `common/dataset.py`: Dataset loader.
 - `common/resnet.py`: ResNet model definitions.
-- `using_explainers.py`: Example of using explainers, please refer to [Using Explainers](https://www.mindspore.cn/probability/docs/en/master/using_explainers.html) for the details.
-- `using_rise_plus.py`: Example of using RISEPlus explainer, the way of using it is different from other explainers, please refer to [Using RISEPlus](https://www.mindspore.cn/probability/docs/en/master/using_explainers.html#using-riseplus) for the details.
-- `using_benchmarks.py`: Example of using benchmarks, please refer to [Using Benchmarks](https://www.mindspore.cn/probability/docs/en/master/using_benchmarks.html) for the details.
-- `using_mindinsight.py`: Example of using MindInsight for visualizations, please refer to [Using MindInsight](https://www.mindspore.cn/probability/docs/en/master/using_mindinsight.html) for the details.
+- `using_explainers.py`: Example of using explainers, please refer to [Using Explainers](https://www.mindspore.cn/xai/docs/en/master/using_explainers.html) for the details.
+- `using_rise_plus.py`: Example of using RISEPlus explainer, the way of using it is different from other explainers, please refer to [Using RISEPlus](https://www.mindspore.cn/xai/docs/en/master/using_explainers.html#using-riseplus) for the details.
+- `using_benchmarks.py`: Example of using benchmarks, please refer to [Using Benchmarks](https://www.mindspore.cn/xai/docs/en/master/using_benchmarks.html) for the details.
+- `using_mindinsight.py`: Example of using MindInsight for visualizations, please refer to [Using MindInsight](https://www.mindspore.cn/xai/docs/en/master/using_mindinsight.html) for the details.
 
 ## Preparations
 
