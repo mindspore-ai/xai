@@ -16,12 +16,15 @@
 
 import sys
 import os
+import io
+import re
 import shutil
 import stat
 import platform
 import shlex
 import subprocess
 import types
+from datetime import date
 from importlib import import_module
 from setuptools import setup, find_packages
 from setuptools.command.egg_info import egg_info
@@ -30,22 +33,27 @@ from setuptools.command.install import install
 
 
 package_name = 'mindspore-xai'
+import_name = 'mindspore_xai'
 
 
-def get_version():
+def get_dated_version():
     """
-    Get version.
+    Get version with date.
 
     Returns:
         str, xai version.
     """
     machinery = import_module('importlib.machinery')
-    version_path = os.path.join(os.path.dirname(__file__), 'mindspore_xai', '_version.py')
+    version_path = os.path.join(os.path.dirname(__file__), import_name, '_version.py')
     module_name = '__msxaiversion__'
     version_module = types.ModuleType(module_name)
     loader = machinery.SourceFileLoader(module_name, version_path)
     loader.exec_module(version_module)
-    return version_module.__version__
+    date_str = date.today().strftime('%Y%m%d')
+    return version_module.__version__ + '.' + date_str
+
+
+dated_version = get_dated_version()
 
 
 def get_platform():
@@ -78,7 +86,7 @@ def get_description():
     )
     stdout, _ = process.communicate()
     if not process.returncode:
-        git_version = stdout.decode()
+        git_version = stdout.decode().strip()
         return '%s platform: %s, cpu: %s, git version: %s' % (package_name, os_info, cpu_info, git_version)
 
     return '%s platform: %s, cpu: %s' % (package_name, os_info, cpu_info)
@@ -133,7 +141,7 @@ class EggInfo(egg_info):
     """Egg info."""
 
     def run(self):
-        egg_info_dir = os.path.join(os.path.dirname(__file__), f'{package_name}.egg-info')
+        egg_info_dir = os.path.join(os.path.dirname(__file__), f'{import_name}.egg-info')
         shutil.rmtree(egg_info_dir, ignore_errors=True)
         super().run()
         update_permissions(egg_info_dir)
@@ -143,9 +151,19 @@ class BuildPy(build_py):
     """Build py files."""
 
     def run(self):
-        xai_lib_dir = os.path.join(os.path.dirname(__file__), 'build', 'lib', package_name)
+        xai_lib_dir = os.path.join(os.path.dirname(__file__), 'build', 'lib', import_name)
         shutil.rmtree(xai_lib_dir, ignore_errors=True)
         super().run()
+
+        # replace the version string with the dated one
+        version_file = os.path.join(os.path.dirname(__file__), 'build', 'lib', import_name, '_version.py')
+        with io.open(version_file, mode='r', encoding='utf-8') as f:
+            content = f.read()
+        pattern = re.compile(r'__version__\s*=.+\n')
+        content = re.sub(pattern, f"__version__ = '{dated_version}'\n", content)
+        with io.open(version_file, mode='w', encoding='utf-8') as f:
+            f.write(content)
+
         update_permissions(xai_lib_dir)
 
 
@@ -156,7 +174,7 @@ class Install(install):
         super().run()
         if sys.argv[-1] == 'install':
             pip = import_module('pip')
-            xai_dir = os.path.join(os.path.dirname(pip.__path__[0]), 'mindspore_xai')
+            xai_dir = os.path.join(os.path.dirname(pip.__path__[0]), import_name)
             update_permissions(xai_dir)
 
 
@@ -168,7 +186,7 @@ if __name__ == '__main__':
 
     setup(
         name=package_name,
-        version=get_version(),
+        version=dated_version,
         author='The MindSpore XAI Authors',
         author_email='contact@mindspore.cn',
         url='https://www.mindspore.cn/xai',
