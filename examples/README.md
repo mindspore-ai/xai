@@ -40,7 +40,7 @@ examples/
 
 ## Preparations
 
-Proper installations of [MindSpore](https://www.mindspore.cn/install) and [XAI](https://www.mindspore.cn/probability/docs/en/master/installation.html) are required. Besides that, `xai_examples_data` has to be downloaded as well:
+Proper installations of [MindSpore](https://www.mindspore.cn/install) and [XAI](https://www.mindspore.cn/xai/docs/en/master/installation.html) are required. Besides that, `xai_examples_data` has to be downloaded as well:
 
 ```bash
 wget https://mindspore-website.obs.myhuaweicloud.com/notebook/datasets/xai/xai_examples_data.tar.gz

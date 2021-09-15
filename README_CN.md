@@ -94,11 +94,11 @@ print(mindspore_xai.__version__)
 
 ## 快速入门
 
-关于如何快速使用XAI为模型进行解释，请点击查看XAI[使用教程](https://mindspore.cn/xai/docs/zh-CN/master/index.html)。
+关于如何快速使用XAI为模型进行解释，请点击查看XAI[使用教程](https://www.mindspore.cn/xai/docs/zh-CN/master/index.html)。
 
 ## 文档
 
-有关安装指南、教程和API的更多详细信息，请参阅[首頁](https://mindspore.cn/xai)。
+有关安装指南、教程和API的更多详细信息，请参阅[首頁](https://www.mindspore.cn/xai)。
 
 ## 社区
 
