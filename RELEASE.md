@@ -1,14 +1,18 @@
-# Explainable AI (XAI) 1.5.0
+# XAI 1.5.0
 
-## Explainable AI (XAI) 1.5.0 Release Notes
+## XAI 1.5.0 Release Notes
 
-* Enhances OoDNet error handling on receiving invalid feature tensor from the underlying.
-* Fixes format issues on README.md and README_CN.md.
+### Major Features and Improvements
 
-# Explainable AI (XAI) 1.4.0
+- [STABLE] Enhances OoDNet error handling on receiving invalid feature tensor from the underlying.
+- [BUGFIX] Fixes format issues on README.md and README_CN.md.
 
-## Explainable AI (XAI) 1.4.0 Release Notes
+# XAI 1.4.0
 
-* Supports image classification models.
-* Includes 7 explanation methods, 4 benchmarking methods and a counterfactual method.
-* Provides high-level API that generates summary files for MindInsight.
+## XAI 1.4.0 Release Notes
+
+### Major Features and Improvements
+
+- [STABLE] Supports image classification models.
+- [STABLE] Includes 7 explanation methods, 4 benchmarking methods and a counterfactual method.
+- [STABLE] Provides high-level API that generates summary files for MindInsight.

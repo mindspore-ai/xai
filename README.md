@@ -94,7 +94,7 @@ print(mindspore_xai.__version__)
 
 ## Quick Start
 
-For a quick start of generating model explanations, please checkout [Tutorials](https://mindspore.cn/xai/docs/en/master/index.html).
+For a quick start of generating model explanations, please checkout [Tutorials](https://www.mindspore.cn/xai/docs/en/master/index.html).
 
 ## Docs
 
