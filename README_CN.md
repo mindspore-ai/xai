@@ -90,7 +90,7 @@ print(mindspore_xai.__version__)
 
 ## 注意事項
 
-[MindInsight](https://gitee.com/mindspore/mindinsight/blob/master/README.md) 是一个可选的XAI可视化工具，请参阅[使用教程](https://www.mindspore.cn/en)。
+[MindInsight](https://www.mindspore.cn/mindinsight) 是一个可选的XAI可视化工具，请参阅[使用教程](https://mindspore.cn/mindinsight/docs/zh-CN/master/index.html)。
 
 ## 快速入门
 
