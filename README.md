@@ -90,7 +90,7 @@ print(mindspore_xai.__version__)
 
 ## Note
 
-[MindInsight](https://gitee.com/mindspore/mindinsight/blob/master/README.md) is an optional tool for visualizing the model explanation from XAI. Please checkout [Tutorials](https://www.mindspore.cn/en) for more details.
+[MindInsight](https://mindspore.cn/mindinsight/en) is an optional tool for visualizing the model explanation from XAI. Please checkout [Tutorials](https://mindspore.cn/mindinsight/docs/en/master/index.html) for more details.
 
 ## Quick Start
 
