@@ -29,8 +29,7 @@ from setuptools.command.build_py import build_py
 from setuptools.command.install import install
 
 
-package_name = 'mindspore-xai'
-import_name = 'mindspore_xai'
+package_name = 'mindspore_xai'
 
 
 def get_version():
@@ -41,7 +40,7 @@ def get_version():
         str, xai version.
     """
     machinery = import_module('importlib.machinery')
-    version_path = os.path.join(os.path.dirname(__file__), import_name, '_version.py')
+    version_path = os.path.join(os.path.dirname(__file__), package_name, '_version.py')
     module_name = '__msxaiversion__'
     version_module = types.ModuleType(module_name)
     loader = machinery.SourceFileLoader(module_name, version_path)
@@ -157,7 +156,7 @@ class Install(install):
         super().run()
         if sys.argv[-1] == 'install':
             pip = import_module('pip')
-            xai_dir = os.path.join(os.path.dirname(pip.__path__[0]), import_name)
+            xai_dir = os.path.join(os.path.dirname(pip.__path__[0]), package_name)
             update_permissions(xai_dir)
 
 
@@ -190,7 +189,7 @@ if __name__ == '__main__':
         python_requires='>=3.7',
         install_requires=get_install_requires(),
         classifiers=[
-            'Development Status :: 1 - Beta',
+            'Development Status :: 5 - Production/Stable',
             'Environment :: Console',
             'Intended Audience :: Science/Research',
             'Intended Audience :: Developers',
