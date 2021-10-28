@@ -209,6 +209,9 @@ class OoDNet(nn.Cell):
         """
         Forward inferences the classification logits or OOD scores.
 
+        Args:
+            x (Tensor): Input tensor for the underlying classifier.
+
         Returns:
             Tensor, logits of softmax with temperature (if set_train(True) was called) or
                 OOD scores (if set_train(False) was called). In the shape of [batch_size, num_classes].
@@ -241,6 +244,9 @@ class OoDNet(nn.Cell):
     def get_train_parameters(self, train_underlying=False):
         """
         Get the training parameters.
+
+        Args:
+            train_underlying (bool): True to include the underlying classifier parameters.
 
         Returns:
             list[Parameter], parameters.
