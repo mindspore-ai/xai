@@ -213,8 +213,8 @@ class OoDNet(nn.Cell):
             x (Tensor): Input tensor for the underlying classifier.
 
         Returns:
-            Tensor, logits of softmax with temperature (if set_train(True) was called) or
-                OOD scores (if set_train(False) was called). In the shape of [batch_size, num_classes].
+            Tensor, the logits of softmax with temperature (if set_train(True) was called) or OOD scores
+            (if set_train(False) was called). The shape is [batch_size, num_classes].
         """
         self._underlying.output_features = True
         feat = self._underlying(x)
@@ -246,7 +246,7 @@ class OoDNet(nn.Cell):
         Get the training parameters.
 
         Args:
-            train_underlying (bool): True to include the underlying classifier parameters.
+            train_underlying (bool): Set to True to include the underlying classifier parameters.
 
         Returns:
             list[Parameter], parameters.
