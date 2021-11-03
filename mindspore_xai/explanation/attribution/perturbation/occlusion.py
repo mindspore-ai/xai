@@ -52,7 +52,7 @@ class Occlusion(PerturbationAttribution):
         network (Cell): The black-box model to be explained.
         activation_fn (Cell): The activation layer that transforms logits to prediction probabilities. For
             single label classification tasks, `nn.Softmax` is usually applied. As for multi-label classification
-            tasks,`nn.Sigmoid` is usually be applied. Users can also pass their own customized `activation_fn` as long
+            tasks, `nn.Sigmoid` is usually be applied. Users can also pass their own customized `activation_fn` as long
             as when combining this function with network, the final output is the probability of the input.
         perturbation_per_eval (int, optional): Number of perturbations for each inference during inferring the
             perturbed samples. Within the memory capacity, usually the larger this number is, the faster the
