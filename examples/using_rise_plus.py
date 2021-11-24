@@ -14,7 +14,8 @@
 # ============================================================================
 from mindspore import context, save_checkpoint, load_checkpoint, load_param_into_net
 from mindspore.nn import Softmax, SoftmaxCrossEntropyWithLogits
-from mindspore_xai.explanation import RISEPlus, OoDNet
+from mindspore_xai.explainer import RISEPlus
+from mindspore_xai.tool.cv import OoDNet
 
 from common.dataset import load_dataset, load_image_tensor
 from common.resnet import resnet50

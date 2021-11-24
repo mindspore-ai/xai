@@ -1,4 +1,4 @@
-# Copyright 2020-2021 Huawei Technologies Co., Ltd
+# Copyright 2021 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,16 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""Predefined XAI metrics."""
+"""Computer vision data visualizations."""
+from .saliency import normalize_saliency, saliency_to_rgba, saliency_to_image
 
-from .attribute.class_sensitivity import ClassSensitivity
-from .attribute.faithfulness import Faithfulness
-from .attribute.localization import Localization
-from .attribute.robustness import Robustness
 
 __all__ = [
-    "ClassSensitivity",
-    "Faithfulness",
-    "Localization",
-    "Robustness"
+    'normalize_saliency',
+    'saliency_to_rgba',
+    'saliency_to_image',
 ]

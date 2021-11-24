@@ -15,7 +15,7 @@
 import mindspore.nn as nn
 from mindspore import context
 from mindspore import load_checkpoint, load_param_into_net
-from mindspore_xai.explanation import GradCAM, GuidedBackprop
+from mindspore_xai.explainer import GradCAM, GuidedBackprop
 from mindspore_xai.benchmark import Faithfulness
 from mindspore_xai.runner import ImageClassificationRunner
 

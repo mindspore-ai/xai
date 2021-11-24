@@ -21,7 +21,8 @@ import mindspore as ms
 from mindspore import context
 from mindspore import nn
 
-from mindspore_xai.explanation import RISE, RISEPlus, Occlusion, OoDNet
+from mindspore_xai.explainer import RISE, RISEPlus, Occlusion
+from mindspore_xai.tool.cv import OoDNet
 
 context.set_context(mode=context.PYNATIVE_MODE)
 
