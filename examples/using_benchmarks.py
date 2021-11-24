@@ -16,7 +16,7 @@ import numpy as np
 import mindspore as ms
 from mindspore import context, Tensor, load_checkpoint, load_param_into_net
 from mindspore.nn import Softmax
-from mindspore_xai.explanation import GradCAM
+from mindspore_xai.explainer import GradCAM
 from mindspore_xai.benchmark import Robustness, Localization
 
 from common.resnet import resnet50

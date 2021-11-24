@@ -22,7 +22,7 @@ from mindspore import context
 from mindspore import nn
 
 from mindspore_xai.benchmark import Localization
-from mindspore_xai.explanation import Gradient
+from mindspore_xai.explainer import Gradient
 
 
 context.set_context(mode=context.PYNATIVE_MODE)
