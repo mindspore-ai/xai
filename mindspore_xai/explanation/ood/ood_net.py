@@ -76,55 +76,50 @@ class OoDNet(nn.Cell):
         >>> import numpy as np
         >>> import mindspore as ms
         >>> from mindspore import context, nn
-        >>> from mindspore_xai.explanation import OoDNet
         >>> from mindspore.common.initializer import Normal
+        >>> from mindspore_xai.explanation import OoDNet
         >>>
         >>>
         >>> class MyLeNet5(nn.Cell):
-        >>>
-        >>>    def __init__(self, num_class, num_channel):
-        >>>        super(MyLeNet5, self).__init__()
-        >>>
-        >>>        # must add the following 2 attributes to your model
-        >>>        self.num_features = 84 # no. of features, int
-        >>>        self.output_features = False # output features flag, bool
-        >>>
-        >>>        self.conv1 = nn.Conv2d(num_channel, 6, 5, pad_mode='valid')
-        >>>        self.conv2 = nn.Conv2d(6, 16, 5, pad_mode='valid')
-        >>>        self.relu = nn.ReLU()
-        >>>        self.max_pool2d = nn.MaxPool2d(kernel_size=2, stride=2)
-        >>>        self.flatten = nn.Flatten()
-        >>>        self.fc1 = nn.Dense(16 * 5 * 5, 120, weight_init=Normal(0.02))
-        >>>        self.fc2 = nn.Dense(120, self.num_features, weight_init=Normal(0.02))
-        >>>        self.fc3 = nn.Dense(self.num_features, num_class, weight_init=Normal(0.02))
-        >>>
-        >>>    def construct(self, x):
-        >>>        x = self.conv1(x)
-        >>>        x = self.relu(x)
-        >>>        x = self.max_pool2d(x)
-        >>>        x = self.conv2(x)
-        >>>        x = self.relu(x)
-        >>>        x = self.max_pool2d(x)
-        >>>        x = self.flatten(x)
-        >>>        x = self.relu(self.fc1(x))
-        >>>        x = self.relu(self.fc2(x))
-        >>>
-        >>>        # return the features tensor if output_features is True
-        >>>        if self.output_features:
-        >>>            return x
-        >>>
-        >>>        x = self.fc3(x)
-        >>>        return x
+        ...    def __init__(self, num_class, num_channel):
+        ...        super(MyLeNet5, self).__init__()
+        ...
+        ...        # must add the following 2 attributes to your model
+        ...        self.num_features = 84 # no. of features, int
+        ...        self.output_features = False # output features flag, bool
+        ...
+        ...        self.conv1 = nn.Conv2d(num_channel, 6, 5, pad_mode='valid')
+        ...        self.conv2 = nn.Conv2d(6, 16, 5, pad_mode='valid')
+        ...        self.relu = nn.ReLU()
+        ...        self.max_pool2d = nn.MaxPool2d(kernel_size=2, stride=2)
+        ...        self.flatten = nn.Flatten()
+        ...        self.fc1 = nn.Dense(16 * 5 * 5, 120, weight_init=Normal(0.02))
+        ...        self.fc2 = nn.Dense(120, self.num_features, weight_init=Normal(0.02))
+        ...        self.fc3 = nn.Dense(self.num_features, num_class, weight_init=Normal(0.02))
+        ...
+        ...    def construct(self, x):
+        ...        x = self.conv1(x)
+        ...        x = self.relu(x)
+        ...        x = self.max_pool2d(x)
+        ...        x = self.conv2(x)
+        ...        x = self.relu(x)
+        ...        x = self.max_pool2d(x)
+        ...        x = self.flatten(x)
+        ...        x = self.relu(self.fc1(x))
+        ...        x = self.relu(self.fc2(x))
+        ...
+        ...        # return the features tensor if output_features is True
+        ...        if self.output_features:
+        ...            return x
+        ...
+        ...        x = self.fc3(x)
+        ...        return x
         >>>
         >>> context.set_context(mode=context.PYNATIVE_MODE)
-        >>> # prepare trained classifier
+        >>> # prepare classifier
         >>> net = MyLeNet5(10, num_channel=3)
-        >>> param_dict = load_checkpoint('mylenet5.ckpt')
-        >>> load_param_into_net(net, param_dict)
-        >>> # prepare train_dataset and your OoD network
-        >>> train_dataset = create_dataset_cifar10("/path/to/cifar/dataset")
+        >>> # prepare OoD network
         >>> ood_net = OoDNet(net, 10)
-        >>> ood_net.train(train_dataset, nn.SoftmaxCrossEntropyWithLogits())
         >>> inputs = ms.Tensor(np.random.rand(1, 3, 32, 32), ms.float32)
         >>> ood_map = ood_net(inputs)
         >>> print(ood_map.shape)
