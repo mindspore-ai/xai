@@ -1,4 +1,4 @@
-# Copyright 2020-2021 Huawei Technologies Co., Ltd
+# Copyright 2020 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,16 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""Predefined XAI metrics."""
+"""Attribute explainers."""
 
-from .attribute.class_sensitivity import ClassSensitivity
-from .attribute.faithfulness import Faithfulness
-from .attribute.localization import Localization
-from .attribute.robustness import Robustness
+from .attribution import Attribution
 
 __all__ = [
-    "ClassSensitivity",
-    "Faithfulness",
-    "Localization",
-    "Robustness"
+    'Attribution'
 ]

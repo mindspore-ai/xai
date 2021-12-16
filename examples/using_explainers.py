@@ -14,7 +14,7 @@
 # ============================================================================
 import mindspore as ms
 from mindspore import Tensor, context, load_checkpoint, load_param_into_net
-from mindspore_xai.explanation import GradCAM
+from mindspore_xai.explainer import GradCAM
 
 from common.dataset import load_dataset, load_image_tensor
 from common.resnet import resnet50
