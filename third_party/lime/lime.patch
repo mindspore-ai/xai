@@ -1,0 +1,355 @@
+diff --git a/lime/explanation.py b/lime/explanation.py
+index d03155e..9c6154c 100644
+--- a/lime/explanation.py
++++ b/lime/explanation.py
+@@ -8,8 +8,6 @@ import json
+ import string
+ import numpy as np
+ 
+-from .exceptions import LimeError
+-
+ from sklearn.utils import check_random_state
+ 
+ 
+@@ -95,8 +93,8 @@ class Explanation(object):
+         self.domain_mapper = domain_mapper
+         self.local_exp = {}
+         self.intercept = {}
+-        self.score = None
+-        self.local_pred = None
++        self.score = {}
++        self.local_pred = {}
+         if mode == 'classification':
+             self.class_names = class_names
+             self.top_labels = None
+@@ -108,9 +106,9 @@ class Explanation(object):
+             self.max_value = 1.0
+             self.dummy_label = 1
+         else:
+-            raise LimeError('Invalid explanation mode "{}". '
+-                            'Should be either "classification" '
+-                            'or "regression".'.format(mode))
++            raise ValueError('Invalid explanation mode "{}". '
++                             'Should be either "classification" '
++                             'or "regression".'.format(mode))
+ 
+     def available_labels(self):
+         """
+@@ -139,7 +137,7 @@ class Explanation(object):
+         """
+         label_to_use = label if self.mode == "classification" else self.dummy_label
+         ans = self.domain_mapper.map_exp_ids(self.local_exp[label_to_use], **kwargs)
+-        ans = [(x[0], float(x[1])) for x in ans]
++        ans = [(str(x[0]), float(x[1])) for x in ans]
+         return ans
+ 
+     def as_map(self):
+@@ -150,7 +148,7 @@ class Explanation(object):
+         """
+         return self.local_exp
+ 
+-    def as_pyplot_figure(self, label=1, **kwargs):
++    def as_pyplot_figure(self, label=1, sample=0, figsize=(4,4), **kwargs):
+         """Returns the explanation as a pyplot figure.
+ 
+         Will throw an error if you don't have matplotlib installed
+@@ -158,6 +156,8 @@ class Explanation(object):
+             label: desired label. If you ask for a label for which an
+                    explanation wasn't computed, will throw an exception.
+                    Will be ignored for regression explanations.
++            sample: sample index, as part of pyplot title.
++            figsize: desired size of pyplot in tuple format, defaults to (4,4).
+             kwargs: keyword arguments, passed to domain_mapper
+ 
+         Returns:
+@@ -165,7 +165,7 @@ class Explanation(object):
+         """
+         import matplotlib.pyplot as plt
+         exp = self.as_list(label=label, **kwargs)
+-        fig = plt.figure()
++        fig = plt.figure(figsize=figsize)
+         vals = [x[1] for x in exp]
+         names = [x[0] for x in exp]
+         vals.reverse()
+@@ -175,9 +175,9 @@ class Explanation(object):
+         plt.barh(pos, vals, align='center', color=colors)
+         plt.yticks(pos, names)
+         if self.mode == "classification":
+-            title = 'Local explanation for class %s' % self.class_names[label]
++            title = 'Local explanation for sample %d for class %s' % (sample, self.class_names[label])
+         else:
+-            title = 'Local explanation'
++            title = 'Local explanation for sample %d' % sample
+         plt.title(title)
+         return fig
+ 
+diff --git a/lime/lime_tabular.py b/lime/lime_tabular.py
+index f788315..a7fa968 100644
+--- a/lime/lime_tabular.py
++++ b/lime/lime_tabular.py
+@@ -12,12 +12,14 @@ import scipy as sp
+ import sklearn
+ import sklearn.preprocessing
+ from sklearn.utils import check_random_state
+-
+-from lime.discretize import QuartileDiscretizer
+-from lime.discretize import DecileDiscretizer
+-from lime.discretize import EntropyDiscretizer
+-from lime.discretize import BaseDiscretizer
+-from lime.discretize import StatsDiscretizer
++import mindspore as ms
++from mindspore import Tensor
++
++from .discretize import QuartileDiscretizer
++from .discretize import DecileDiscretizer
++from .discretize import EntropyDiscretizer
++from .discretize import BaseDiscretizer
++from .discretize import StatsDiscretizer
+ from . import explanation
+ from . import lime_base
+ 
+@@ -95,10 +97,10 @@ class TableDomainMapper(explanation.DomainMapper):
+                                     fweights))
+             else:
+                 out_dict = dict(map(lambda x: (x[0], (x[1], x[2], x[3])),
+-                                zip(self.feature_indexes,
+-                                    fnames,
+-                                    self.feature_values,
+-                                    fweights)))
++                                    zip(self.feature_indexes,
++                                        fnames,
++                                        self.feature_values,
++                                        fweights)))
+                 out_list = [out_dict.get(x[0], (str(x[0]), 0.0, 0.0)) for x in exp]
+         else:
+             out_list = list(zip(self.exp_feature_names,
+@@ -122,8 +124,8 @@ class LimeTabularExplainer(object):
+     explained."""
+ 
+     def __init__(self,
++                 network,
+                  training_data,
+-                 mode="classification",
+                  training_labels=None,
+                  feature_names=None,
+                  categorical_features=None,
+@@ -141,8 +143,10 @@ class LimeTabularExplainer(object):
+         """Init function.
+ 
+         Args:
++            network (Cell, function): The black-box model to be explained, or a prediction function. For classifiers,
++                the function should take a tensor and outputs prediction probabilities. For regressors, this takes a
++                tensor and returns the predictions.
+             training_data: numpy 2d array
+-            mode: "classification" or "regression"
+             training_labels: labels for training data. Not required, but may be
+                 used by discretizer.
+             feature_names: list of names (strings) corresponding to the columns
+@@ -184,6 +188,23 @@ class LimeTabularExplainer(object):
+                 means", "mins", "maxs", "stds", "feature_values",
+                 "feature_frequencies"
+         """
++        mode = "regression"
++        outputs = network(ms.Tensor(training_data[:1], ms.float32))
++        if outputs.shape[1] > 1:
++            mode = "classification"
++
++        if type(training_data) == ms.Tensor:
++            training_data = training_data.asnumpy()
++
++        if len(training_data.shape) != 2:
++            raise ValueError('Dimension invalid. `training_data` should be 2D. '
++                             'But got {}D.'.format(len(training_data.shape)))
++
++        if issubclass(type(network), ms.nn.Cell):
++            network.set_train(False)
++            network.set_grad(False)
++        self._network = network
++
+         self.random_state = check_random_state(random_state)
+         self.mode = mode
+         self.categorical_names = categorical_names or {}
+@@ -213,19 +234,19 @@ class LimeTabularExplainer(object):
+ 
+             if discretizer == 'quartile':
+                 self.discretizer = QuartileDiscretizer(
+-                        training_data, self.categorical_features,
+-                        self.feature_names, labels=training_labels,
+-                        random_state=self.random_state)
++                    training_data, self.categorical_features,
++                    self.feature_names, labels=training_labels,
++                    random_state=self.random_state)
+             elif discretizer == 'decile':
+                 self.discretizer = DecileDiscretizer(
+-                        training_data, self.categorical_features,
+-                        self.feature_names, labels=training_labels,
+-                        random_state=self.random_state)
++                    training_data, self.categorical_features,
++                    self.feature_names, labels=training_labels,
++                    random_state=self.random_state)
+             elif discretizer == 'entropy':
+                 self.discretizer = EntropyDiscretizer(
+-                        training_data, self.categorical_features,
+-                        self.feature_names, labels=training_labels,
+-                        random_state=self.random_state)
++                    training_data, self.categorical_features,
++                    self.feature_names, labels=training_labels,
++                    random_state=self.random_state)
+             elif isinstance(discretizer, BaseDiscretizer):
+                 self.discretizer = discretizer
+             else:
+@@ -235,7 +256,7 @@ class LimeTabularExplainer(object):
+             self.categorical_features = list(range(training_data.shape[1]))
+ 
+             # Get the discretized_training_data when the stats are not provided
+-            if(self.training_data_stats is None):
++            if (self.training_data_stats is None):
+                 discretized_training_data = self.discretizer.discretize(
+                     training_data)
+ 
+@@ -295,7 +316,6 @@ class LimeTabularExplainer(object):
+ 
+     def explain_instance(self,
+                          data_row,
+-                         predict_fn,
+                          labels=(1,),
+                          top_labels=None,
+                          num_features=10,
+@@ -303,22 +323,12 @@ class LimeTabularExplainer(object):
+                          distance_metric='euclidean',
+                          model_regressor=None):
+         """Generates explanations for a prediction.
+-
+         First, we generate neighborhood data by randomly perturbing features
+         from the instance (see __data_inverse). We then learn locally weighted
+         linear models on this neighborhood data to explain each of the classes
+         in an interpretable way (see lime_base.py).
+-
+         Args:
+             data_row: 1d numpy array or scipy.sparse matrix, corresponding to a row
+-            predict_fn: prediction function. For classifiers, this should be a
+-                function that takes a numpy array and outputs prediction
+-                probabilities. For regressors, this takes a numpy array and
+-                returns the predictions. For ScikitClassifiers, this is
+-                `classifier.predict_proba()`. For ScikitRegressors, this
+-                is `regressor.predict()`. The prediction function needs to work
+-                on multiple feature vectors (the vectors randomly perturbed
+-                from the data_row).
+             labels: iterable with labels to be explained.
+             top_labels: if not None, ignore labels and produce explanations for
+                 the K labels with highest prediction probabilities, where K is
+@@ -329,7 +339,6 @@ class LimeTabularExplainer(object):
+             model_regressor: sklearn regressor to use in explanation. Defaults
+                 to Ridge regression in LimeBase. Must have model_regressor.coef_
+                 and 'sample_weight' as a parameter to model_regressor.fit()
+-
+         Returns:
+             An Explanation object (see explanation.py) with the corresponding
+             explanations.
+@@ -347,12 +356,12 @@ class LimeTabularExplainer(object):
+         else:
+             scaled_data = (data - self.scaler.mean_) / self.scaler.scale_
+         distances = sklearn.metrics.pairwise_distances(
+-                scaled_data,
+-                scaled_data[0].reshape(1, -1),
+-                metric=distance_metric
++            scaled_data,
++            scaled_data[0].reshape(1, -1),
++            metric=distance_metric
+         ).ravel()
+ 
+-        yss = predict_fn(inverse)
++        yss = self._network(ms.Tensor(inverse, ms.float32)).asnumpy()
+ 
+         # for classification, the model needs to provide a list of tuples - classes
+         # along with prediction probabilities
+@@ -424,7 +433,7 @@ class LimeTabularExplainer(object):
+             discretized_feature_names = copy.deepcopy(feature_names)
+             for f in self.discretizer.names:
+                 discretized_feature_names[f] = self.discretizer.names[f][int(
+-                        discretized_instance[f])]
++                    discretized_instance[f])]
+ 
+         domain_mapper = TableDomainMapper(feature_names,
+                                           values,
+@@ -449,14 +458,15 @@ class LimeTabularExplainer(object):
+         for label in labels:
+             (ret_exp.intercept[label],
+              ret_exp.local_exp[label],
+-             ret_exp.score, ret_exp.local_pred) = self.base.explain_instance_with_data(
+-                    scaled_data,
+-                    yss,
+-                    distances,
+-                    label,
+-                    num_features,
+-                    model_regressor=model_regressor,
+-                    feature_selection=self.feature_selection)
++             ret_exp.score[label],
++             ret_exp.local_pred[label]) = self.base.explain_instance_with_data(
++                scaled_data,
++                yss,
++                distances,
++                label,
++                num_features,
++                model_regressor=model_regressor,
++                feature_selection=self.feature_selection)
+ 
+         if self.mode == "regression":
+             ret_exp.intercept[1] = ret_exp.intercept[0]
+@@ -508,9 +518,12 @@ class LimeTabularExplainer(object):
+                 instance_sample = data_row[:, non_zero_indexes]
+                 scale = scale[non_zero_indexes]
+                 mean = mean[non_zero_indexes]
++
+             data = self.random_state.normal(
+                 0, 1, num_samples * num_cols).reshape(
+                 num_samples, num_cols)
++            data = np.array(data)
++
+             if self.sample_around_instance:
+                 data = data * scale + instance_sample
+             else:
+@@ -614,7 +627,7 @@ class RecurrentTabularExplainer(LimeTabularExplainer):
+         # Reshape X
+         n_samples, n_timesteps, n_features = training_data.shape
+         training_data = np.transpose(training_data, axes=(0, 2, 1)).reshape(
+-                n_samples, n_timesteps * n_features)
++            n_samples, n_timesteps * n_features)
+         self.n_timesteps = n_timesteps
+         self.n_features = n_features
+ 
+@@ -624,20 +637,20 @@ class RecurrentTabularExplainer(LimeTabularExplainer):
+ 
+         # Send off the the super class to do its magic.
+         super(RecurrentTabularExplainer, self).__init__(
+-                training_data,
+-                mode=mode,
+-                training_labels=training_labels,
+-                feature_names=feature_names,
+-                categorical_features=categorical_features,
+-                categorical_names=categorical_names,
+-                kernel_width=kernel_width,
+-                kernel=kernel,
+-                verbose=verbose,
+-                class_names=class_names,
+-                feature_selection=feature_selection,
+-                discretize_continuous=discretize_continuous,
+-                discretizer=discretizer,
+-                random_state=random_state)
++            training_data,
++            mode=mode,
++            training_labels=training_labels,
++            feature_names=feature_names,
++            categorical_features=categorical_features,
++            categorical_names=categorical_names,
++            kernel_width=kernel_width,
++            kernel=kernel,
++            verbose=verbose,
++            class_names=class_names,
++            feature_selection=feature_selection,
++            discretize_continuous=discretize_continuous,
++            discretizer=discretizer,
++            random_state=random_state)
+ 
+     def _make_predict_proba(self, func):
+         """
