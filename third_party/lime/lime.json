@@ -1,0 +1,22 @@
+{
+  "git_url": "https://github.com/marcotcr/lime",
+  "tag": "0.2.0.0",
+  "files": [
+    {
+      "src": "lime/lime_base.py",
+      "dst": "lime_base.py"
+    },
+    {
+      "src": "lime/lime_tabular.py",
+      "dst": "lime_tabular.py"
+    },
+    {
+      "src": "lime/discretize.py",
+      "dst": "discretize.py"
+    },
+    {
+      "src": "lime/explanation.py",
+      "dst": "explanation.py"
+    }
+  ]
+}
