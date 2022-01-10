@@ -28,7 +28,8 @@ from setuptools.command.egg_info import egg_info
 from setuptools.command.build_py import build_py
 from setuptools.command.install import install
 
-
+apply_patch_script = os.path.join(os.path.dirname(os.path.realpath(__file__)), "scripts", "apply_patch.py")
+third_party_packages = ["lime"]
 package_name = 'mindspore_xai'
 
 
@@ -153,6 +154,12 @@ class Install(install):
     """Install."""
 
     def run(self):
+        if sys.argv[-1] == 'install':
+            for package in third_party_packages:
+                cmd = 'python {} {}'.format(apply_patch_script, package)
+                if subprocess.call(cmd, shell=True) != 0:
+                    raise RuntimeError("failed to run command: `{}`".format(cmd))
+
         super().run()
         if sys.argv[-1] == 'install':
             pip = import_module('pip')

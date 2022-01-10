@@ -48,12 +48,13 @@ class GradNet(Cell):
 
     Args:
         network (Cell): The network to generate backpropagated gradients.
+        sens_param (bool): Enable GradOperation sens_params.
     """
 
-    def __init__(self, network):
+    def __init__(self, network, sens_param=True):
         super(GradNet, self).__init__()
         self.network = network
-        self.grad = GradOperation(get_all=True, sens_param=True)(network)
+        self.grad = GradOperation(get_all=True, sens_param=sens_param)(network)
 
     def construct(self, *input_data):
         """
