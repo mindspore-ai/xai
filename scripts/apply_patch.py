@@ -11,13 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Apply patch."""
 import argparse
 import shutil
 import tempfile
 import filecmp
 from pathlib import Path
 
-from utils import get_patch_file, get_package_dir, load_config, git_apply_patch, git_clone, PACKAGES
+from utils import get_patch_file, get_package_dir, load_config, git_apply_patch, get_repo_from_url, PACKAGES
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='clone open source codes and apply patch')
@@ -27,16 +28,16 @@ if __name__ == "__main__":
     args = parser.parse_args()
     package = args.package
 
-    git_url, tag, files = load_config(package)
+    url, files = load_config(package)
     # The package location inside the xai, e.g. xai/mindspore_xai/third_party/lime
     package_dir = get_package_dir(package)
     patch_file = get_patch_file(package)
 
     with tempfile.TemporaryDirectory() as tmp_dir:
         repo_dir = Path(tmp_dir) / package
-        git_clone(git_url, repo_dir, files, tag)
+        get_repo_from_url(url, repo_dir)
 
-        git_apply_patch(repo_dir, patch_file)
+        git_apply_patch(str(repo_dir), patch_file)
 
         # copy the interested files from repo directory to local directory
         for f in files:

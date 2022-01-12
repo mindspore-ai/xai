@@ -14,7 +14,6 @@
 # ============================================================================
 """LIME Tabular explainer."""
 import matplotlib.pyplot as plt
-import mindspore as ms
 from mindspore import Tensor
 import numpy as np
 

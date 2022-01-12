@@ -37,8 +37,8 @@ class CustomNet(nn.Cell):
         return ms.Tensor([[0.1, 0.9]], ms.float32)
 
 
-def mock_gradient_call(_, inputs, targets):
-    del inputs, targets
+def mock_gradient_call(_, inputs, targets, **kwargs):
+    del inputs, targets, kwargs
     return SALIENCY
 
 
