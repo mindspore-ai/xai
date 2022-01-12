@@ -1,6 +1,5 @@
 {
-  "git_url": "https://github.com/marcotcr/lime",
-  "tag": "0.2.0.0",
+  "url": "https://tools.mindspore.cn/libs/lime/0.2.0.0.zip",
   "files": [
     {
       "src": "lime/lime_base.py",
@@ -17,6 +16,10 @@
     {
       "src": "lime/explanation.py",
       "dst": "explanation.py"
+    },
+    {
+      "src": "LICENSE",
+      "dst": "LICENSE"
     }
   ]
 }

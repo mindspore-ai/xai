@@ -11,12 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Create patch."""
 import argparse
 import shutil
 import tempfile
 from pathlib import Path
 
-from utils import get_patch_file, get_package_dir, load_config, git_create_patch, git_clone, PACKAGES
+from utils import get_patch_file, get_package_dir, load_config, git_create_patch, get_repo_from_url, PACKAGES
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='create patch (difference between open source codes and local codes)')
@@ -26,7 +27,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     package = args.package
 
-    git_url, tag, files = load_config(package)
+    url, files = load_config(package)
     # The package location inside the xai, e.g. xai/mindspore_xai/third_party/lime
     package_dir = get_package_dir(package)
     patch_file = get_patch_file(package)
@@ -38,7 +39,7 @@ if __name__ == "__main__":
 
     with tempfile.TemporaryDirectory() as tmp_dir:
         repo_dir = Path(tmp_dir) / package
-        git_clone(git_url, repo_dir, files, tag)
+        get_repo_from_url(url, repo_dir)
 
         # copy the modified codes from local directory to repo directory
         for f in files:
@@ -48,6 +49,6 @@ if __name__ == "__main__":
                 raise FileNotFoundError('{} not exist in the repo directory!'.format(src))
             shutil.copyfile(str(dst), str(src))
 
-        git_create_patch(repo_dir, patch_file)
+        git_create_patch(str(repo_dir), patch_file)
 
     print('patch saved to {}'.format(patch_file))
