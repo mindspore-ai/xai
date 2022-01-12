@@ -66,7 +66,7 @@ class ModifiedReLU(Gradient):
         gradients = self._grad_net(*inputs, weights)
         saliency = self._aggregation_fn(gradients)
 
-        self._postproc_saliency(saliency, ret, show)
+        return self._postproc_saliency(saliency, ret, show)
 
     def _hook_relu_backward(self):
         """Set backward hook for ReLU layers."""

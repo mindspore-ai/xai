@@ -9,3 +9,4 @@
 # Tests
 "xai/tests"                                                                                             "protected-access"
 "xai/tests"                                                                                             "invalid-sequence-index"
+"xai/tests"                                                                                             "no-self-use"
