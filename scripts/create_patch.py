@@ -14,13 +14,13 @@
 """Create patch."""
 import argparse
 import shutil
-import tempfile
-from pathlib import Path
 
-from utils import get_patch_file, get_package_dir, load_config, git_create_patch, get_repo_from_url, PACKAGES
+from utils import get_patch_file, get_package_local_dir, load_config, git_create_patch, get_source_code_from_url, \
+    PACKAGES, cache_dir
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='create patch (difference between open source codes and local codes)')
+    parser = argparse.ArgumentParser(description='create patch for a package'
+                                                 '(difference between source codes and local codes)')
     parser.add_argument('package', type=str, choices=PACKAGES,
                         help='package name')
 
@@ -29,26 +29,33 @@ if __name__ == "__main__":
 
     url, files = load_config(package)
     # The package location inside the xai, e.g. xai/mindspore_xai/third_party/lime
-    package_dir = get_package_dir(package)
+    local_dir = get_package_local_dir(package)
     patch_file = get_patch_file(package)
 
     for f in files:
-        dst = package_dir / f['dst']
-        if not dst.is_file():
-            raise FileNotFoundError('{} not exist in the package directory!'.format(dst))
+        local_p = local_dir / f
+        if not local_p.exists():
+            raise FileNotFoundError('{} not exist in local directory!'.format(local_p))
 
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        repo_dir = Path(tmp_dir) / package
-        get_repo_from_url(url, repo_dir)
+    source_code_dir = cache_dir / package
+    get_source_code_from_url(url, package)
 
-        # copy the modified codes from local directory to repo directory
-        for f in files:
-            src = repo_dir / f['src']
-            dst = package_dir / f['dst']
-            if not src.is_file():
-                raise FileNotFoundError('{} not exist in the repo directory!'.format(src))
-            shutil.copyfile(str(dst), str(src))
+    # copy the modified codes from local directory to source code directory
+    for f in files:
+        source_code_p = source_code_dir / f
+        local_p = local_dir / f
 
-        git_create_patch(str(repo_dir), patch_file)
+        # path could be a file or a directory
+        if local_p.is_file():
+            shutil.copyfile(str(local_p), str(source_code_p))
+        elif local_p.is_dir():
+            for src in local_p.rglob("*.py"):
+                dst = str(src).replace(str(local_p), str(source_code_p))
+                shutil.copyfile(str(src), str(dst))
+
+    git_create_patch(str(source_code_dir), patch_file)
+
+    # remove the source codes
+    shutil.rmtree(str(source_code_dir))
 
     print('patch saved to {}'.format(patch_file))

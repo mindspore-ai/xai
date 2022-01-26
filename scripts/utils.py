@@ -17,40 +17,48 @@ import subprocess
 import json
 import urllib.request
 import zipfile
-import tempfile
 import shutil
 from pathlib import Path
 
 PACKAGES = ["lime"]
 # i.e. xai/
 root_dir = Path(__file__).resolve().parents[1]
+cache_dir = root_dir / ".cache" / "patch"
+cache_dir.mkdir(exist_ok=True, parents=True)
 
 
-def get_repo_from_url(url, repo_dir):
+def get_source_code_from_url(url, package):
     """
-    Download zipped repo from url and unzip to local directory
+    Download zipped source codes from url and unzip to cache directory
 
     Args:
         url (str): Url.
-        repo_dir (Path): Local directory.
+        package (str): package name.
     """
-    package = repo_dir.name
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        tmp_repo_dir = Path(tmp_dir) / package
+    package_file = cache_dir / "{}.zip".format(package)
+    if not zipfile.is_zipfile(str(package_file)):
+        urllib.request.urlretrieve(url, str(package_file))
 
-        # download zip file
-        with tempfile.NamedTemporaryFile(suffix=".zip") as tmp_file:
-            urllib.request.urlretrieve(url, tmp_file.name)
+    source_code_dir = cache_dir / package
+    if source_code_dir.is_dir():
+        shutil.rmtree(str(source_code_dir))
 
-            # unzip
-            with zipfile.ZipFile(tmp_file.name, "r") as zip_ref:
-                zip_ref.extractall(str(tmp_repo_dir))
+    # unzip to a tmp folder first, then move to source_code_dir.
+    tmp_source_code_dir = source_code_dir.with_suffix(".tmp")
+    if source_code_dir.is_dir():
+        shutil.rmtree(str(tmp_source_code_dir))
+    with zipfile.ZipFile(str(package_file), "r") as zip_ref:
+        zip_ref.extractall(str(tmp_source_code_dir))
 
-        shutil.move(str(next(tmp_repo_dir.glob("{}*".format(package)))), str(repo_dir))
+    license_file = next(tmp_source_code_dir.rglob("LICENSE"))
+    license_file.parent.rename(source_code_dir)
+
+    if tmp_source_code_dir.is_dir():
+        shutil.rmtree(str(tmp_source_code_dir))
 
     # init git
     cmd = "git init -q && git add ."
-    run_cmd(cmd, str(repo_dir))
+    run_cmd(cmd, str(source_code_dir))
 
 
 def get_git_version():
@@ -86,58 +94,30 @@ def run_cmd(cmd, directory=None):
         os.chdir(str(cwd))
 
 
-def git_clone(git_url, repo_dir, files, tag='master'):
-    """
-    Clones a repository into a local directory
-
-    Args:
-        git_url (str): Git url.
-        repo_dir (str): Local directory.
-        files (list): list of src/dst mapping.
-        tag (str): Target Git repo tag.
-    """
-    git_version = get_git_version()
-
-    # sparse-checkout was introduced in Git version 2.25
-    if git_version[0] >= 2 and git_version[1] >= 25:
-        # Clone minimum files, ref: https://stackoverflow.com/a/63786181
-        files = [f['src'] for f in files]
-
-        clone_cmd = 'git clone -c advice.detachedHead=false -q  --filter=blob:none --no-checkout --sparse -b {} ' \
-                    '--depth 1 {} {}'.format(tag, git_url, repo_dir)
-        checkout_cmd = "git sparse-checkout init --cone && git sparse-checkout add {} && git checkout -q".format(
-            " ".join(files)
-        )
-
-        run_cmd(clone_cmd)
-        run_cmd(checkout_cmd, repo_dir)
-    else:
-        clone_cmd = 'git clone -c advice.detachedHead=false -q -b {} --depth 1 {} {}'.format(tag, git_url, repo_dir)
-        run_cmd(clone_cmd)
-
-
-def git_create_patch(repo_dir, patch_file):
+def git_create_patch(source_code_dir, patch_file):
     """
     Create Git patch.
 
     Args:
-        repo_dir (str): Local repo directory.
+        source_code_dir (str): Local source code directory.
         patch_file (str): Patch file path.
     """
+    # add '-N' to use diff on untracked files.
     cmd = 'git diff > {}'.format(patch_file)
-    run_cmd(cmd, repo_dir)
+    run_cmd(cmd, source_code_dir)
 
 
-def git_apply_patch(repo_dir, patch_file):
+def git_apply_patch(source_code_dir, patch_file):
     """
     Apply Git patch.
 
     Args:
-        repo_dir (str): Local repo directory.
+        source_code_dir (str): Local source code directory.
         patch_file (str): Patch file path.
     """
-    cmd = 'git apply {}'.format(patch_file)
-    run_cmd(cmd, repo_dir)
+    # add --ignore-space-change and --ignore-whitespace to avoid error in Windows
+    cmd = 'git apply --ignore-space-change --ignore-whitespace {}'.format(patch_file)
+    run_cmd(cmd, source_code_dir)
 
 
 def load_config(package):
@@ -149,7 +129,7 @@ def load_config(package):
 
     Returns:
         str, package url.
-        list, list of src/dst mapping.
+        list, list of string.
     """
     config_file = (root_dir / 'third_party' / package / package).with_suffix('.json')
 
@@ -159,15 +139,15 @@ def load_config(package):
     return config['url'], config['files']
 
 
-def get_package_dir(package):
+def get_package_local_dir(package):
     """
-    Get Git package directory.
+    Get Git package local directory.
 
     Args:
         package (str): Target package.
 
     Returns:
-        str, Git package directory.
+        str, Git package local directory.
     """
 
     return root_dir / 'mindspore_xai' / 'third_party' / package

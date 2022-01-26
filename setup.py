@@ -154,12 +154,6 @@ class Install(install):
     """Install."""
 
     def run(self):
-        if sys.argv[-1] == 'install':
-            for package in third_party_packages:
-                cmd = 'python {} {}'.format(apply_patch_script, package)
-                if subprocess.call(cmd, shell=True) != 0:
-                    raise RuntimeError("failed to run command: `{}`".format(cmd))
-
         super().run()
         if sys.argv[-1] == 'install':
             pip = import_module('pip')
@@ -172,6 +166,12 @@ if __name__ == '__main__':
     if (version_info.major, version_info.minor) < (3, 7):
         sys.stderr.write('Python version should be at least 3.7\r\n')
         sys.exit(1)
+
+    if sys.argv[-1] == 'install':
+        for package in third_party_packages:
+            install_cmd = 'python {} {}'.format(apply_patch_script, package)
+            if subprocess.call(install_cmd, shell=True) != 0:
+                raise RuntimeError("failed to run command: `{}`".format(install_cmd))
 
     setup(
         name=package_name,
@@ -187,6 +187,7 @@ if __name__ == '__main__':
         description=get_description(),
         packages=find_packages(),
         platforms=[get_platform()],
+        package_data={'mindspore_xai': ['third_party/lime/lime/bundle.js']},
         include_package_data=True,
         cmdclass={
             'egg_info': EggInfo,

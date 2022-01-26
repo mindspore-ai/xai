@@ -13,10 +13,13 @@
 # limitations under the License.
 # ============================================================================
 """Tests of LIME Tabular explainers of xai.explanation."""
+from pathlib import Path
+import tempfile
 import numpy as np
 import pytest
 import mindspore as ms
 from mindspore import nn
+import sklearn.ensemble
 
 from mindspore_xai.explainer import LIMETabular
 
@@ -90,6 +93,12 @@ def fixture_training_data_tensor(training_data_np):
     return ms.Tensor(training_data_np, ms.float32)
 
 
+@pytest.fixture(scope='session', name="training_data_stats")
+def fixture_training_data_stats(training_data_np):
+    """fixture training data stats."""
+    return LIMETabular.to_training_data_stats(training_data_np)
+
+
 @pytest.fixture(scope='session', name="inputs")
 def fixture_inputs():
     """fixture inputs."""
@@ -97,27 +106,48 @@ def fixture_inputs():
 
 
 @pytest.fixture(scope='session', name="classification_net_lime")
-def fixture_classification_net_lime(classification_net, training_data_tensor):
+def fixture_classification_net_lime(classification_net, training_data_stats):
     """fixture classification net lime."""
-    return LIMETabular(classification_net, training_data_tensor)
+    return LIMETabular(classification_net, training_data_stats)
 
 
 @pytest.fixture(scope='session', name="regression_net_lime")
-def fixture_regression_net_lime(regression_net, training_data_tensor):
+def fixture_regression_net_lime(regression_net, training_data_stats):
     """fixture regression net lime."""
-    return LIMETabular(regression_net, training_data_tensor)
+    return LIMETabular(regression_net, training_data_stats)
 
 
 class TestLIMETabular:
     """Unit test for perturbation explainers."""
-
-    def test_training_data_tensor(self, classification_net, training_data_tensor):
+    def test_tensor_to_training_data_stats(self, training_data_tensor):
         """training data is a tensor."""
-        assert LIMETabular(classification_net, training_data_tensor)
+        assert isinstance(LIMETabular.to_training_data_stats(training_data_tensor), dict)
 
-    def test_training_data_numpy(self, classification_net, training_data_np):
+    def test_numpy_to_training_data_stats(self, training_data_np):
         """training data is a numpy array."""
-        assert LIMETabular(classification_net, training_data_np)
+        assert isinstance(LIMETabular.to_training_data_stats(training_data_np), dict)
+
+    def test_save_training_data_stats_to_str(self, training_data_stats):
+        """save training data stats to str file"""
+        with tempfile.NamedTemporaryFile(suffix=".json") as tmp_file:
+            f = str(tmp_file)
+            LIMETabular.save_training_data_stats(training_data_stats, f)
+            assert isinstance(LIMETabular.load_training_data_stats(f), dict)
+
+    def test_save_training_data_stats_to_path(self, training_data_stats):
+        """save training data stats to pathlib file"""
+        with tempfile.NamedTemporaryFile(suffix=".json") as tmp_file:
+            f = Path(str(tmp_file))
+            LIMETabular.save_training_data_stats(training_data_stats, f)
+            assert isinstance(LIMETabular.load_training_data_stats(f), dict)
+
+    def test_save_training_data_stats_to_filestream(self, training_data_stats):
+        """save training data stats to filestream"""
+        with tempfile.NamedTemporaryFile(suffix=".json") as tmp_file:
+            with open(str(tmp_file), "w") as f:
+                LIMETabular.save_training_data_stats(training_data_stats, f)
+            with open(str(tmp_file), "r") as f:
+                assert isinstance(LIMETabular.load_training_data_stats(f), dict)
 
     def test_targets_int(self, classification_net_lime, inputs):
         """targets is int."""
@@ -142,3 +172,25 @@ class TestLIMETabular:
         targets = 0
         exps = regression_net_lime(inputs, targets, num_samples=10)
         eval_exps_dims(exps, NUM_INPUTS, 1, NUM_FEATURES)
+
+    def test_sklearn_model(self, training_data_np, training_data_stats):
+        """SKlearn model"""
+        # labels_train has 3 classes
+        labels_train = np.zeros(NUM_TRAINING_DATA)
+        for i in range(NUM_TRAINING_DATA):
+            labels_train[i] = i % NUM_CLASSES
+
+        model = sklearn.ensemble.RandomForestClassifier(n_estimators=10)
+        model.fit(training_data_np, labels_train)
+        lime = LIMETabular(model.predict_proba, training_data_stats)
+
+        inputs = np.random.rand(NUM_INPUTS, NUM_FEATURES)
+        targets = np.array([[0, 1, 2], [0, 1, 2]])
+        exps = lime(inputs, targets, num_samples=10)
+        eval_exps_dims(exps, NUM_INPUTS, 3, NUM_FEATURES)
+        # test 1D numpy array targets
+        targets = np.array([0, 1])
+        lime(inputs, targets, num_samples=10)
+        # test int targets
+        targets = 0
+        lime(inputs, targets, num_samples=10)
