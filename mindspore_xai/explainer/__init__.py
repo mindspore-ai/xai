@@ -1,4 +1,4 @@
-# Copyright 2021 Huawei Technologies Co., Ltd
+# Copyright 2021-2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,17 +17,19 @@
 from .attribute.backprop.gradient import Gradient
 from .attribute.backprop.gradcam import GradCAM
 from .attribute.backprop.modified_relu import Deconvolution, GuidedBackprop
+from .attribute.shap import SHAPGradient, SHAPKernel
 from .attribute.perturb.occlusion import Occlusion
 from .attribute.perturb.rise import RISE
 from .attribute.perturb.riseplus import RISEPlus
 from .attribute.perturb.lime import LIMETabular
-
 
 __all__ = [
     'Gradient',
     'Deconvolution',
     'GuidedBackprop',
     'GradCAM',
+    "SHAPGradient",
+    "SHAPKernel",
     'Occlusion',
     'RISE',
     'RISEPlus',
