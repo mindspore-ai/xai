@@ -29,7 +29,7 @@ from setuptools.command.build_py import build_py
 from setuptools.command.install import install
 
 apply_patch_script = os.path.join(os.path.dirname(os.path.realpath(__file__)), "scripts", "apply_patch.py")
-third_party_packages = ["lime"]
+third_party_packages = ["lime", "shap"]
 package_name = 'mindspore_xai'
 
 
@@ -187,7 +187,6 @@ if __name__ == '__main__':
         description=get_description(),
         packages=find_packages(),
         platforms=[get_platform()],
-        package_data={'mindspore_xai': ['third_party/lime/lime/bundle.js']},
         include_package_data=True,
         cmdclass={
             'egg_info': EggInfo,
