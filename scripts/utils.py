@@ -20,7 +20,7 @@ import zipfile
 import shutil
 from pathlib import Path
 
-PACKAGES = ["lime"]
+PACKAGES = ["lime", "shap"]
 # i.e. xai/
 root_dir = Path(__file__).resolve().parents[1]
 cache_dir = root_dir / ".cache" / "patch"

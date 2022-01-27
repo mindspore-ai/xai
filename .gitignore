@@ -121,4 +121,4 @@ dmypy.json
 output/
 
 # third party packages
-mindspore_xai/third_party/
+mindspore_xai/third_party/*

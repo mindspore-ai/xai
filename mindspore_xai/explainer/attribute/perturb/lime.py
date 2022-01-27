@@ -14,7 +14,6 @@
 # ============================================================================
 """LIME Tabular explainer."""
 import json
-import collections
 from io import IOBase
 
 import numpy as np
@@ -41,7 +40,7 @@ class LIMETabular:
         mode through the opposite operations.
 
     Args:
-        predictor (Cell, callable): The black-box model to be explained, or a prediction function.
+        predictor (Cell, Callable): The black-box model to be explained, or a callable function.
         training_data_stats (dict): a dict object having the details of training data statistics. The stats can be
             generated using static method LIETabular.to_training_data_stats(training_data).
         feature_names (list, optional): list of names (strings) corresponding to the columns in the training data.
@@ -121,7 +120,8 @@ class LIMETabular:
                  categorical_features=None,
                  class_names=None,
                  random_state=None):
-        check_value_type("predictor", predictor, [ms.nn.Cell, collections.Callable])
+        if not callable(predictor):
+            raise ValueError("predictor must be callable.")
         check_value_type("training_data_stats", training_data_stats, dict)
         check_value_type("feature_names", feature_names, [list, type(None)])
         check_value_type("categorical_features", categorical_features, [list, type(None)])

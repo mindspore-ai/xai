@@ -1,0 +1,18 @@
+{
+  "url": "https://tools.mindspore.cn/libs/shap/v0.40.0.zip",
+  "files": [
+    "__init__.py",
+    "LICENSE",
+    "shap/cext/_cext.cc",
+    "shap/cext/tree_shap.h",
+    "shap/explainers",
+    "shap/maskers",
+    "shap/models",
+    "shap/utils",
+    "shap/plots",
+    "shap/__init__.py",
+    "shap/_explanation.py",
+    "shap/_serializable.py",
+    "shap/links.py"
+  ]
+}
