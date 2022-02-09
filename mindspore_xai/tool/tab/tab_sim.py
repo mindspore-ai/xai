@@ -566,3 +566,127 @@ class CsvTabDigest(TabDigest):
                 mask &= col_mask
             joint_dist[tuple(bv_idxs)] = np.sum(mask) / rec_count
         self.col_group_dists.append(joint_dist)
+
+
+class TabSim:
+    """
+    Tabular data simulator.
+
+    Args:
+        tab_digest (TabDigest): Table digest.
+        batch_size (int): Batch size for row data generation. Default: 10000
+
+    Raises:
+        TypeError: Be raised for any argument or input type problem.
+        ValueError: Be raised for any input value problem.
+    """
+    def __init__(self, tab_digest, batch_size=10000):
+        self._tab_digest = tab_digest
+        self._batch_size = batch_size
+
+    def generate(self, num_rows, writer, noise=0):
+        """
+        Generate simulated data.
+
+        Args:
+            num_rows (int): Total number of rows to be generated.
+            writer (TabWriter): Writer for saving the generated data.
+            noise (float): Noise for data's distributions, the interpolation weight between the original distributions
+                in the table digest and pure uniform distributions. 0 means 100% follows the original distributions.
+                Default: 0.
+        """
+        if noise < 0 or noise > 1:
+            raise ValueError('Argument "noise" must be in range of [0.0, 1.0].')
+
+        batch_count = num_rows // self._batch_size
+        if num_rows > batch_count * self._batch_size:
+            batch_count += 1
+
+        schema = [(c.name, c.dtype) for c in self._tab_digest.columns]
+        writer.begin(schema, self._batch_size, num_rows)
+
+        col_count = len(self._tab_digest.columns)
+
+        for bi in range(batch_count):
+            gen_size = min(self._batch_size, num_rows - bi*self._batch_size)
+            if self._tab_digest.label_col_idx >= 0:
+                batch = self._gen_with_label_col(gen_size, noise)
+            else:
+                batch = [None] * col_count
+                for group, dist in zip(self._tab_digest.col_groups, self._tab_digest.col_group_dists):
+                    self._gen_col_grp_data(group, dist, gen_size, noise, batch)
+
+            for i, col_data in enumerate(batch):
+                if col_data is None:
+                    raise RuntimeError(f'Column[{i}] is not generated.')
+            writer.write(batch)
+
+        writer.end()
+
+    def _gen_with_label_col(self, gen_size, noise):
+        """Generate simulated data with label column."""
+        col_count = len(self._tab_digest.columns)
+        batch = [None] * col_count
+        bin_idxs = [None] * col_count
+
+        for col in self._tab_digest.columns:
+            if col.idx != self._tab_digest.label_col_idx:
+                batch[col.idx] = np.empty(gen_size, dtype=col.dtype)
+
+        self._gen_col_grp_data(self._tab_digest.col_groups[0],
+                               self._tab_digest.col_group_dists[0],
+                               gen_size, noise, batch, bin_idxs)
+
+        label_bin_idxs = bin_idxs[self._tab_digest.label_col_idx]
+        label_col = self._tab_digest.columns[self._tab_digest.label_col_idx]
+        for label_bvi in range(label_col.bin_count):
+            mask = (label_bin_idxs == label_bvi)
+            segment_size = np.sum(mask)
+            if segment_size == 0:
+                continue
+            segment = [None] * segment_size
+            groups = self._tab_digest.col_groups[1:]
+            dists = self._tab_digest.col_group_dists[1:]
+
+            for group, dist in zip(groups, dists):
+                self._gen_col_grp_data(group, dist[label_bvi], segment_size, noise, segment)
+                for ci in group:
+                    batch[ci][mask] = segment[ci]
+
+        return batch
+
+    def _gen_col_grp_data(self, group, dist, num_rows, noise, out_batch, out_bin_idxs=None):
+        """Generate simulated data for a column group."""
+        probs = dist.flatten()
+        probs /= np.sum(probs)
+        if noise > _EPS:
+            probs = (1 - noise)*probs + noise/probs.size
+            probs /= np.sum(probs)
+
+        choices = np.arange(probs.size, dtype=int)
+        keys = np.random.choice(choices, num_rows, p=probs)
+        bin_idxs = np.unravel_index(keys, dist.shape)
+        for i, ci in enumerate(group):
+            if out_batch[ci] is not None:
+                raise RuntimeError(f'Column[{ci}] is already generated.')
+            col = self._tab_digest.columns[ci]
+            out_batch[ci] = self._bins_to_vals(col, bin_idxs[i])
+            if out_bin_idxs is not None:
+                out_bin_idxs[ci] = bin_idxs[i]
+
+    @staticmethod
+    def _bins_to_vals(col, bin_idxs):
+        """Convert bin indices to actual values."""
+        if col.is_numeric:
+            if col.dtype is int:
+                if col.bin_width > 1:
+                    offsets = np.random.randint(col.bin_width, size=bin_idxs.size)
+                else:
+                    return col.bin_vals[bin_idxs]
+            else:
+                if col.bin_width == 0:
+                    return col.bin_vals[bin_idxs]
+                offsets = np.random.uniform(0, col.bin_width, size=bin_idxs.shape[0])
+            return col.bin_vals[bin_idxs] + offsets
+
+        return col.bin_vals[bin_idxs]
