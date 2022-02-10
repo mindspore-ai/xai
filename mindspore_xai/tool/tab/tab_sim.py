@@ -17,6 +17,7 @@
 from pathlib import Path
 from io import IOBase
 from collections import OrderedDict
+import json
 
 import numpy as np
 
@@ -24,7 +25,7 @@ import numpy as np
 _EPS = 1e-9
 
 # max. no. of bins in a column group
-_COL_GRP_MAX_BIN = 10000
+_COL_GRP_MAX_BIN = 1000
 
 # min. normalized mutual information in a column group
 _COL_GRP_MIN_NMI = 0.1
@@ -35,12 +36,30 @@ _MAX_DIS_VAL = 256
 # column type to data type map
 # numeric - int, float
 # discrete - cat, str
-_DTYPE_MAP = {
+_C2D_TYPE_MAP = {
     'int': int,
     'float': float,
     'cat': int,
     'str': str
 }
+
+# string to data type map
+_S2D_TYPE_MAP = {
+    'int': int,
+    'float': float,
+    'str': str
+}
+
+
+def _open(file, mode):
+    """Open a file."""
+    if isinstance(file, str):
+        return open(file, mode=mode), True
+    elif isinstance(file, Path):
+        return file.open(mode=mode), True
+    elif isinstance(file, IOBase):
+        return file, False
+    raise TypeError(f'Argument "file"({type(file)}) is not in type of str, Path or IOBase.')
 
 
 class TabWriter:
@@ -121,16 +140,7 @@ class CsvTabWriter(TabWriter):
         """
         del batch_size
         del num_rows
-        if isinstance(self._file, (str, Path)):
-            if isinstance(self._file, Path):
-                self._fp = self._file.open(mode='w')
-            else:
-                self._fp = open(self._file, mode='w')
-                self._close_on_end = True
-        else:
-            self._fp = self._file
-            self._close_on_end = False
-
+        self._fp, self._close_on_end = _open(self._file, 'w')
         header = ','.join([t[0] for t in schema])
         self._fp.write(header + '\n')
 
@@ -176,24 +186,40 @@ class ColDigest:
         self.dtype = None
         self.is_numeric = None
         self.is_label = False
-        self.bin_vals = None
-        self.bin_count = None
-        self.bin_width = None
         self.max_val = None
         self.min_val = None
+        self.bin_count = None
+        self.bin_width = None
+        self.bin_vals = None
+
+    def to_dict(self):
+        """Converts to a dict."""
+        d = self.__dict__
+        d['dtype'] = self.dtype.__name__
+        d['bin_vals'] = self.bin_vals.tolist()
+        return d
+
+    @classmethod
+    def from_dict(cls, d):
+        """Creates from a dict."""
+        digest = cls()
+        digest.__dict__.update(d)
+        digest.dtype = _S2D_TYPE_MAP[digest.dtype]
+        digest.bin_vals = np.array(digest.bin_vals, dtype=digest.dtype)
+        return digest
 
 
 class TabDigest:
     """Table digest, data traits of a table."""
     def __init__(self):
+        self.label_col_idx = -1
         self.columns = None
         self.col_groups = None
         self.col_group_dists = None
-        self.label_col_idx = -1
 
     def save(self, file):
         """
-        Saves to file.
+        Saves to a json file.
 
         Args:
             file (str, Path, IOBase): The file path or stream to be written to. If a str or Path is provided, then the
@@ -205,12 +231,26 @@ class TabDigest:
             ValueError: Be raised for any input value problem.
             IOError: Be raised for any I/O problem.
         """
-        raise NotImplementedError
+        data = self.__dict__
 
-    @staticmethod
-    def load(file):
+        # remove private data
+        keys = list(data.keys())
+        for k in keys:
+            if k.startswith('_'):
+                data.pop(k, None)
+
+        data['columns'] = [c.to_dict() for c in self.columns]
+        data['col_group_dists'] = [d.flatten().tolist() for d in self.col_group_dists]
+
+        fp, just_opened = _open(file, 'w')
+        json.dump(data, fp, indent=4)
+        if just_opened:
+            fp.close()
+
+    @classmethod
+    def load(cls, file):
         """
-        Loads from file.
+        Loads from a json file.
 
         Args:
             file (str, Path, IOBase): The file path or stream to be read. If a str or Path is provided, then the
@@ -225,7 +265,24 @@ class TabDigest:
             ValueError: Be raised for any input value problem.
             IOError: Be raised for any I/O problem.
         """
-        raise NotImplementedError
+        fp, just_opened = _open(file, 'r')
+        data = json.load(fp)
+        if just_opened:
+            fp.close()
+        digest = cls()
+        digest.__dict__.update(data)
+        digest.columns = [ColDigest.from_dict(d) for d in data['columns']]
+        digest.col_group_dists = []
+        for group, dist in zip(data['col_groups'], data['col_group_dists']):
+            if 0 <= digest.label_col_idx != group[0]:
+                shape = [digest.columns[digest.label_col_idx].bin_count]
+            else:
+                shape = []
+            shape.extend([digest.columns[ci].bin_count for ci in group])
+            dist = np.array(dist, dtype=float).reshape(shape)
+            digest.col_group_dists.append(dist)
+
+        return digest
 
 
 class CsvTabDigest(TabDigest):
@@ -236,16 +293,16 @@ class CsvTabDigest(TabDigest):
         The expected header format is: "<name>|<type>,<name>|<type>,<name>|<type>,...". <name> is column name, allowed
         patten is `[0-9a-zA-Z_\-]+`. <type> is column type, must be one of "int", "float", "cat" and "str". "int" and
         "float" are numeric columns while "cat" and "str" are discrete columns. The maximum number of distinct values
-        of discrete columns is 256. The underlying data type of "cat" is integer without continuous assumption while
-        "str" values' allowed patten is `[0-9a-zA-Z_\-\+\.]*`. Example header: "col_A|int,col_B|float,col_C|cat". User
-        may optionally specify a label column by adding a "*" character before the column name, example:
+        of discrete columns is 256. The underlying data type of "cat" is integer without ordering while "str" values'
+        allowed patten is `[0-9a-zA-Z_\-\+\.]*`. Example header: "col_A|int,col_B|float,col_C|cat". User may optionally
+        specify a label column by adding a "*" character before the column name, example:
         "col_A|int,col_B|float,*col_C|cat", only "cat" and "str" columns can be label. At most one label column is
         allowed.
 
     Args:
         num_bins (int): Number of bins for numeric columns. Default: 10.
-        clip_sd (float, optional): Number of standard deviations for clipping numeric column values. Disable the
-            clipping by providing None. Default: 3.
+        clip_sd (int, float): Number of standard deviations for clipping numeric column values. Disable the
+            clipping by providing zero. Default: 3.
 
     Raises:
         TypeError: Be raised for any argument or input type problem.
@@ -253,8 +310,8 @@ class CsvTabDigest(TabDigest):
     """
     def __init__(self, num_bins=10, clip_sd=3):
         super().__init__()
-        self.num_bins = num_bins
-        self.clip_sd = clip_sd
+        self._num_bins = num_bins
+        self._clip_sd = clip_sd
         self._values = None
         self._distincts = None
         self._bin_idxs = None
@@ -344,7 +401,7 @@ class CsvTabDigest(TabDigest):
             raise TypeError(f'Label column type must be either "cat" or "str".')
 
         try:
-            dtype = _DTYPE_MAP[col_type]
+            dtype = _C2D_TYPE_MAP[col_type]
         except KeyError:
             raise TypeError(f'Unrecognized column[{idx}] type:{col_type}.')
         col = ColDigest()
@@ -391,22 +448,22 @@ class CsvTabDigest(TabDigest):
     def _proc_num_col(self, col):
         """Process numeric column."""
         values = np.array(self._values[col.idx], dtype=col.dtype)
-        if self.clip_sd is not None:
+        if self._clip_sd > 0:
             sd = np.std(values)
             avg = np.mean(values)
-            radius = self.clip_sd * sd
+            radius = self._clip_sd * sd
             clip_min = avg - radius
             clip_max = avg + radius
             if col.dtype is int:
                 clip_min = int(np.floor(clip_min))
                 clip_max = int(np.ceil(clip_max))
             values = np.clip(values, clip_min, clip_max)
-        col.min_val = values.min()
-        col.max_val = values.max()
+        col.min_val = col.dtype(values.min())
+        col.max_val = col.dtype(values.max())
         rng = col.max_val - col.min_val
         if col.dtype is int:
             rng += 1
-        min_rng = self.num_bins if col.dtype is int else _EPS
+        min_rng = self._num_bins if col.dtype is int else _EPS
         if rng < min_rng:
             if col.dtype is int:
                 col.bin_width = 1
@@ -415,8 +472,8 @@ class CsvTabDigest(TabDigest):
                 col.bin_width = 0
                 col.bin_count = 1
         else:
-            col.bin_width = rng / self.num_bins
-            col.bin_count = self.num_bins
+            col.bin_width = rng / self._num_bins
+            col.bin_count = self._num_bins
             if col.dtype is int:
                 col.bin_width = int(np.round(col.bin_width))
                 if col.min_val + col.bin_width * col.bin_count < col.max_val:
@@ -539,7 +596,7 @@ class CsvTabDigest(TabDigest):
 
     def _add_col_group(self, group):
         """Add a column group."""
-        self.col_groups.append(group)
+        self.col_groups.append(list(map(int, group)))
 
         if group[0] != self.label_col_idx:
             shape = [self.columns[self.label_col_idx].bin_vals.size]
@@ -594,6 +651,12 @@ class TabSim:
             noise (float): Noise for data's distributions, the interpolation weight between the original distributions
                 in the table digest and pure uniform distributions. 0 means 100% follows the original distributions.
                 Default: 0.
+
+        Raises:
+            TypeError: Be raised for any argument or input type problem.
+            ValueError: Be raised for any input value problem.
+            IOError: Be raised for any I/O problem.
+            RuntimeError: Be raised for any runtime problem.
         """
         if noise < 0 or noise > 1:
             raise ValueError('Argument "noise" must be in range of [0.0, 1.0].')
