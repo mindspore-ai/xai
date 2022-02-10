@@ -25,6 +25,7 @@ import numpy as np
 _EPS = 1e-9
 
 # max. no. of bins in a column group
+# group no. of bins = product of all member column no. of bins
 _COL_GRP_MAX_BIN = 1000
 
 # min. normalized mutual information in a column group
@@ -180,16 +181,27 @@ class CsvTabWriter(TabWriter):
 class ColDigest:
     """Column digest, data traits of a column."""
     def __init__(self):
+        # (str) column name
         self.name = None
+        # (int) column zero based index
         self.idx = None
-        self.type = None
+        # ('int', 'float', 'cat' or 'str') column type
+        self.ctype = None
+        # (int, float or str) data type, column type 'cat' has a data type of int
         self.dtype = None
+        # (bool) is numeric, column with type: 'int' or 'float' are numeric
         self.is_numeric = None
+        # (bool) is it a label column, only 'cat' and 'str' can be a label
         self.is_label = False
+        # (self.dtype) max. value, None if not numeric
         self.max_val = None
+        # (self.dtype) min. value, None if not numeric
         self.min_val = None
+        # (int) number of histogram bins(if numeric) or distinct values(if not numeric)
         self.bin_count = None
+        # (self.dtype) histogram bin width, None if not numeric
         self.bin_width = None
+        # (np.ndarray with dtype of self.dtype), left edge of bins(if numeric) or distinct values(if not numeric)
         self.bin_vals = None
 
     def to_dict(self):
@@ -212,9 +224,14 @@ class ColDigest:
 class TabDigest:
     """Table digest, data traits of a table."""
     def __init__(self):
+        # (int) index of the label column, -1 if there is none
         self.label_col_idx = -1
+        # (list[ColDigest]), column digests
         self.columns = None
+        # (list[list[int]]), column groups, lists of member column indices
+        # if there is a label column, then group 0 is always the label column
         self.col_groups = None
+        # (list(np.ndarray)), column group join distribution
         self.col_group_dists = None
 
     def save(self, file):
@@ -239,6 +256,7 @@ class TabDigest:
             if k.startswith('_'):
                 data.pop(k, None)
 
+        # converts to json serializable
         data['columns'] = [c.to_dict() for c in self.columns]
         data['col_group_dists'] = [d.flatten().tolist() for d in self.col_group_dists]
 
@@ -271,7 +289,11 @@ class TabDigest:
             fp.close()
         digest = cls()
         digest.__dict__.update(data)
+
+        # deserialize from json
         digest.columns = [ColDigest.from_dict(d) for d in data['columns']]
+
+        # convert the flatten group joint distribution back into non-flatten format
         digest.col_group_dists = []
         for group, dist in zip(data['col_groups'], data['col_group_dists']):
             if 0 <= digest.label_col_idx != group[0]:
@@ -407,7 +429,7 @@ class CsvTabDigest(TabDigest):
         col = ColDigest()
         col.name = col_name
         col.idx = idx
-        col.type = col_type
+        col.ctype = col_type
         col.dtype = dtype
         col.is_numeric = col_type in ('int', 'float')
         col.is_label = is_label
@@ -448,6 +470,7 @@ class CsvTabDigest(TabDigest):
     def _proc_num_col(self, col):
         """Process numeric column."""
         values = np.array(self._values[col.idx], dtype=col.dtype)
+        # clip outliers
         if self._clip_sd > 0:
             sd = np.std(values)
             avg = np.mean(values)
@@ -460,6 +483,8 @@ class CsvTabDigest(TabDigest):
             values = np.clip(values, clip_min, clip_max)
         col.min_val = col.dtype(values.min())
         col.max_val = col.dtype(values.max())
+
+        # discretize to histogram bins and store values as bin indices
         rng = col.max_val - col.min_val
         if col.dtype is int:
             rng += 1
@@ -488,6 +513,7 @@ class CsvTabDigest(TabDigest):
     def _calc_nmi_mat(self):
         """Compute the lower normalized mutual information matrix."""
         col_count = len(self.columns)
+        # the diagonal and the upper half of the matrix is not used, fill with -1
         self._low_nmi = np.full((col_count, col_count), -1, dtype=float)
         for i in range(1, col_count):
             for j in range(i):
@@ -495,12 +521,14 @@ class CsvTabDigest(TabDigest):
 
     def _calc_nmi(self, i, j):
         """Compute the normalized mutual information of 2 columns."""
-        mi = 0.0
-        hx = 0.0
-        hy = 0.0
+        mi = 0.0  # mutual information
+        hx = 0.0  # column i entropy
+        hy = 0.0  # column j entropy
         calc_hy = True
         rec_count = self._bin_idxs[0].shape[0]
         for x in range(self.columns[i].bin_vals.size):
+            # compute the value of mask of columns and the marginal probabilities
+            # caching them for a faster speed
             mkey = f'mask_{i}.{x}'
             pkey = f'prob_{i}.{x}'
             mask_x = self._cache.get(mkey, None)
@@ -527,8 +555,11 @@ class CsvTabDigest(TabDigest):
 
                 if calc_hy:
                     hy -= y_prob * np.log(y_prob)
+
+                # joint probability
                 xy_count = np.sum(mask_x & mask_y)
                 xy_prob = xy_count / rec_count
+
                 mi += xy_prob * np.log((xy_prob + _EPS)/(x_prob * y_prob + _EPS))
             calc_hy = False
 
@@ -546,9 +577,11 @@ class CsvTabDigest(TabDigest):
         grouped = []
 
         if self.label_col_idx >= 0:
+            # label column always form group 0 on its own
             group = [self.label_col_idx]
             self._add_col_group(group)
             grouped.extend(group)
+            # prevents from picked by other groups
             low_nmi[self.label_col_idx, :] = -1
             low_nmi[:, self.label_col_idx] = -1
 
@@ -559,6 +592,8 @@ class CsvTabDigest(TabDigest):
             low_nmi[group] = -1
             self._add_col_group(group)
             grouped.extend(group)
+
+        # form single column groups for any ungrouped columns
         grouped = set(grouped)
         for i in range(len(self.columns)):
             if i not in grouped:
@@ -580,6 +615,8 @@ class CsvTabDigest(TabDigest):
         low_nmi[:, group] = -1
 
         while bins < _COL_GRP_MAX_BIN:
+            # search for the next column pair with the highest mutual information
+            # the found column index of the MI matrix is the index of the new column member
             max_ij = np.unravel_index(np.argmax(low_nmi[group, :], axis=None), (len(group), low_nmi.shape[1]))
             max_ij = (group[max_ij[0]], max_ij[1])
             if low_nmi[max_ij] < _COL_GRP_MIN_NMI:
@@ -598,7 +635,12 @@ class CsvTabDigest(TabDigest):
         """Add a column group."""
         self.col_groups.append(list(map(int, group)))
 
-        if group[0] != self.label_col_idx:
+        # compute the joint distribution of the group
+        # if there is a label column (l):
+        #   joint distribution of the label column and group members p({l} n G) is computed
+        # otherwise:
+        #   joint distribution of group members p(G) is computed
+        if 0 <= self.label_col_idx != group[0]:
             shape = [self.columns[self.label_col_idx].bin_vals.size]
         else:
             shape = []
@@ -607,6 +649,8 @@ class CsvTabDigest(TabDigest):
         rec_count = self._bin_idxs[0].size
         mask = np.empty(rec_count, dtype=bool)
 
+        # enumerate all possible value(as bin index) combinations of all member columns (and label column)
+        # to compute the joint distribution
         for bi in range(np.prod(shape)):
             bv_idxs = np.unravel_index(bi, shape)
             mask.fill(True)
@@ -694,12 +738,18 @@ class TabSim:
 
         for col in self._tab_digest.columns:
             if col.idx != self._tab_digest.label_col_idx:
-                batch[col.idx] = np.empty(gen_size, dtype=col.dtype)
+                if col.dtype is str:
+                    # won't work with dtype=str
+                    batch[col.idx] = np.empty(gen_size, dtype=object)
+                else:
+                    batch[col.idx] = np.empty(gen_size, dtype=col.dtype)
 
         self._gen_col_grp_data(self._tab_digest.col_groups[0],
                                self._tab_digest.col_group_dists[0],
                                gen_size, noise, batch, bin_idxs)
 
+        # generate group columns with condition of label column's value
+        # label column group is always be generated first
         label_bin_idxs = bin_idxs[self._tab_digest.label_col_idx]
         label_col = self._tab_digest.columns[self._tab_digest.label_col_idx]
         for label_bvi in range(label_col.bin_count):
@@ -707,7 +757,7 @@ class TabSim:
             segment_size = np.sum(mask)
             if segment_size == 0:
                 continue
-            segment = [None] * segment_size
+            segment = [None] * col_count
             groups = self._tab_digest.col_groups[1:]
             dists = self._tab_digest.col_group_dists[1:]
 
