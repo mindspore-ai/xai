@@ -68,7 +68,7 @@ class TabWriter:
 
     def begin(self, schema, batch_size, num_rows):
         """
-        Begins the writing.
+        Begin the writing.
 
         Args:
             schema (list[tuple[str, type]]): List of column name and data type tuples, possible data types are: `int`,
@@ -85,7 +85,7 @@ class TabWriter:
 
     def write(self, batch):
         """
-        Writes a batch of column data.
+        Write a batch of column data.
 
         Args:
             batch (list[np.ndarray]): List of column data to be written, the length of data is inclusively between 1
@@ -100,7 +100,7 @@ class TabWriter:
 
     def end(self):
         """
-        Ends the writing.
+        End the writing.
 
         Raises:
             IOError: Be raised for any I/O problem.
@@ -126,7 +126,7 @@ class CsvTabWriter(TabWriter):
 
     def begin(self, schema, batch_size, num_rows):
         """
-        Begins the writing.
+        Begin the writing.
 
         Args:
             schema (list[tuple[str, type]]): List of column name and data type tuples, possible data types are: `int`,
@@ -147,7 +147,7 @@ class CsvTabWriter(TabWriter):
 
     def write(self, batch):
         """
-        Writes a batch of column data.
+        Write a batch of column data.
 
         Args:
             batch (list[np.ndarray]): List of column data to be written, the length of data is inclusively between 1
@@ -165,7 +165,7 @@ class CsvTabWriter(TabWriter):
 
     def end(self):
         """
-        Ends the writing.
+        End the writing.
 
         Note:
             The file will be closed if it is provided as a str or Path object in the constructor.
@@ -205,7 +205,7 @@ class ColDigest:
         self.bin_vals = None
 
     def to_dict(self):
-        """Converts to a dict."""
+        """Convert to a dict."""
         d = copy.deepcopy(self.__dict__)
         d['dtype'] = self.dtype.__name__
         d['bin_vals'] = self.bin_vals.tolist()
@@ -213,7 +213,7 @@ class ColDigest:
 
     @classmethod
     def from_dict(cls, d):
-        """Creates from a dict."""
+        """Create from a dict."""
         digest = cls()
         digest.__dict__.update(d)
         digest.dtype = _S2D_TYPE_MAP[digest.dtype]
@@ -236,7 +236,7 @@ class TabDigest:
 
     def save(self, file):
         """
-        Saves to a json file.
+        Save to a json file.
 
         Args:
             file (str, Path, IOBase): The file path or stream to be written to. If a str or Path is provided, then the
@@ -268,7 +268,7 @@ class TabDigest:
     @classmethod
     def load(cls, file):
         """
-        Loads from a json file.
+        Load from a json file.
 
         Args:
             file (str, Path, IOBase): The file path or stream to be read. If a str or Path is provided, then the
@@ -342,10 +342,10 @@ class CsvTabDigest(TabDigest):
 
     def digest(self, csv_reader, col_types=None, label_col=None):
         """
-        Digest a CSV data file.
+        Digest a CSV table.
 
         Args:
-            csv_reader (Iterable[Iterable[str]]): CSV reader of the data file.
+            csv_reader (Iterable[Iterable[str]]): CSV reader of the table.
             col_types (list[str], optional): Column types, the length must be same as the number of columns in the CSV.
                 It overrides the column type information in the CSV file.
             label_col (str, optional): The label column name. It overrides the label specification in the CSV file.
@@ -365,7 +365,7 @@ class CsvTabDigest(TabDigest):
             else:
                 self._read_record(row)
 
-        self._proc_columns()
+        self._digest_columns()
         self._calc_iqr_mat()
         self._group_columns()
         self._cleanup()
@@ -451,27 +451,27 @@ class CsvTabDigest(TabDigest):
                 self._distincts[i][val] = idx
             self._values[i].append(idx)
 
-    def _proc_columns(self):
-        """Process all columns."""
+    def _digest_columns(self):
+        """Digest all columns."""
         for col in self.columns:
             if col.is_numeric:
-                self._proc_num_col(col)
+                self._digest_num_col(col)
             else:
-                self._proc_disc_col(col)
+                self._digest_disc_col(col)
         self._distincts = None
         self._values = None
 
-    def _proc_disc_col(self, col):
-        """Process discrete column."""
+    def _digest_disc_col(self, col):
+        """Digest a discrete column."""
         col.bin_vals = np.array(list(self._distincts[col.idx].keys()), dtype=col.dtype)
         col.bin_count = col.bin_vals.shape[0]
         self._bin_idxs[col.idx] = np.array(self._values[col.idx], dtype=int)
 
-    def _proc_num_col(self, col):
-        """Process numeric column."""
+    def _digest_num_col(self, col):
+        """Digest a numeric column."""
         values = np.array(self._values[col.idx], dtype=col.dtype)
-        # clip outliers
         if self._clip_sd > 0:
+            # clip outliers
             sd = np.std(values)
             avg = np.mean(values)
             radius = self._clip_sd * sd
@@ -511,7 +511,7 @@ class CsvTabDigest(TabDigest):
         self._bin_idxs[col.idx] = bin_idxs
 
     def _calc_iqr_mat(self):
-        """Compute the lower information quality ratio(IQR) matrix."""
+        """Computes the lower information quality ratio(IQR) matrix."""
         col_count = len(self.columns)
         # the diagonal and upper half of the matrix is not used, fill with -1
         self._low_iqr = np.full((col_count, col_count), -1, dtype=float)
@@ -576,7 +576,7 @@ class CsvTabDigest(TabDigest):
             group = [self.label_col_idx]
             self._add_col_group(group)
             grouped.extend(group)
-            # prevents from picked by other groups
+            # prevents from picking by other groups
             low_iqr[self.label_col_idx, :] = -1
             low_iqr[:, self.label_col_idx] = -1
 
