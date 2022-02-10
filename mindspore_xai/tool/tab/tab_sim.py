@@ -13,11 +13,11 @@
 # limitations under the License.
 # ============================================================================
 """Tabular data simulator."""
-
+import copy
+import json
+from collections import OrderedDict
 from pathlib import Path
 from io import IOBase
-from collections import OrderedDict
-import json
 
 import numpy as np
 
@@ -28,8 +28,8 @@ _EPS = 1e-9
 # group no. of bins = product of all member column no. of bins
 _COL_GRP_MAX_BIN = 1000
 
-# min. normalized mutual information in a column group
-_COL_GRP_MIN_NMI = 0.1
+# min. information quality ratio in a column grouping
+_COL_GRP_MIN_IQR = 0.1
 
 # max. no. of distinct values in a discrete column
 _MAX_DIS_VAL = 256
@@ -206,7 +206,7 @@ class ColDigest:
 
     def to_dict(self):
         """Converts to a dict."""
-        d = self.__dict__
+        d = copy.deepcopy(self.__dict__)
         d['dtype'] = self.dtype.__name__
         d['bin_vals'] = self.bin_vals.tolist()
         return d
@@ -231,7 +231,7 @@ class TabDigest:
         # (list[list[int]]), column groups, lists of member column indices
         # if there is a label column, then group 0 is always the label column
         self.col_groups = None
-        # (list(np.ndarray)), column group join distribution
+        # (list(np.ndarray)), joint distribution of column groups
         self.col_group_dists = None
 
     def save(self, file):
@@ -248,7 +248,7 @@ class TabDigest:
             ValueError: Be raised for any input value problem.
             IOError: Be raised for any I/O problem.
         """
-        data = self.__dict__
+        data = copy.deepcopy(self.__dict__)
 
         # remove private data
         keys = list(data.keys())
@@ -337,7 +337,7 @@ class CsvTabDigest(TabDigest):
         self._values = None
         self._distincts = None
         self._bin_idxs = None
-        self._low_nmi = None
+        self._low_iqr = None
         self._cache = None
 
     def digest(self, csv_reader, col_types=None, label_col=None):
@@ -366,7 +366,7 @@ class CsvTabDigest(TabDigest):
                 self._read_record(row)
 
         self._proc_columns()
-        self._calc_nmi_mat()
+        self._calc_iqr_mat()
         self._group_columns()
         self._cleanup()
 
@@ -382,7 +382,7 @@ class CsvTabDigest(TabDigest):
         self._values = None
         self._distincts = None
         self._bin_idxs = None
-        self._low_nmi = None
+        self._low_iqr = None
         self._cache = None
 
     def _read_header(self, row, col_types, label_col):
@@ -510,24 +510,23 @@ class CsvTabDigest(TabDigest):
         bin_idxs = np.clip(bin_idxs, 0, None)
         self._bin_idxs[col.idx] = bin_idxs
 
-    def _calc_nmi_mat(self):
-        """Compute the lower normalized mutual information matrix."""
+    def _calc_iqr_mat(self):
+        """Compute the lower information quality ratio(IQR) matrix."""
         col_count = len(self.columns)
-        # the diagonal and the upper half of the matrix is not used, fill with -1
-        self._low_nmi = np.full((col_count, col_count), -1, dtype=float)
+        # the diagonal and upper half of the matrix is not used, fill with -1
+        self._low_iqr = np.full((col_count, col_count), -1, dtype=float)
         for i in range(1, col_count):
             for j in range(i):
-                self._low_nmi[i, j] = self._calc_nmi(i, j)
+                self._low_iqr[i, j] = self._calc_iqr(i, j)
 
-    def _calc_nmi(self, i, j):
-        """Compute the normalized mutual information of 2 columns."""
+    def _calc_iqr(self, i, j):
+        """Compute the information quality ratio(IQR) of 2 columns."""
         mi = 0.0  # mutual information
-        hx = 0.0  # column i entropy
-        hy = 0.0  # column j entropy
-        calc_hy = True
+        h = 0.0  # joint entropy
         rec_count = self._bin_idxs[0].shape[0]
+
         for x in range(self.columns[i].bin_vals.size):
-            # compute the value of mask of columns and the marginal probabilities
+            # compute the value mask of columns and the marginal probabilities
             # caching them for a faster speed
             mkey = f'mask_{i}.{x}'
             pkey = f'prob_{i}.{x}'
@@ -540,7 +539,6 @@ class CsvTabDigest(TabDigest):
             else:
                 x_prob = self._cache[pkey]
 
-            hx -= x_prob * np.log(x_prob)
             for y in range(self.columns[j].bin_vals.size):
                 mkey = f'mask_{j}.{y}'
                 pkey = f'prob_{j}.{y}'
@@ -553,27 +551,24 @@ class CsvTabDigest(TabDigest):
                 else:
                     y_prob = self._cache[pkey]
 
-                if calc_hy:
-                    hy -= y_prob * np.log(y_prob)
-
                 # joint probability
                 xy_count = np.sum(mask_x & mask_y)
                 xy_prob = xy_count / rec_count
 
+                h -= xy_prob * np.log(xy_prob)
                 mi += xy_prob * np.log((xy_prob + _EPS)/(x_prob * y_prob + _EPS))
-            calc_hy = False
 
-        if hx < _EPS or hy < _EPS:
+        if h < _EPS:
             return 0.0
 
-        return mi / np.sqrt(hx * hy)
+        return mi / h
 
     def _group_columns(self):
-        """Group columns by mutual information."""
+        """Group columns by IQR."""
         self.col_groups = []
         self.col_group_dists = []
 
-        low_nmi = self._low_nmi.copy()
+        low_iqr = self._low_iqr.copy()
         grouped = []
 
         if self.label_col_idx >= 0:
@@ -582,14 +577,14 @@ class CsvTabDigest(TabDigest):
             self._add_col_group(group)
             grouped.extend(group)
             # prevents from picked by other groups
-            low_nmi[self.label_col_idx, :] = -1
-            low_nmi[:, self.label_col_idx] = -1
+            low_iqr[self.label_col_idx, :] = -1
+            low_iqr[:, self.label_col_idx] = -1
 
         while True:
-            group = self._find_col_group(low_nmi)
+            group = self._find_col_group(low_iqr)
             if not group:
                 break
-            low_nmi[group] = -1
+            low_iqr[group] = -1
             self._add_col_group(group)
             grouped.extend(group)
 
@@ -599,27 +594,27 @@ class CsvTabDigest(TabDigest):
             if i not in grouped:
                 self._add_col_group([i])
 
-        self._low_nmi = None
+        self._low_iqr = None
         self._bin_idxs = None
 
-    def _find_col_group(self, low_nmi):
-        """Find the next column group by mutual information."""
-        max_ij = np.unravel_index(np.argmax(low_nmi, axis=None), low_nmi.shape)
-        if low_nmi[max_ij] < _COL_GRP_MIN_NMI:
+    def _find_col_group(self, low_iqr):
+        """Find the next column group by IQR."""
+        max_ij = np.unravel_index(np.argmax(low_iqr, axis=None), low_iqr.shape)
+        if low_iqr[max_ij] < _COL_GRP_MIN_IQR:
             return None
         bins = self.columns[max_ij[0]].bin_vals.size * self.columns[max_ij[1]].bin_vals.size
         if bins > _COL_GRP_MAX_BIN:
             raise RuntimeError(f'_COL_GRP_MAX_BIN:{_COL_GRP_MAX_BIN} is too small.')
         group = list(max_ij)
         # prevent group members be selected in the following loop
-        low_nmi[:, group] = -1
+        low_iqr[:, group] = -1
 
         while bins < _COL_GRP_MAX_BIN:
-            # search for the next column pair with the highest mutual information
+            # search for the next column pair with the highest IQR
             # the found column index of the MI matrix is the index of the new column member
-            max_ij = np.unravel_index(np.argmax(low_nmi[group, :], axis=None), (len(group), low_nmi.shape[1]))
+            max_ij = np.unravel_index(np.argmax(low_iqr[group, :], axis=None), (len(group), low_iqr.shape[1]))
             max_ij = (group[max_ij[0]], max_ij[1])
-            if low_nmi[max_ij] < _COL_GRP_MIN_NMI:
+            if low_iqr[max_ij] < _COL_GRP_MIN_IQR:
                 return group
             new_bins = bins * self.columns[max_ij[1]].bin_vals.size
             if new_bins > _COL_GRP_MAX_BIN:
@@ -627,7 +622,7 @@ class CsvTabDigest(TabDigest):
             # prevent the new member be selected in the coming iterations
             bins = new_bins
             group.append(max_ij[1])
-            low_nmi[:, max_ij[1]] = -1
+            low_iqr[:, max_ij[1]] = -1
 
         return group
 
@@ -692,9 +687,9 @@ class TabSim:
         Args:
             num_rows (int): Total number of rows to be generated.
             writer (TabWriter): Writer for saving the generated data.
-            noise (float): Noise for data's distributions, the interpolation weight between the original distributions
-                in the table digest and pure uniform distributions. 0 means 100% follows the original distributions.
-                Default: 0.
+            noise (int, float): Noise for data's distributions, the interpolation weight between the original
+                distributions in the table digest and pure uniform distributions. 0 means 100% follows the original
+                distributions. Default: 0.
 
         Raises:
             TypeError: Be raised for any argument or input type problem.
@@ -748,7 +743,7 @@ class TabSim:
                                self._tab_digest.col_group_dists[0],
                                gen_size, noise, batch, bin_idxs)
 
-        # generate group columns with condition of label column's value
+        # generate group columns with condition of label column's value, p(G|l)
         # label column group is always be generated first
         label_bin_idxs = bin_idxs[self._tab_digest.label_col_idx]
         label_col = self._tab_digest.columns[self._tab_digest.label_col_idx]
@@ -771,11 +766,15 @@ class TabSim:
     def _gen_col_grp_data(self, group, dist, num_rows, noise, out_batch, out_bin_idxs=None):
         """Generate simulated data for a column group."""
         probs = dist.flatten()
-        probs /= np.sum(probs)
+        probs_sum = np.sum(probs)
+        if probs_sum == 0:
+            raise RuntimeError("Sum of group's joint distribution is zero.")
+        probs /= probs_sum
         if noise > _EPS:
             probs = (1 - noise)*probs + noise/probs.size
             probs /= np.sum(probs)
 
+        # sample from joint distribution
         choices = np.arange(probs.size, dtype=int)
         keys = np.random.choice(choices, num_rows, p=probs)
         bin_idxs = np.unravel_index(keys, dist.shape)
