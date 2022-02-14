@@ -193,15 +193,11 @@ class ColDigest:
         self.is_numeric = None
         # (bool) is it a label column, only 'cat' and 'str' can be a label
         self.is_label = False
-        # (self.dtype) max. value, None if not numeric
-        self.max_val = None
-        # (self.dtype) min. value, None if not numeric
-        self.min_val = None
         # (int) number of histogram bins(if numeric) or distinct values(if not numeric)
         self.bin_count = None
         # (self.dtype) histogram bin width, None if not numeric
         self.bin_width = None
-        # (np.ndarray with dtype of self.dtype), left edge of bins(if numeric) or distinct values(if not numeric)
+        # (np.ndarray with dtype of self.dtype), left edges of bins(if numeric) or distinct values(if not numeric)
         self.bin_vals = None
 
     def to_dict(self):
@@ -481,11 +477,11 @@ class CsvTabDigest(TabDigest):
                 clip_min = int(np.floor(clip_min))
                 clip_max = int(np.ceil(clip_max))
             values = np.clip(values, clip_min, clip_max)
-        col.min_val = col.dtype(values.min())
-        col.max_val = col.dtype(values.max())
+        min_val = col.dtype(values.min())
+        max_val = col.dtype(values.max())
 
         # discretize to histogram bins and store values as bin indices
-        rng = col.max_val - col.min_val
+        rng = max_val - min_val
         if col.dtype is int:
             rng += 1
         min_rng = self._num_bins if col.dtype is int else _EPS
@@ -501,9 +497,9 @@ class CsvTabDigest(TabDigest):
             col.bin_count = self._num_bins
             if col.dtype is int:
                 col.bin_width = int(np.round(col.bin_width))
-                if col.min_val + col.bin_width * col.bin_count < col.max_val:
+                if min_val + col.bin_width * col.bin_count < max_val:
                     col.bin_count += 1
-        bins = [col.min_val + col.bin_width * i for i in range(col.bin_count)]
+        bins = [min_val + col.bin_width * i for i in range(col.bin_count)]
         col.bin_vals = np.array(bins, dtype=col.dtype)
         bins.append(bins[-1] + col.bin_width)
         bin_idxs = np.digitize(values, bins) - 1
@@ -511,7 +507,7 @@ class CsvTabDigest(TabDigest):
         self._bin_idxs[col.idx] = bin_idxs
 
     def _calc_iqr_mat(self):
-        """Computes the lower information quality ratio(IQR) matrix."""
+        """Compute the lower information quality ratio(IQR) matrix."""
         col_count = len(self.columns)
         # the diagonal and upper half of the matrix is not used, fill with -1
         self._low_iqr = np.full((col_count, col_count), -1, dtype=float)
@@ -555,7 +551,7 @@ class CsvTabDigest(TabDigest):
                 xy_count = np.sum(mask_x & mask_y)
                 xy_prob = xy_count / rec_count
 
-                h -= xy_prob * np.log(xy_prob)
+                h -= xy_prob * np.log(xy_prob + _EPS)
                 mi += xy_prob * np.log((xy_prob + _EPS)/(x_prob * y_prob + _EPS))
 
         if h < _EPS:
@@ -588,7 +584,7 @@ class CsvTabDigest(TabDigest):
             self._add_col_group(group)
             grouped.extend(group)
 
-        # form single column groups for any ungrouped columns
+        # form single column groups for all ungrouped columns
         grouped = set(grouped)
         for i in range(len(self.columns)):
             if i not in grouped:
@@ -739,12 +735,12 @@ class TabSim:
                 else:
                     batch[col.idx] = np.empty(gen_size, dtype=col.dtype)
 
+        # label column group(group 0) is always be generated first
         self._gen_col_grp_data(self._tab_digest.col_groups[0],
                                self._tab_digest.col_group_dists[0],
                                gen_size, noise, batch, bin_idxs)
 
         # generate group columns with condition of label column's value, p(G|l)
-        # label column group is always be generated first
         label_bin_idxs = bin_idxs[self._tab_digest.label_col_idx]
         label_col = self._tab_digest.columns[self._tab_digest.label_col_idx]
         for label_bvi in range(label_col.bin_count):
