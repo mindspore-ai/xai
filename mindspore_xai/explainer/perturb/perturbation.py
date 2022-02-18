@@ -18,7 +18,7 @@
 from mindspore.train._utils import check_value_type
 from mindspore.nn import Cell
 
-from ..attribution import Attribution
+from mindspore_xai.common.attribution import Attribution
 
 
 class PerturbationAttribution(Attribution):

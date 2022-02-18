@@ -25,7 +25,7 @@ from mindspore import log as logger
 from mindspore.train._utils import check_value_type
 
 from mindspore_xai.common.utils import format_tensor_to_ndarray
-from mindspore_xai.explainer.attribute import Attribution
+from mindspore_xai.common.attribution import Attribution
 
 _Explainer = Attribution
 

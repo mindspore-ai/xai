@@ -14,10 +14,10 @@
 # ============================================================================
 """Predefined XAI metrics."""
 
-from .attribute.class_sensitivity import ClassSensitivity
-from .attribute.faithfulness import Faithfulness
-from .attribute.localization import Localization
-from .attribute.robustness import Robustness
+from .class_sensitivity import ClassSensitivity
+from .faithfulness import Faithfulness
+from .localization import Localization
+from .robustness import Robustness
 
 __all__ = [
     "ClassSensitivity",

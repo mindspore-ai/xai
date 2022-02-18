@@ -23,7 +23,7 @@ import mindspore.ops.operations as op
 from mindspore import nn
 
 from mindspore_xai.explainer import GradCAM
-from mindspore_xai.explainer.attribute.backprop.gradcam import _gradcam_aggregation as aggregation
+from mindspore_xai.explainer.backprop.gradcam import _gradcam_aggregation as aggregation
 
 
 context.set_context(mode=context.PYNATIVE_MODE)
