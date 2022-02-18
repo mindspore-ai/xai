@@ -244,6 +244,9 @@ class TabDigest:
             ValueError: Be raised for any input value problem.
             IOError: Be raised for any I/O problem.
         """
+        if not isinstance(file, (str, Path, IOBase)):
+            raise TypeError(f'Argument "file" must be in type of str, Path or IOBase.')
+
         data = copy.deepcopy(self.__dict__)
 
         # remove private data
@@ -279,6 +282,9 @@ class TabDigest:
             ValueError: Be raised for any input value problem.
             IOError: Be raised for any I/O problem.
         """
+        if not isinstance(file, (str, Path, IOBase)):
+            raise TypeError(f'Argument "file" must be in type of str, Path or IOBase.')
+
         fp, just_opened = _open(file, 'r')
         data = json.load(fp)
         if just_opened:
@@ -327,6 +333,10 @@ class CsvTabDigest(TabDigest):
         ValueError: Be raised for any input value problem.
     """
     def __init__(self, num_bins=10, clip_sd=3):
+        if not isinstance(num_bins, int):
+            raise TypeError(f'Argument "num_bins" must be in type of int.')
+        if not isinstance(clip_sd, (int, float)):
+            raise TypeError(f'Argument "clip_sd" must be in type of int or float.')
         super().__init__()
         self._num_bins = num_bins
         self._clip_sd = clip_sd
@@ -351,6 +361,10 @@ class CsvTabDigest(TabDigest):
             ValueError: Be raised for any input value problem.
             IOError: Be raised for any I/O problem.
         """
+        if not isinstance(col_types, (list, type(None))):
+            raise TypeError(f'Argument "col_types" must be in type of list[str] or None.')
+        if not isinstance(label_col, (str, type(None))):
+            raise TypeError(f'Argument "label_col" must be in type of str or None.')
         self._reset()
         self._cache = dict()
         header = True
@@ -693,6 +707,13 @@ class TabSim:
             IOError: Be raised for any I/O problem.
             RuntimeError: Be raised for any runtime problem.
         """
+        if not isinstance(num_rows, int):
+            raise TypeError(f'Argument "num_rows" must be in type of int.')
+        if not isinstance(writer, TabWriter):
+            raise TypeError(f'Argument "writer" must be in type of TabWriter.')
+        if not isinstance(noise, (int, float)):
+            raise TypeError(f'Argument "noise" must be in type of int or float.')
+
         if noise < 0 or noise > 1:
             raise ValueError('Argument "noise" must be in range of [0.0, 1.0].')
 

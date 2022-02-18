@@ -37,30 +37,55 @@ def fixture_regression_net_shap(regression_net, training_data_tensor):
 class TestSHAPKernel:
     """Unit test for SHAP kernel explainer."""
 
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
     def test_targets_int(self, classification_net_shap, inputs):
         """targets is int."""
         targets = 0
         exps = classification_net_shap(inputs, targets, num_samples=10)
         assert exps.shape == (NUM_INPUTS, 1, NUM_FEATURES)
 
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
     def test_targets_1d_tensor(self, classification_net_shap, inputs):
         """targets is 1d tensor."""
         targets = ms.Tensor([0, 1], ms.int32)
         exps = classification_net_shap(inputs, targets, num_samples=10)
         assert exps.shape == (NUM_INPUTS, 1, NUM_FEATURES)
 
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
     def test_targets_2d_tensor(self, classification_net_shap, inputs):
         """targets is 2d tensor."""
         targets = ms.Tensor([[0, 1, 2], [0, 1, 2]], ms.int32)
         exps = classification_net_shap(inputs, targets, num_samples=10)
         assert exps.shape == (NUM_INPUTS, 3, NUM_FEATURES)
 
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
     def test_network_regression(self, regression_net_shap, inputs):
         """regression network."""
         targets = 0
         exps = regression_net_shap(inputs, targets, num_samples=10)
         assert exps.shape == (NUM_INPUTS, 1, NUM_FEATURES)
 
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
     def test_network_sklearn_classifier(self, training_data_np):
         """sklearn.ensemble.RandomForestClassifier."""
         # labels_train has 3 classes
@@ -78,6 +103,11 @@ class TestSHAPKernel:
         exps = shap(inputs, targets)
         assert exps.shape == (NUM_INPUTS, 3, NUM_FEATURES)
 
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
     def test_network_sklearn_regressor(self, training_data_np):
         """sklearn.ensemble.RandomForestRegressor."""
         labels_train = np.random.rand(NUM_TRAINING_DATA)

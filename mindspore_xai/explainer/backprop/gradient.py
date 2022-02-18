@@ -19,7 +19,7 @@ from mindspore import Tensor
 from mindspore.train._utils import check_value_type
 
 from mindspore_xai.common.utils import abs_max, unify_inputs, unify_targets
-from ..attribution import Attribution
+from mindspore_xai.common.attribution import Attribution
 from .backprop_utils import get_bp_weights, GradNet
 
 
