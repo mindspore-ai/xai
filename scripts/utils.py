@@ -19,6 +19,11 @@ import urllib.request
 import zipfile
 import shutil
 from pathlib import Path
+import ssl
+
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
 
 PACKAGES = ["lime", "shap"]
 # i.e. xai/
@@ -37,7 +42,9 @@ def get_source_code_from_url(url, package):
     """
     package_file = cache_dir / "{}.zip".format(package)
     if not zipfile.is_zipfile(str(package_file)):
-        urllib.request.urlretrieve(url, str(package_file))
+        with urllib.request.urlopen(url, context=ctx) as u, \
+                open(package_file, 'wb') as f:
+            f.write(u.read())
 
     source_code_dir = cache_dir / package
     if source_code_dir.is_dir():

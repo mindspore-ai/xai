@@ -193,6 +193,11 @@ if __name__ == '__main__':
             'build_py': BuildPy,
             'install': Install,
         },
+        entry_points={
+            'console_scripts': [
+                'mindspore_xai=mindspore_xai.tool.cli:cli_entry',
+            ],
+        },
         python_requires='>=3.7',
         install_requires=get_install_requires(),
         classifiers=[

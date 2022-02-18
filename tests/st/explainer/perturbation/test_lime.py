@@ -119,14 +119,30 @@ def fixture_regression_net_lime(regression_net, training_data_stats):
 
 class TestLIMETabular:
     """Unit test for perturbation explainers."""
+
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
     def test_tensor_to_training_data_stats(self, training_data_tensor):
         """training data is a tensor."""
         assert isinstance(LIMETabular.to_training_data_stats(training_data_tensor), dict)
 
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
     def test_numpy_to_training_data_stats(self, training_data_np):
         """training data is a numpy array."""
         assert isinstance(LIMETabular.to_training_data_stats(training_data_np), dict)
 
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
     def test_save_training_data_stats_to_str(self, training_data_stats):
         """save training data stats to str file"""
         with tempfile.NamedTemporaryFile(suffix=".json") as tmp_file:
@@ -134,6 +150,11 @@ class TestLIMETabular:
             LIMETabular.save_training_data_stats(training_data_stats, f)
             assert isinstance(LIMETabular.load_training_data_stats(f), dict)
 
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
     def test_save_training_data_stats_to_path(self, training_data_stats):
         """save training data stats to pathlib file"""
         with tempfile.NamedTemporaryFile(suffix=".json") as tmp_file:
@@ -141,6 +162,11 @@ class TestLIMETabular:
             LIMETabular.save_training_data_stats(training_data_stats, f)
             assert isinstance(LIMETabular.load_training_data_stats(f), dict)
 
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
     def test_save_training_data_stats_to_filestream(self, training_data_stats):
         """save training data stats to filestream"""
         with tempfile.NamedTemporaryFile(suffix=".json") as tmp_file:
@@ -149,30 +175,55 @@ class TestLIMETabular:
             with open(str(tmp_file), "r") as f:
                 assert isinstance(LIMETabular.load_training_data_stats(f), dict)
 
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
     def test_targets_int(self, classification_net_lime, inputs):
         """targets is int."""
         targets = 0
         exps = classification_net_lime(inputs, targets, num_samples=10)
         eval_exps_dims(exps, NUM_INPUTS, 1, NUM_FEATURES)
 
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
     def test_targets_1d_tensor(self, classification_net_lime, inputs):
         """targets is 1d tensor."""
         targets = ms.Tensor([0, 1], ms.int32)
         exps = classification_net_lime(inputs, targets, num_samples=10)
         eval_exps_dims(exps, NUM_INPUTS, 1, NUM_FEATURES)
 
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
     def test_targets_2d_tensor(self, classification_net_lime, inputs):
         """targets is 2d tensor."""
         targets = ms.Tensor([[0, 1, 2], [0, 1, 2]], ms.int32)
         exps = classification_net_lime(inputs, targets, num_samples=10)
         eval_exps_dims(exps, NUM_INPUTS, 3, NUM_FEATURES)
 
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
     def test_network_regression(self, regression_net_lime, inputs):
         """regression network lime."""
         targets = 0
         exps = regression_net_lime(inputs, targets, num_samples=10)
         eval_exps_dims(exps, NUM_INPUTS, 1, NUM_FEATURES)
 
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
     def test_sklearn_model(self, training_data_np, training_data_stats):
         """SKlearn model"""
         # labels_train has 3 classes

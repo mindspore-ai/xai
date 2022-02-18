@@ -21,7 +21,7 @@ import mindspore.nn as nn
 from mindspore.train._utils import check_value_type
 from mindspore import log
 
-from mindspore_xai.explainer.attribute.perturb.replacement import RandomPerturb
+from mindspore_xai.explainer.perturb.replacement import RandomPerturb
 from .metric import LabelSensitiveMetric
 
 

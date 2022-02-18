@@ -129,7 +129,7 @@ index 1265820..44ddf93 100644
      set_size = 0
      M = len(inds)
 diff --git a/shap/explainers/_gradient.py b/shap/explainers/_gradient.py
-index 4ce2889..0b1d396 100644
+index 4ce2889..5f8c2bc 100644
 --- a/shap/explainers/_gradient.py
 +++ b/shap/explainers/_gradient.py
 @@ -1,547 +1,118 @@
@@ -147,7 +147,7 @@ index 4ce2889..0b1d396 100644
 -torch = None
 +import matplotlib.pyplot as plt
  
-+from mindspore_xai.explainer.attribute.backprop.backprop_utils import get_bp_weights, GradNet
++from mindspore_xai.explainer.backprop.backprop_utils import get_bp_weights, GradNet
 +from ..utils._legacy import match_model_to_data
 +from ..utils._legacy import convert_to_instance_with_index, convert_to_link, IdentityLink, convert_to_data, \
 +    convert_to_model

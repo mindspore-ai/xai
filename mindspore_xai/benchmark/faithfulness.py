@@ -22,9 +22,9 @@ from mindspore import log, nn
 from mindspore.train._utils import check_value_type
 
 from mindspore_xai.common.utils import calc_auc, format_tensor_to_ndarray
-from mindspore_xai.explainer.attribute import Attribution as _Attribution
-from mindspore_xai.explainer.attribute.perturb.replacement import Constant, GaussianBlur
-from mindspore_xai.explainer.attribute.perturb.ablation import AblationWithSaliency
+from mindspore_xai.common.attribution import Attribution as _Attribution
+from mindspore_xai.explainer.perturb.replacement import Constant, GaussianBlur
+from mindspore_xai.explainer.perturb.ablation import AblationWithSaliency
 from .metric import LabelSensitiveMetric
 
 _ArrayType = np.ndarray
