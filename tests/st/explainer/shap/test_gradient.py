@@ -26,13 +26,13 @@ context.set_context(mode=context.PYNATIVE_MODE)
 @pytest.fixture(scope='module', name="classification_net_shap")
 def fixture_classification_net_shap(classification_net, training_data_tensor):
     """fixture classification net shap."""
-    return SHAPGradient(classification_net, training_data_tensor)
+    return SHAPGradient(classification_net, training_data_tensor, num_neighbours=10)
 
 
 @pytest.fixture(scope='module', name="regression_net_shap")
 def fixture_regression_net_shap(regression_net, training_data_tensor):
     """fixture regression net shap."""
-    return SHAPGradient(regression_net, training_data_tensor)
+    return SHAPGradient(regression_net, training_data_tensor, num_neighbours=10)
 
 
 class TestSHAPGradient:
@@ -46,7 +46,7 @@ class TestSHAPGradient:
     def test_targets_int(self, classification_net_shap, inputs):
         """targets is int."""
         targets = 0
-        exps = classification_net_shap(inputs, targets, num_samples=10)
+        exps = classification_net_shap(inputs, targets)
         assert exps.shape == (NUM_INPUTS, 1, NUM_FEATURES)
 
     @pytest.mark.level0
@@ -57,7 +57,7 @@ class TestSHAPGradient:
     def test_targets_1d_tensor(self, classification_net_shap, inputs):
         """targets is 1d tensor."""
         targets = ms.Tensor([0, 1], ms.int32)
-        exps = classification_net_shap(inputs, targets, num_samples=10)
+        exps = classification_net_shap(inputs, targets)
         assert exps.shape == (NUM_INPUTS, 1, NUM_FEATURES)
 
     @pytest.mark.level0
@@ -68,7 +68,7 @@ class TestSHAPGradient:
     def test_targets_2d_tensor(self, classification_net_shap, inputs):
         """targets is 2d tensor."""
         targets = ms.Tensor([[0, 1, 2], [0, 1, 2]], ms.int32)
-        exps = classification_net_shap(inputs, targets, num_samples=10)
+        exps = classification_net_shap(inputs, targets)
         assert exps.shape == (NUM_INPUTS, 3, NUM_FEATURES)
 
     @pytest.mark.level0
@@ -79,5 +79,5 @@ class TestSHAPGradient:
     def test_network_regression(self, regression_net_shap, inputs):
         """regression network."""
         targets = 0
-        exps = regression_net_shap(inputs, targets, num_samples=10)
+        exps = regression_net_shap(inputs, targets)
         assert exps.shape == (NUM_INPUTS, 1, NUM_FEATURES)

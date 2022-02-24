@@ -34,14 +34,19 @@ class SHAPGradient(_SHAP):
         operations.
 
     Args:
-        network (Cell): The black-box model to be explained.
-        data (Tensor): 2D tensor of shape :math:`(N, K)` (N being the number of samples, K being the number of
-            features). The background dataset to use for integrating out features. Gradient explainer integrates
-            over these samples.
+        network (Cell): The mindspore cell to be explained. For classification, it accepts a 2D array/tensor of
+            shape :math:`(N, K)` as input and outputs a 2D array/tensor of shape :math:`(N, L)`. For regreesion, it
+            accepts a 2D array/tensor of shape :math:`(N, K)` as input and outputs a 1D array/tensor of
+            shape :math:`(N)`.
+        features (Tensor): 2D tensor of shape :math:`(N, K)` (N being the number of samples, K being the number of
+            features). The background dataset to use for integrating out features, accept (whole or part of) training
+            dataset.
         feature_names (list, optional): list of names (strings) corresponding to the columns in the training data.
             Default: `None`.
         class_names (list, optional): list of class names, ordered according to whatever the classifier is using. If
             not present, class names will be '0', '1', ... Default: `None`.
+        num_neighbours (int, optional): Number of subsets used for the estimation of the shap values. Default: 200.
+        max_features (int, optional): Maximum number of features present in explanation. Default: 10.
 
     Inputs:
         - **inputs** (Tensor) - The input data to be explained, a 2D tensor of shape :math:`(N, K)`.
@@ -49,14 +54,10 @@ class SHAPGradient(_SHAP):
           `targets` is an integer, all the inputs will generate attribution map w.r.t this integer. When `targets` is a
           tensor or numpy array or list, it should be of shape :math:`(N, l)` (l being the number of labels for each
           sample) or :math:`(N,)` :math:`()`. Default: 0.
-        - **num_samples** (int, optional): Number of subsets used for the estimation of the shap values. Default: 200.
-        - **random_seed** (int, optional): an integer that will be used to generate random numbers. If None, the random
-          seed will be initialized using the internal numpy seed. Default: `None`.
-        - **num_features** (int, optional): Maximum number of features present in explanation. Default: 10.
         - **show** (bool, optional): Show the explanation figures, `None` means auto. Default: `None`.
 
     Outputs:
-        Tensor, a 3D tensor of shape :math:`(N, K, l)`
+        Tensor, a 3D tensor of shape :math:`(N, l, K)`, nth sample, jth label, kth feature weight.
 
     Supported Platforms:
         ``Ascend`` ``GPU``
@@ -103,20 +104,21 @@ class SHAPGradient(_SHAP):
         [-7.8321345-05 -6.3213331e-04 4.31211032e-04 7.4324332434e-04]
 """
 
-    def __init__(self, network, data, feature_names=None, class_names=None):
+    def __init__(self, network, features, feature_names=None, class_names=None, num_neighbours=200, max_features=10):
         check_value_type("network", network, ms.nn.Cell)
-        check_value_type("data", data, ms.Tensor)
+        check_value_type("features", features, ms.Tensor)
+        check_value_type("num_neighbours", num_neighbours, int)
+        check_value_type("max_features", max_features, int)
 
-        super().__init__(network, data, feature_names, class_names)
+        super().__init__(network, features, feature_names, class_names)
 
-        self._impl = GradientExplainer(network, data, self._mode, self._predictor_num_outputs)
+        self._impl = GradientExplainer(network, features, self._mode, self._predictor_num_outputs)
+        self._num_neighbours = num_neighbours
+        self._max_features = max_features
 
-    def __call__(self, inputs, targets=0, num_samples=200, random_seed=None, num_features=10, show=None):
+    def __call__(self, inputs, targets=0, show=None):
         check_value_type("inputs", inputs, ms.Tensor)
         check_value_type("targets", targets, [ms.Tensor, np.ndarray, list, int])
-        check_value_type("num_samples", num_samples, int)
-        check_value_type("random_seed", random_seed, [int, type(None)])
-        check_value_type("num_features", num_features, int)
         check_value_type("show", show, [bool, type(None)])
 
         if len(inputs.shape) != 2:
@@ -125,11 +127,11 @@ class SHAPGradient(_SHAP):
 
         targets = self._unify_targets(inputs, targets)
 
-        exps = self._impl.shap_values(inputs, targets, num_samples, random_seed)
+        exps = self._impl.shap_values(inputs, targets, self._num_neighbours)
 
         if show is None:
             show = is_notebook()
         if show:
-            self._show_all(exps, targets, self._impl.expected_value, num_features)
+            self._show_all(exps, targets, self._impl.expected_value, self._max_features)
 
         return exps
