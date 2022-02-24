@@ -25,13 +25,13 @@ from .conftest import NUM_INPUTS, NUM_FEATURES, NUM_TRAINING_DATA, NUM_CLASSES
 @pytest.fixture(scope='module', name="classification_net_shap")
 def fixture_classification_net_shap(classification_net, training_data_tensor):
     """fixture classification net shap."""
-    return SHAPKernel(classification_net, training_data_tensor)
+    return SHAPKernel(classification_net, training_data_tensor, num_neighbours=10)
 
 
 @pytest.fixture(scope='module', name="regression_net_shap")
 def fixture_regression_net_shap(regression_net, training_data_tensor):
     """fixture regression net shap."""
-    return SHAPKernel(regression_net, training_data_tensor)
+    return SHAPKernel(regression_net, training_data_tensor, num_neighbours=10)
 
 
 class TestSHAPKernel:
@@ -45,7 +45,7 @@ class TestSHAPKernel:
     def test_targets_int(self, classification_net_shap, inputs):
         """targets is int."""
         targets = 0
-        exps = classification_net_shap(inputs, targets, num_samples=10)
+        exps = classification_net_shap(inputs, targets)
         assert exps.shape == (NUM_INPUTS, 1, NUM_FEATURES)
 
     @pytest.mark.level0
@@ -56,7 +56,7 @@ class TestSHAPKernel:
     def test_targets_1d_tensor(self, classification_net_shap, inputs):
         """targets is 1d tensor."""
         targets = ms.Tensor([0, 1], ms.int32)
-        exps = classification_net_shap(inputs, targets, num_samples=10)
+        exps = classification_net_shap(inputs, targets)
         assert exps.shape == (NUM_INPUTS, 1, NUM_FEATURES)
 
     @pytest.mark.level0
@@ -67,7 +67,7 @@ class TestSHAPKernel:
     def test_targets_2d_tensor(self, classification_net_shap, inputs):
         """targets is 2d tensor."""
         targets = ms.Tensor([[0, 1, 2], [0, 1, 2]], ms.int32)
-        exps = classification_net_shap(inputs, targets, num_samples=10)
+        exps = classification_net_shap(inputs, targets)
         assert exps.shape == (NUM_INPUTS, 3, NUM_FEATURES)
 
     @pytest.mark.level0
@@ -78,7 +78,7 @@ class TestSHAPKernel:
     def test_network_regression(self, regression_net_shap, inputs):
         """regression network."""
         targets = 0
-        exps = regression_net_shap(inputs, targets, num_samples=10)
+        exps = regression_net_shap(inputs, targets)
         assert exps.shape == (NUM_INPUTS, 1, NUM_FEATURES)
 
     @pytest.mark.level0
@@ -96,7 +96,7 @@ class TestSHAPKernel:
         model = sklearn.ensemble.RandomForestClassifier(n_estimators=10)
         model.fit(training_data_np, labels_train)
 
-        shap = SHAPKernel(model.predict_proba, training_data_np)
+        shap = SHAPKernel(model.predict_proba, training_data_np, num_neighbours=10)
 
         inputs = np.random.rand(NUM_INPUTS, NUM_FEATURES)
         targets = np.array([[0, 1, 2], [0, 1, 2]])
@@ -114,7 +114,7 @@ class TestSHAPKernel:
         model = sklearn.ensemble.RandomForestRegressor(n_estimators=10)
         model.fit(training_data_np, labels_train)
 
-        shap = SHAPKernel(model.predict, training_data_np)
+        shap = SHAPKernel(model.predict, training_data_np, num_neighbours=10)
 
         inputs = np.random.rand(NUM_INPUTS, NUM_FEATURES)
         targets = 0

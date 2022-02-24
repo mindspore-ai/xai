@@ -179,7 +179,7 @@ index d03155e..92ba2f9 100644
          predict_proba_js = ''
          if self.mode == "classification" and predict_proba:
 diff --git a/lime/lime_tabular.py b/lime/lime_tabular.py
-index f788315..132b610 100644
+index f788315..fd752ad 100644
 --- a/lime/lime_tabular.py
 +++ b/lime/lime_tabular.py
 @@ -12,14 +12,14 @@ import scipy as sp
@@ -241,7 +241,7 @@ index f788315..132b610 100644
              training_labels: labels for training data. Not required, but may be
                  used by discretizer.
              feature_names: list of names (strings) corresponding to the columns
-@@ -184,6 +186,29 @@ class LimeTabularExplainer(object):
+@@ -184,6 +186,26 @@ class LimeTabularExplainer(object):
                  means", "mins", "maxs", "stds", "feature_values",
                  "feature_frequencies"
          """
@@ -263,15 +263,12 @@ index f788315..132b610 100644
 +        if isinstance(training_data, ms.Tensor):
 +            training_data = training_data.asnumpy()
 +
-+        if self._model_is_cell:
-+            model.set_train(False)
-+            model.set_grad(False)
 +        self._model = model
 +
          self.random_state = check_random_state(random_state)
          self.mode = mode
          self.categorical_names = categorical_names or {}
-@@ -213,19 +238,19 @@ class LimeTabularExplainer(object):
+@@ -213,19 +235,19 @@ class LimeTabularExplainer(object):
  
              if discretizer == 'quartile':
                  self.discretizer = QuartileDiscretizer(
@@ -300,7 +297,7 @@ index f788315..132b610 100644
              elif isinstance(discretizer, BaseDiscretizer):
                  self.discretizer = discretizer
              else:
-@@ -235,7 +260,7 @@ class LimeTabularExplainer(object):
+@@ -235,7 +257,7 @@ class LimeTabularExplainer(object):
              self.categorical_features = list(range(training_data.shape[1]))
  
              # Get the discretized_training_data when the stats are not provided
@@ -309,7 +306,7 @@ index f788315..132b610 100644
                  discretized_training_data = self.discretizer.discretize(
                      training_data)
  
-@@ -295,7 +320,6 @@ class LimeTabularExplainer(object):
+@@ -295,7 +317,6 @@ class LimeTabularExplainer(object):
  
      def explain_instance(self,
                           data_row,
@@ -317,7 +314,7 @@ index f788315..132b610 100644
                           labels=(1,),
                           top_labels=None,
                           num_features=10,
-@@ -303,22 +327,12 @@ class LimeTabularExplainer(object):
+@@ -303,22 +324,12 @@ class LimeTabularExplainer(object):
                           distance_metric='euclidean',
                           model_regressor=None):
          """Generates explanations for a prediction.
@@ -340,7 +337,7 @@ index f788315..132b610 100644
              labels: iterable with labels to be explained.
              top_labels: if not None, ignore labels and produce explanations for
                  the K labels with highest prediction probabilities, where K is
-@@ -329,7 +343,6 @@ class LimeTabularExplainer(object):
+@@ -329,7 +340,6 @@ class LimeTabularExplainer(object):
              model_regressor: sklearn regressor to use in explanation. Defaults
                  to Ridge regression in LimeBase. Must have model_regressor.coef_
                  and 'sample_weight' as a parameter to model_regressor.fit()
@@ -348,7 +345,7 @@ index f788315..132b610 100644
          Returns:
              An Explanation object (see explanation.py) with the corresponding
              explanations.
-@@ -347,12 +360,15 @@ class LimeTabularExplainer(object):
+@@ -347,12 +357,15 @@ class LimeTabularExplainer(object):
          else:
              scaled_data = (data - self.scaler.mean_) / self.scaler.scale_
          distances = sklearn.metrics.pairwise_distances(
@@ -368,7 +365,7 @@ index f788315..132b610 100644
  
          # for classification, the model needs to provide a list of tuples - classes
          # along with prediction probabilities
-@@ -424,7 +440,7 @@ class LimeTabularExplainer(object):
+@@ -424,7 +437,7 @@ class LimeTabularExplainer(object):
              discretized_feature_names = copy.deepcopy(feature_names)
              for f in self.discretizer.names:
                  discretized_feature_names[f] = self.discretizer.names[f][int(
@@ -377,7 +374,7 @@ index f788315..132b610 100644
  
          domain_mapper = TableDomainMapper(feature_names,
                                            values,
-@@ -449,14 +465,15 @@ class LimeTabularExplainer(object):
+@@ -449,14 +462,15 @@ class LimeTabularExplainer(object):
          for label in labels:
              (ret_exp.intercept[label],
               ret_exp.local_exp[label],
@@ -401,7 +398,7 @@ index f788315..132b610 100644
  
          if self.mode == "regression":
              ret_exp.intercept[1] = ret_exp.intercept[0]
-@@ -508,9 +525,12 @@ class LimeTabularExplainer(object):
+@@ -508,9 +522,12 @@ class LimeTabularExplainer(object):
                  instance_sample = data_row[:, non_zero_indexes]
                  scale = scale[non_zero_indexes]
                  mean = mean[non_zero_indexes]
@@ -414,7 +411,7 @@ index f788315..132b610 100644
              if self.sample_around_instance:
                  data = data * scale + instance_sample
              else:
-@@ -614,7 +634,7 @@ class RecurrentTabularExplainer(LimeTabularExplainer):
+@@ -614,7 +631,7 @@ class RecurrentTabularExplainer(LimeTabularExplainer):
          # Reshape X
          n_samples, n_timesteps, n_features = training_data.shape
          training_data = np.transpose(training_data, axes=(0, 2, 1)).reshape(
@@ -423,7 +420,7 @@ index f788315..132b610 100644
          self.n_timesteps = n_timesteps
          self.n_features = n_features
  
-@@ -624,20 +644,20 @@ class RecurrentTabularExplainer(LimeTabularExplainer):
+@@ -624,20 +641,20 @@ class RecurrentTabularExplainer(LimeTabularExplainer):
  
          # Send off the the super class to do its magic.
          super(RecurrentTabularExplainer, self).__init__(
