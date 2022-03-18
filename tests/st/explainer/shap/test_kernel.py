@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""Unit test for SHAP kernel explainer."""
+"""Tests of SHAP kernel explainer."""
 import pytest
 import mindspore as ms
 import sklearn
