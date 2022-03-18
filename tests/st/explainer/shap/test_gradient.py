@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""Unit test for SHAP gradient explainer."""
+"""Tests of SHAP gradient explainer."""
 import pytest
 import mindspore as ms
 from mindspore import context
