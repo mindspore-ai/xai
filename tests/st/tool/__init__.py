@@ -12,4 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""Initialization of smoke tests."""
+"""Initialization of tests of tools."""
