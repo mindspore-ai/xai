@@ -122,3 +122,6 @@ output/
 
 # third party packages
 mindspore_xai/third_party/*
+
+# MacOSX
+.DS_Store
