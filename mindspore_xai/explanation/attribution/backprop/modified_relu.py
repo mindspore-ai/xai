@@ -75,8 +75,8 @@ class ModifiedReLU(Gradient):
         inputs = grad_inputs if self.use_relu_backprop else grad_outputs
         relu = op.ReLU()
         if isinstance(inputs, tuple):
-            return relu(*inputs)
-        return relu(inputs)
+            return (relu(*inputs),)
+        return (relu(inputs),)
 
 
 class Deconvolution(ModifiedReLU):
