@@ -15,11 +15,14 @@
 """Tests of SHAP kernel explainer."""
 import pytest
 import mindspore as ms
+from mindspore import context
 import sklearn
 import numpy as np
 
 from mindspore_xai.explainer import SHAPKernel
 from .conftest import NUM_INPUTS, NUM_FEATURES, NUM_TRAINING_DATA, NUM_CLASSES
+
+context.set_context(mode=context.PYNATIVE_MODE)
 
 
 @pytest.fixture(scope='module', name="classification_net_shap")
@@ -120,3 +123,16 @@ class TestSHAPKernel:
         targets = 0
         exps = shap(inputs, targets)
         assert exps.shape == (NUM_INPUTS, 1, NUM_FEATURES)
+
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
+    def test_graph_mode(self, classification_net_shap, inputs):
+        """mode is context.GRAPH_MODE."""
+        context.set_context(mode=context.GRAPH_MODE)
+        targets = ms.Tensor([[0, 1, 2], [0, 1, 2]], ms.int32)
+        exps = classification_net_shap(inputs, targets)
+        assert exps.shape == (NUM_INPUTS, 3, NUM_FEATURES)
+        context.set_context(mode=context.PYNATIVE_MODE)

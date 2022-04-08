@@ -25,7 +25,6 @@ ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
 
-PACKAGES = ["lime", "shap"]
 # i.e. xai/
 root_dir = Path(__file__).resolve().parents[1]
 cache_dir = root_dir / ".cache" / "patch"
@@ -40,6 +39,7 @@ def get_source_code_from_url(url, package):
         url (str): Url.
         package (str): package name.
     """
+    print("downloading {}".format(url))
     package_file = cache_dir / "{}.zip".format(package)
     if not zipfile.is_zipfile(str(package_file)):
         with urllib.request.urlopen(url, context=ctx) as u, \
@@ -140,6 +140,9 @@ def load_config(package):
     """
     config_file = (root_dir / 'third_party' / package / package).with_suffix('.json')
 
+    if not config_file.is_file():
+        raise ValueError("Invalid package '{}'".format(package))
+
     with config_file.open() as f:
         config = json.load(f)
 
@@ -172,3 +175,14 @@ def get_patch_file(package):
     """
 
     return (root_dir / 'third_party' / package / package).with_suffix('.patch')
+
+
+def list_third_party_src_pkg():
+    """
+    List third party source packages
+
+    Returns:
+        list, list of string.
+    """
+    dirs = (root_dir / 'third_party').glob("*")
+    return [d.stem for d in dirs if d.is_dir()]

@@ -42,7 +42,7 @@ class LIMETabular:
             generated using static method LIETabular.to_feature_stats(training_data).
         feature_names (list, optional): list of names (strings) corresponding to the columns in the training data.
             Default: `None`.
-        categorical_features (list, optional): list of indices (ints) corresponding to the categorical columns.
+        categorical_features_indexes (list, optional): list of indices (ints) corresponding to the categorical columns.
             Everything else will be considered continuous. Values in these columns MUST be integers. Default: `None`.
         class_names (list, optional): list of class names, ordered according to whatever the classifier is using. If
             not present, class names will be '0', '1', ... Default: `None`.
@@ -50,8 +50,8 @@ class LIMETabular:
         max_features (int, optional): Maximum number of features present in explanation. Default: 10.
 
     Inputs:
-        - **inputs** (Tensor, numpy.ndarray) - The input data to be explained, a 2D tensor or 2D numpy array of
-          shape :math:`(N, K)`.
+        - **inputs** (Tensor, numpy.ndarray) - The input data to be explained, a 2D float tensor or 2D float
+          numpy array of shape :math:`(N, K)`.
         - **targets** (Tensor, numpy.ndarray, list, int, optional) - The labels of interest to be explained. When
           `targets` is an integer, all the inputs will generate attribution map w.r.t this integer. When `targets` is a
           tensor or numpy array or list, it should be of shape :math:`(N, l)` (l being the number of labels for each
@@ -112,7 +112,7 @@ class LIMETabular:
     def __init__(self, predictor,
                  train_feat_stats,
                  feature_names=None,
-                 categorical_features=None,
+                 categorical_features_indexes=None,
                  class_names=None,
                  num_perturbs=5000,
                  max_features=10):
@@ -120,7 +120,7 @@ class LIMETabular:
             raise ValueError("predictor must be callable.")
         check_value_type("train_feat_stats", train_feat_stats, dict)
         check_value_type("feature_names", feature_names, [list, type(None)])
-        check_value_type("categorical_features", categorical_features, [list, type(None)])
+        check_value_type("categorical_features_indexes", categorical_features_indexes, [list, type(None)])
         check_value_type("class_names", class_names, [list, type(None)])
         check_value_type("num_perturbs", num_perturbs, int)
         check_value_type("max_features", max_features, int)
@@ -135,7 +135,7 @@ class LIMETabular:
         self._impl = LimeTabularExplainer(predictor,
                                           training_data,
                                           feature_names=feature_names,
-                                          categorical_features=categorical_features,
+                                          categorical_features=categorical_features_indexes,
                                           class_names=class_names,
                                           training_data_stats=train_feat_stats)
 
@@ -175,14 +175,16 @@ class LIMETabular:
         return exps
 
     @staticmethod
-    def to_feat_stats(features, feature_names=None, categorical_features=None):
+    def to_feat_stats(features, feature_names=None, categorical_features_indexes=None):
         """
         Convert features to feature stats.
 
         Args:
             features (Tensor, numpy.ndarray): training data.
             feature_names (list, None): feature names.
-            categorical_features (list, None): categorical features.
+            categorical_features_indexes (list, optional): list of indices (ints) corresponding to the categorical
+                columns. Everything else will be considered continuous. Values in these columns MUST be integers.
+                Default: `None`.
 
         Returns:
             dict, training data stats
@@ -196,7 +198,7 @@ class LIMETabular:
             data = features.asnumpy()
         else:
             data = features
-        explainer = LimeTabularExplainer(func, data, categorical_features=categorical_features,
+        explainer = LimeTabularExplainer(func, data, categorical_features=categorical_features_indexes,
                                          feature_names=feature_names)
         stats = {
             "means": explainer.discretizer.means,
