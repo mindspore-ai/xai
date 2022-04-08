@@ -44,8 +44,8 @@ class SHAPKernel(_SHAP):
         max_features (int, optional): Maximum number of features present in explanation. Default: 10.
 
     Inputs:
-        - **inputs** (Tensor, numpy.ndarray) - The input data to be explained, a 2D tensor or 2D numpy array of
-          shape :math:`(N, K)`.
+        - **inputs** (Tensor, numpy.ndarray) - The input data to be explained, a 2D float tensor or 2D float numpy
+          array of shape :math:`(N, K)`.
         - **targets** (Tensor, numpy.ndarray, list, int, optional) - The labels of interest to be explained. When
           `targets` is an integer, all the inputs will generate attribution map w.r.t this integer. When `targets` is a
           tensor or numpy array or list, it should be of shape :math:`(N, l)` (l being the number of labels for each

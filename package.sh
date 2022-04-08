@@ -38,8 +38,7 @@ write_checksum() {
     done
 }
 
-${PYTHON} ${BASEPATH}/scripts/apply_patch.py lime
-${PYTHON} ${BASEPATH}/scripts/apply_patch.py shap
+${PYTHON} ${BASEPATH}/scripts/apply_patch.py all
 
 mk_new_dir "${OUTPUT_PATH}"
 

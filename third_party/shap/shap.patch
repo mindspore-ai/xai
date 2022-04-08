@@ -77,6 +77,19 @@ index a50cd04..6b8e892 100644
  # from ._order import Order
  from .utils._general import OpChain
  
+diff --git a/shap/_serializable.py b/shap/_serializable.py
+index 6085030..9480706 100644
+--- a/shap/_serializable.py
++++ b/shap/_serializable.py
+@@ -4,7 +4,7 @@ import inspect
+ import logging
+ #import warnings
+ import numpy as np
+-import cloudpickle
++# import cloudpickle
+ 
+ log = logging.getLogger('shap')
+ 
 diff --git a/shap/cext/tree_shap.h b/shap/cext/tree_shap.h
 index 1061e7d..4acbdb0 100644
 --- a/shap/cext/tree_shap.h
@@ -129,7 +142,7 @@ index 1265820..44ddf93 100644
      set_size = 0
      M = len(inds)
 diff --git a/shap/explainers/_gradient.py b/shap/explainers/_gradient.py
-index 4ce2889..5f8c2bc 100644
+index 4ce2889..a289ef0 100644
 --- a/shap/explainers/_gradient.py
 +++ b/shap/explainers/_gradient.py
 @@ -1,547 +1,118 @@
@@ -389,7 +402,7 @@ index 4ce2889..5f8c2bc 100644
 +        link = convert_to_link(link)
 +        model = convert_to_model(network)
 +        shap_data = convert_to_data(data.asnumpy(), keep_index=False)
-+        model_null = match_model_to_data(model, shap_data)
++        model_null = match_model_to_data(model, shap_data, model_is_cell=True)
 +        linkfv = np.vectorize(link.f)
 +
 +        fnull = np.sum((model_null.T * shap_data.weights).T, 0)
@@ -773,7 +786,7 @@ index 4ce2889..5f8c2bc 100644
 +
 +        return output_phis
 diff --git a/shap/explainers/_kernel.py b/shap/explainers/_kernel.py
-index ad6b364..9706e25 100644
+index ad6b364..9b3af36 100644
 --- a/shap/explainers/_kernel.py
 +++ b/shap/explainers/_kernel.py
 @@ -11,8 +11,9 @@ import copy
@@ -787,11 +800,17 @@ index ad6b364..9706e25 100644
  
  log = logging.getLogger('shap')
  
-@@ -59,7 +60,10 @@ class Kernel(Explainer):
+@@ -59,14 +60,23 @@ class Kernel(Explainer):
      """
  
      def __init__(self, model, data, link=IdentityLink(), **kwargs):
 -
++        # check if model accept mindspore.Tensor as input
++        try:
++            model(ms.Tensor(data[:1], ms.float32))
++            self._model_is_cell = True
++        except:
++            self._model_is_cell = False
 +        if isinstance(data, Tensor):
 +            data = data.asnumpy()
 +        if link is None:
@@ -799,7 +818,15 @@ index ad6b364..9706e25 100644
          # convert incoming inputs to standardized iml objects
          self.link = convert_to_link(link)
          self.model = convert_to_model(model)
-@@ -105,7 +109,7 @@ class Kernel(Explainer):
+         self.keep_index = kwargs.get("keep_index", False)
+         self.keep_index_ordered = kwargs.get("keep_index_ordered", False)
+         self.data = convert_to_data(data, keep_index=self.keep_index)
+-        model_null = match_model_to_data(self.model, self.data)
++        model_null = match_model_to_data(self.model, self.data, model_is_cell=self._model_is_cell)
+ 
+         # enforce our current input type limitations
+         assert isinstance(self.data, DenseData) or isinstance(self.data, SparseData), \
+@@ -105,7 +115,7 @@ class Kernel(Explainer):
              self.D = self.fnull.shape[0]
  
  
@@ -808,7 +835,7 @@ index ad6b364..9706e25 100644
          """ Estimate the SHAP values for a set of samples.
  
          Parameters
-@@ -136,7 +140,13 @@ class Kernel(Explainer):
+@@ -136,7 +146,13 @@ class Kernel(Explainer):
              attribute of the explainer). For models with vector outputs this returns a list
              of such matrices, one for each output.
          """
@@ -822,7 +849,7 @@ index ad6b364..9706e25 100644
          # convert dataframes
          if str(type(X)).endswith("pandas.core.series.Series'>"):
              X = X.values
-@@ -179,7 +189,7 @@ class Kernel(Explainer):
+@@ -179,7 +195,7 @@ class Kernel(Explainer):
          # explain the whole dataset
          elif len(X.shape) == 2:
              explanations = []
@@ -831,7 +858,7 @@ index ad6b364..9706e25 100644
                  data = X[i:i + 1, :]
                  if self.keep_index:
                      data = convert_to_instance_with_index(data, column_name, index_value[i:i + 1], index_name)
-@@ -196,10 +206,10 @@ class Kernel(Explainer):
+@@ -196,10 +212,10 @@ class Kernel(Explainer):
  
              # single-output
              else:
@@ -845,7 +872,7 @@ index ad6b364..9706e25 100644
  
      def explain(self, incoming_instance, **kwargs):
          # convert incoming input to a standardized iml object
-@@ -227,7 +237,10 @@ class Kernel(Explainer):
+@@ -227,7 +243,10 @@ class Kernel(Explainer):
          if self.keep_index:
              model_out = self.model.f(instance.convert_to_df())
          else:
@@ -857,7 +884,7 @@ index ad6b364..9706e25 100644
          if isinstance(model_out, (pd.DataFrame, pd.Series)):
              model_out = model_out.values
          self.fx = model_out[0]
-@@ -510,7 +523,10 @@ class Kernel(Explainer):
+@@ -510,7 +529,10 @@ class Kernel(Explainer):
              data = pd.concat([index, data], axis=1).set_index(self.data.index_name)
              if self.keep_index_ordered:
                  data = data.sort_index()
@@ -937,10 +964,10 @@ index b07925b..bf6958f 100644
      @staticmethod
      def supports_model_with_masker(model, masker):
 diff --git a/shap/explainers/_partition.py b/shap/explainers/_partition.py
-index 9f773dd..173634b 100644
+index 9f773dd..99e71b6 100644
 --- a/shap/explainers/_partition.py
 +++ b/shap/explainers/_partition.py
-@@ -5,7 +5,6 @@ from ..utils import MaskedModel
+@@ -5,14 +5,13 @@ from ..utils import MaskedModel
  import numpy as np
  import warnings
  import time
@@ -948,6 +975,14 @@ index 9f773dd..173634b 100644
  import queue
  from ..utils import assert_import, record_import_error, safe_isinstance, make_masks, OpChain
  from .. import Explanation
+ from .. import maskers
+ from ._explainer import Explainer
+ from .. import links
+-import cloudpickle
++# import cloudpickle
+ import pickle
+ from ..maskers import Masker
+ from ..models import Model
 @@ -69,6 +68,8 @@ class Partition(Explainer):
          --------
          See `Partition explainer examples <https://shap.readthedocs.io/en/latest/api_examples/explainers/Partition.html>`_
@@ -1014,9 +1049,18 @@ index 9f773dd..173634b 100644
              for i in range(len(batch_args)):
  
 diff --git a/shap/explainers/_permutation.py b/shap/explainers/_permutation.py
-index 6787c1a..585996b 100644
+index 6787c1a..25b51c6 100644
 --- a/shap/explainers/_permutation.py
 +++ b/shap/explainers/_permutation.py
+@@ -7,7 +7,7 @@ import numpy as np
+ import pandas as pd
+ import scipy as sp
+ import pickle
+-import cloudpickle
++# import cloudpickle
+ from .. import links
+ from .. import maskers
+ from ..maskers import Masker
 @@ -45,6 +45,9 @@ class Permutation(Explainer):
          **call_args : valid argument to the __call__ method
              These arguments are saved and passed to the __call__ method as the new default values for these arguments.
@@ -1406,7 +1450,7 @@ index 1182042..6f9edf2 100644
      return (m1 ^ m2).sum()
  
 diff --git a/shap/utils/_legacy.py b/shap/utils/_legacy.py
-index e05a0ae..db01edd 100644
+index e05a0ae..369960b 100644
 --- a/shap/utils/_legacy.py
 +++ b/shap/utils/_legacy.py
 @@ -4,6 +4,8 @@ import scipy as sp
@@ -1418,12 +1462,20 @@ index e05a0ae..db01edd 100644
  
  
  def kmeans(X, k, round_values=True):
-@@ -109,7 +111,10 @@ def match_model_to_data(model, data):
+@@ -102,14 +104,17 @@ def convert_to_model(val):
+         return Model(val, None)
+ 
+ 
+-def match_model_to_data(model, data):
++def match_model_to_data(model, data, model_is_cell):
+     assert isinstance(model, Model), "model must be of type Model!"
+     
+     try:
          if isinstance(data, DenseDataWithIndex):
              out_val = model.f(data.convert_to_df())
          else:
 -            out_val = model.f(data.data)
-+            if issubclass(type(model.f), ms.nn.Cell):
++            if model_is_cell:
 +                out_val = model.f(Tensor(data.data, ms.float32)).asnumpy()
 +            else:
 +                out_val = model.f(data.data)
