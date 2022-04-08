@@ -17,9 +17,26 @@
 import copy
 import warnings
 
-import numpy as np
 
-from .path_gen import reverse_id_maps
+def _reverse_id_maps(id_maps):
+    """
+    Reverse the key-value position of object id maps.
+
+    Args:
+        id_maps(dict[any, dict[any, any]]): Collection of object id maps.
+
+    Returns:
+        dict[any, dict[any, any]], collection of the reversed object id maps.
+    """
+    reversed_maps = dict()
+    for obj_type, id_map in id_maps.items():
+        if not isinstance(id_map, dict):
+            continue
+        reversed_map = dict()
+        for src_id, intern_id in id_map.items():
+            reversed_map[intern_id] = src_id
+        reversed_maps[obj_type] = reversed_map
+    return reversed_maps
 
 
 class RelationPath:
@@ -51,10 +68,10 @@ class Suggestion:
 
 class Recommender:
     """
-    Inference and aggregation.
+    TB-Net inference and result aggregation.
 
     Args:
-        network(Cell): TBNet.
+        network(Cell): TB-Net.
         id_maps(dict[str, dict[str, int]]): Object id maps.
         top_k (int): The number of items to be recommended.
 
@@ -78,27 +95,21 @@ class Recommender:
             [batch size, per-item paths, embedding dim, embedding dim].
         hist_item_embs (Tensor): Historical item embeddings, float Tensor in shape of
             [batch size, per-item paths, embedding dim].
+
+    Supported Platforms:
+        ``GPU``
     """
     def __init__(self, network, id_maps, top_k):
         if top_k < 1:
             raise ValueError('top_k is less than 1.')
         self._network = network
-        self._r_id_maps = reverse_id_maps(id_maps)
+        self._r_id_maps = _reverse_id_maps(id_maps)
         self._top_k = top_k
         self._suggestions = []
         self._paths_sorted = False
 
     def __call__(self, item, rl1, ref, rl2, hist_item):
-        """
-        Inference and aggregate the results.
-
-        Args:
-            item (Tensor): Candidate item IDs, int Tensor in shape of [batch size, ].
-            rl1 (Tensor): item-reference relation IDs, int Tensor in shape of [batch size, per-item paths].
-            ref (Tensor): Reference object IDs, int Tensor in shape of [batch size, per-item paths].
-            rl2 (Tensor): reference-hist_item relation IDs, int Tensor in shape of [batch size, per-item paths].
-            hist_item (Tensor): Historical item IDs, int Tensor in shape of [batch size, per-item paths].
-        """
+        """Inference and aggregate the results."""
         result = self._network(item, rl1, ref, rl2, hist_item)
         scores = result[0]
         importances = result[1]

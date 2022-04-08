@@ -22,7 +22,7 @@ from mindspore.dataset import GeneratorDataset
 
 def create_dataset(data_path, per_item_paths, **kwargs):
     """
-    Create a dataset for TBNet.
+    Create a dataset for TB-Net.
 
     Note:
         Columns: 'items', 'relation1', 'reference', 'relation2', 'hist_item', 'label'.
@@ -34,14 +34,17 @@ def create_dataset(data_path, per_item_paths, **kwargs):
 
     Returns:
         GeneratorDataset, the generator dataset that reads from the csv datafile.
+
+    Raises:
+        IOError: Be raised for any file content problem.
     """
 
-    kwargs['source'] = partial(csv_generator, data_path, per_item_paths)
+    kwargs['source'] = partial(_csv_generator, data_path, per_item_paths)
     kwargs['column_names'] = ['item', 'relation1', 'reference', 'relation2', 'hist_item', 'label']
     return GeneratorDataset(**kwargs)
 
 
-def csv_generator(csv_path, per_item_paths):
+def _csv_generator(csv_path, per_item_paths):
     """Generator for csv datafile."""
     expected_columns = 2 + (per_item_paths * 4)
     file = open(csv_path)
@@ -51,7 +54,7 @@ def csv_generator(csv_path, per_item_paths):
             continue
         id_list = line.split(',')
         if len(id_list) < expected_columns:
-            raise ValueError(f'Expecting {expected_columns} values but got {len(id_list)} only!')
+            raise IOError(f'Expecting {expected_columns} values but got {len(id_list)} only!')
         id_list = list(map(int, id_list))
         item = id_list[0]
         label = id_list[1]

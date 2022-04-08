@@ -60,8 +60,10 @@ class TBNet(nn.Cell):
             [batch size, per-item paths, embedding dim, embedding dim].
         hist_item_embs (Tensor): Historical item embeddings, float Tensor in shape of
             [batch size, per-item paths, embedding dim].
-    """
 
+    Supported Platforms:
+        ``GPU``
+    """
     def __init__(self, num_items, num_references, num_relations, embedding_dim):
         super(TBNet, self).__init__()
 
@@ -175,7 +177,10 @@ class NetWithLossCell(nn.Cell):
         hist_item (Tensor): Historical item IDs, int Tensor in shape of [batch size, per-item paths].
 
     Outputs:
-        loss (Tensor): loss value.
+        Tensor, the Loss value.
+
+    Supported Platforms:
+        ``Ascend`` ``GPU``
     """
 
     def __init__(self, network, kge_weight, node_weight=0.002, l2_weight=1e-7):
@@ -265,7 +270,10 @@ class TrainStepWrapCell(nn.Cell):
         hist_item (Tensor): Historical item IDs, int Tensor in shape of [batch size, per-item paths].
 
     Outputs:
-        loss and gradient.
+        Tensor, the Loss value.
+
+    Supported Platforms:
+        ``Ascend`` ``GPU``
     """
 
     def __init__(self, network, lr, sens=1):
@@ -325,19 +333,11 @@ class EvalNet(nn.Cell):
         hist_item (Tensor): Historical item IDs, int Tensor in shape of [batch size, per-item paths].
 
     Outputs:
-        probs (Tensor): prediction probabilities, float Tensor in shape of [batch size, ].
-        scores (Tensor): Item recommendation scores, float Tensor in shape of [batch size, ]
-        importances (Tensor): Relation path probabilities/importances, float Tensor in shape of
-            [batch size, per-item paths].
-        item_embs (Tensor): Candidate item embeddings, float Tensor in shape of [batch size, embedding dim]
-        rl1_embs (Tensor): item-reference relation embeddings, float Tensor in shape of
-            [batch size, per-item paths, embedding dim, embedding dim].
-        ref_embs (Tensor): Reference object embeddings, float Tensor in shape of
-            [batch size, per-item paths, embedding dim].
-        rl2_embs (Tensor): reference-hist_item relation embeddings, float Tensor in shape of
-            [batch size, per-item paths, embedding dim, embedding dim].
-        hist_item_embs (Tensor): Historical item embeddings, float Tensor in shape of
-            [batch size, per-item paths, embedding dim].
+        probs (Tensor): Prediction probabilities, float Tensor in shape of [batch size, ].
+        label (Tensor): Ground-truth labels, float Tensor in shape of [batch size, ]
+
+    Supported Platforms:
+        ``Ascend`` ``GPU``
     """
 
     def __init__(self, network):

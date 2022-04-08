@@ -25,9 +25,7 @@ from mindspore.nn import Cell
 
 
 class EmbeddingMatrix(Cell):
-    """
-    Support three-dimension embedding vector initialization.
-    """
+    """Support three-dimension embedding vector initialization."""
 
     def __init__(self, vocab_size, embedding_size, embedding_table='normal',
                  dtype=mstype.float32, padding_idx=None):
@@ -64,9 +62,7 @@ class EmbeddingMatrix(Cell):
         self.get_shp = P.Shape()
 
     def construct(self, ids):
-        """
-        Return the initialized three-dimension embedding vector
-        """
+        """Return the initialized three-dimension embedding vector."""
         extended_ids = self.expand(ids, -1)
         out_shape = self.get_shp(ids) + self.embedding_out
         flat_ids = self.reshape_flat(extended_ids, self.shp_flat)

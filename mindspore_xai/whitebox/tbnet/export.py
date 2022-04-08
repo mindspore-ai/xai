@@ -57,8 +57,8 @@ def get_args():
         '--run_mode',
         type=str,
         required=False,
-        default='graph',
-        choices=['graph', 'pynative'],
+        default='GRAPH',
+        choices=['GRAPH', 'PYNATIVE'],
         help="run code by GRAPH mode or PYNATIVE mode"
     )
 
@@ -91,7 +91,7 @@ def export_tbnet():
         raise ValueError("please check the checkpoint path.")
 
     context.set_context(device_id=args.device_id)
-    if args.run_mode == 'graph':
+    if args.run_mode == 'GRAPH':
         context.set_context(mode=context.GRAPH_MODE)
     else:
         context.set_context(mode=context.PYNATIVE_MODE)

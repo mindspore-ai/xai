@@ -15,7 +15,6 @@
 """Relation path data generator."""
 import io
 import random
-import json
 import csv
 import warnings
 
@@ -31,6 +30,7 @@ class _UserRec:
         self.has_unseen_ref = False
 
     def add_item(self, item_rec, rating):
+        """Add an item."""
         if rating == 'p':
             item_dict = self.positive_items
         elif rating == 'c':
@@ -49,36 +49,6 @@ class _ItemRec:
         self.ref_ids = ref_ids
 
 
-def reverse_id_maps(id_maps):
-    """
-    Reverse the key-value position of object id maps.
-
-    Args:
-        id_maps(dict[any, dict[any, any]]): Collection of object id maps.
-
-    Returns:
-        dict[any, dict[any, any]], collection of the reversed object id maps.
-
-    Examples:
-        >>> import io
-        >>> import json
-        >>> from mindspore_xai.whitebox.tbnet import reverse_id_maps
-        >>>
-        >>> with io.open("id_maps.json", mode="r", encoding="utf-8") as f:
-        >>>     id_maps = json.load(f)
-        >>> reversed_id_maps = reverse_id_maps(id_maps)
-    """
-    reversed_maps = dict()
-    for obj_type, id_map in id_maps.items():
-        if not isinstance(id_map, dict):
-            continue
-        reversed_map = dict()
-        for src_id, intern_id in id_map.items():
-            reversed_map[intern_id] = src_id
-        reversed_maps[obj_type] = reversed_map
-    return reversed_maps
-
-
 class PathGen:
     """
     Generate relation path csv from the source csv table.
@@ -89,47 +59,6 @@ class PathGen:
         id_maps (dict[str, Union[dict[str, int], int]], Optional): Object id maps, the internal id baseline, new user,
             item and entity IDs will be based on that. If Which is None or empty, grow_id_maps will be True by
             default.
-
-    Examples:
-        >>> import io
-        >>> import json
-        >>> from mindspore_xai.whitebox.tbnet import PathGen
-        >>>
-        >>> ################ single source csv, single output csv ################
-        >>> path_gen = PathGen(per_item_paths=24)
-        >>> path_gen.generate("src_all.csv", "out_paths.csv")
-        >>>
-        >>> ################ multiple source csv, single output csv ################
-        >>> path_gen = PathGen(per_item_paths=24)
-        >>> with io.open("out_paths2.csv", mode="w") as out_csv:
-        >>>     path_gen.generate("src_user_0001_1000.csv", out_csv)
-        >>>     path_gen.generate("src_user_1001_2000.csv", out_csv)
-        >>>
-        >>> ################ multiple source csv, multiple output csv ################
-        >>> path_gen = PathGen(per_item_paths=24)
-        >>> path_gen.generate("src_user_0001_1000.csv", "out_paths_part1.csv")
-        >>> path_gen.generate("src_user_1001_2000.csv", "out_paths_part2.csv")
-        >>>
-        >>> ################ resume the path generation ################
-        >>> with io.open("id_maps.json", mode="r", encoding="utf-8") as f:
-        >>>     id_maps = json.load(f)
-        >>> path_gen = PathGen(per_item_paths=24, id_maps=id_maps)
-        >>> # for adding new items and ref_ids' internal ID, otherwise, 0 will be assigned.
-        >>> path_gen.grow_id_maps = True
-        >>> # The ID of new user, item and reference will be continued from part1
-        >>> path_gen.generate("src_part2.csv", "out_part2.csv")
-        >>>
-        >>> ################ generate query csv for inference ################
-        >>> path_gen = PathGen(per_item_paths=24, id_maps=id_maps)
-        >>> # DO NOT set grow_id_maps to True for assigning 0 as internal ID of the unseen items and references
-        >>> # the generated csv will only contains candidate items with rating 'c' or 'x'
-        >>> path_gen.subject_ratings = "cx"
-        >>> # generate single user query csv for infer script
-        >>> path_gen.generate("src_user_0001.csv", "query_user_0001.csv")
-        >>>
-        >>> ################ save id maps ################
-        >>> with io.open("id_maps.json", mode="w", encoding="utf-8") as f:
-        >>>     json.dump(path_gen.id_maps(), f, indent=4)
     """
     def __init__(self, per_item_paths, same_relation=False, id_maps=None):
 
@@ -163,51 +92,51 @@ class PathGen:
 
     @property
     def num_users(self):
-        """No. of distinct users."""
+        """int, the number of distinct users."""
         return self._user_id_counter - 1
 
     @property
     def num_references(self):
-        """No. of distinct references."""
+        """int, the number of distinct references."""
         return len(self._ref_id_map)
 
     @property
     def num_items(self):
-        """No. of distinct items."""
+        """int, the number of distinct items."""
         return len(self._item_id_map)
 
     @property
     def num_relations(self):
-        """No. of distinct relations."""
+        """int, the number of distinct relations."""
         return self._num_relations
 
     @property
     def rows_generated(self):
-        """Total no. of rows generated to the output CSVs."""
+        """int, total number of rows generated to the output CSVs."""
         return self._rows_generated
 
     @property
     def per_item_paths(self):
-        """No. of path per subject item."""
+        """int, the number of path per subject item."""
         return self._per_item_paths
 
     @property
     def same_relation(self):
-        """Only generate paths with the same relation on both sides?"""
+        """bool, only generate paths with the same relation on both sides."""
         return self._same_relation
 
     @property
     def unseen_items(self):
-        """Total no. of unseen items has encountered."""
+        """int, total number of unseen items has encountered."""
         return self._unseen_items
 
     @property
     def unseen_refs(self):
-        """Total no. of unseen references has encountered."""
+        """int, total number of unseen references has encountered."""
         return self._unseen_refs
 
     def id_maps(self):
-        """Object ID maps."""
+        """dict, object ID maps."""
         maps = {
             "item": dict(self._item_id_map),
             "reference": dict(self._ref_id_map),
@@ -225,11 +154,11 @@ class PathGen:
             in_csv (Union[str, TextIOBase]): The input source csv path or stream.
             out_csv (Union[str, TextIOBase]): The output source csv path or stream.
             in_sep (str): Separator of the input csv.
-            in_mv_sep (str): Multi-value separator of the input csv.
-            in_encoding (str): Encoding of the input source csv, ingored if in_csv is a text stream already.
+            in_mv_sep (str): Multi-value separator of the input csv in a single column.
+            in_encoding (str): Encoding of the input source csv, ignored if in_csv is a text stream already.
 
         Returns:
-            int, no. of rows that generated to the output csv in this call.
+            int, the number of rows that generated to the output csv in this call.
         """
         if not isinstance(in_csv, (str, io.TextIOBase)):
             raise TypeError(f"Unexpected in_csv type:{type(in_csv)}")

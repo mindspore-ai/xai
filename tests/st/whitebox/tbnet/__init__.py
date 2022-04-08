@@ -1,4 +1,4 @@
-# Copyright 2021-2022 Huawei Technologies Co., Ltd
+# Copyright 2022 Huawei Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,24 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""TB-Net API."""
-
-from .src.tbnet import TBNet, NetWithLossCell, TrainStepWrapCell, EvalNet
-from .src.dataset import create_dataset
-from .src.metrics import AUC, ACC
-from .src.recommend import Recommender, RelationPath, Suggestion
-from .src.path_gen import PathGen
-
-__all__ = [
-    'TBNet',
-    'NetWithLossCell',
-    'TrainStepWrapCell',
-    'EvalNet',
-    'create_dataset',
-    'AUC',
-    'ACC',
-    'Recommender',
-    'RelationPath',
-    'Suggestion',
-    'PathGen'
-]
+"""Initialization of tests of TB-Net."""
