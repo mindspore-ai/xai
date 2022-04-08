@@ -12,16 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""Tests of LIME Tabular explainers of xai.explanation."""
+"""Tests of LIME Tabular explainers."""
 from pathlib import Path
 import tempfile
 import numpy as np
 import pytest
 import mindspore as ms
 from mindspore import nn
+from mindspore import context
 import sklearn.ensemble
 
 from mindspore_xai.explainer import LIMETabular
+
+context.set_context(mode=context.PYNATIVE_MODE)
 
 NUM_TRAINING_DATA = 10
 NUM_INPUTS = 2
@@ -245,3 +248,16 @@ class TestLIMETabular:
         # test int targets
         targets = 0
         lime(inputs, targets)
+
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
+    def test_graph_mode(self, classification_net_lime, inputs):
+        """mode is context.GRAPH_MODE."""
+        context.set_context(mode=context.GRAPH_MODE)
+        targets = ms.Tensor([[0, 1, 2], [0, 1, 2]], ms.int32)
+        exps = classification_net_lime(inputs, targets)
+        eval_exps_dims(exps, NUM_INPUTS, 3, NUM_FEATURES)
+        context.set_context(mode=context.PYNATIVE_MODE)

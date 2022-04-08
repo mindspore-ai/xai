@@ -18,7 +18,7 @@ import filecmp
 from pathlib import Path
 
 from utils import get_patch_file, get_package_local_dir, load_config, git_apply_patch, get_source_code_from_url, \
-    PACKAGES, cache_dir
+    cache_dir, list_third_party_src_pkg
 
 
 def safe_copy(src_path, dst_path):
@@ -40,38 +40,44 @@ def safe_copy(src_path, dst_path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='clone open source codes and apply patch')
-    parser.add_argument('package', type=str, choices=PACKAGES,
-                        help='package name')
+    parser.add_argument('package', type=str, help='package name, or "all" if want to apply patch for all '
+                                                  'third party packages')
 
     args = parser.parse_args()
-    package = args.package
 
-    url, files = load_config(package)
-    # The package location inside the xai, e.g. xai/mindspore_xai/third_party/lime
-    local_dir = get_package_local_dir(package)
-    patch_file = get_patch_file(package)
+    if args.package == "all":
+        packages = list_third_party_src_pkg()
+    else:
+        packages = [args.package]
 
-    source_code_dir = cache_dir / package
+    for package in packages:
+        print("applying patch for {}".format(package))
+        url, files = load_config(package)
+        # The package location inside the xai, e.g. xai/mindspore_xai/third_party/lime
+        local_dir = get_package_local_dir(package)
+        patch_file = get_patch_file(package)
 
-    get_source_code_from_url(url, package)
-    git_apply_patch(str(source_code_dir), patch_file)
+        source_code_dir = cache_dir / package
 
-    # copy the interested files from source code directory to package local directory
-    for f in files:
-        source_code_p = source_code_dir / f
-        local_p = local_dir / f
+        get_source_code_from_url(url, package)
+        git_apply_patch(str(source_code_dir), patch_file)
 
-        if source_code_p.is_file():
-            safe_copy(source_code_p, local_p)
-        elif source_code_p.is_dir():
-            for src in source_code_p.rglob("*.py"):
-                dst = str(src).replace(str(source_code_p), str(local_p))
-                safe_copy(src, Path(dst))
+        # copy the interested files from source code directory to package local directory
+        for f in files:
+            source_code_p = source_code_dir / f
+            local_p = local_dir / f
 
-    # remove the source codes
-    shutil.rmtree(str(source_code_dir))
+            if source_code_p.is_file():
+                safe_copy(source_code_p, local_p)
+            elif source_code_p.is_dir():
+                for src in source_code_p.rglob("*.py"):
+                    dst = str(src).replace(str(source_code_p), str(local_p))
+                    safe_copy(src, Path(dst))
 
-    # create __init__.py
-    (local_dir / "__init__.py").touch()
+        # remove the source codes
+        shutil.rmtree(str(source_code_dir))
 
-    print('patch applied to {}'.format(local_dir))
+        # create __init__.py
+        (local_dir / "__init__.py").touch()
+
+        print('patch applied to {}'.format(local_dir))

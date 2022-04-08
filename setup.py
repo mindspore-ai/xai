@@ -29,7 +29,6 @@ from setuptools.command.build_py import build_py
 from setuptools.command.install import install
 
 apply_patch_script = os.path.join(os.path.dirname(os.path.realpath(__file__)), "scripts", "apply_patch.py")
-third_party_packages = ["lime", "shap"]
 package_name = 'mindspore_xai'
 
 
@@ -168,10 +167,9 @@ if __name__ == '__main__':
         sys.exit(1)
 
     if sys.argv[-1] == 'install':
-        for package in third_party_packages:
-            install_cmd = 'python {} {}'.format(apply_patch_script, package)
-            if subprocess.call(install_cmd, shell=True) != 0:
-                raise RuntimeError("failed to run command: `{}`".format(install_cmd))
+        install_cmd = 'python {} all'.format(apply_patch_script)
+        if subprocess.call(install_cmd, shell=True) != 0:
+            raise RuntimeError("failed to run command: `{}`".format(install_cmd))
 
     setup(
         name=package_name,
