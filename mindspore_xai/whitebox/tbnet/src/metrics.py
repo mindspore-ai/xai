@@ -20,8 +20,12 @@ from mindspore.nn.metrics import Metric
 
 
 class AUC(Metric):
-    """TB-Net metrics method. Compute model metrics AUC."""
+    """
+    Area under curve metric for TB-Net.
 
+    Supported Platforms:
+        ``GPU``
+    """
     def __init__(self):
         super(AUC, self).__init__()
         self.clear()
@@ -32,14 +36,20 @@ class AUC(Metric):
         self.pred_probs = []
 
     def update(self, probs, labels):
-        """Update list of predictions and labels."""
+        """
+        Update list of predictions and labels.
+
+        Args:
+            probs (Tensor): Prediction probability from the model.
+            labels (Tensor): Ground-truth labels.
+        """
         all_predict = probs.asnumpy().flatten().tolist()
         all_label = labels.asnumpy().flatten().tolist()
         self.pred_probs.extend(all_predict)
         self.true_labels.extend(all_label)
 
     def eval(self):
-        """Return AUC score"""
+        """Return AUC score."""
         if len(self.true_labels) != len(self.pred_probs):
             raise RuntimeError(
                 'true_labels.size is not equal to pred_probs.size()')
@@ -50,8 +60,12 @@ class AUC(Metric):
 
 
 class ACC(Metric):
-    """TB-Net metrics method. Compute model metrics ACC."""
+    """
+    Accuracy metric for TB-Net.
 
+    Supported Platforms:
+        ``GPU``
+    """
     def __init__(self):
         super(ACC, self).__init__()
         self.clear()
@@ -62,14 +76,20 @@ class ACC(Metric):
         self.pred_probs = []
 
     def update(self, probs, labels):
-        """Update list of predictions and labels."""
+        """
+        Update list of predictions and labels.
+
+        Args:
+            probs (Tensor): Prediction probability from the model.
+            labels (Tensor): Ground-truth labels.
+        """
         all_predict = probs.asnumpy().flatten().tolist()
         all_label = labels.asnumpy().flatten().tolist()
         self.pred_probs.extend(all_predict)
         self.true_labels.extend(all_label)
 
     def eval(self):
-        """Return accuracy score"""
+        """Return accuracy score."""
         if len(self.true_labels) != len(self.pred_probs):
             raise RuntimeError(
                 'true_labels.size is not equal to pred_probs.size()')
