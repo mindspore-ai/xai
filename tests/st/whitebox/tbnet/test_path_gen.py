@@ -46,12 +46,12 @@ u1,i7,x,a00,a15
 u1,i8,c,a00,a15
 """
 
-        src_fp = tempfile.TemporaryFile()
+        src_fp = tempfile.TemporaryFile(mode='r+')
         src_fp.write(src_csv)
         src_fp.flush()
         src_fp.seek(0)
 
-        path_fp = tempfile.TemporaryFile()
+        path_fp = tempfile.TemporaryFile(mode='w')
 
         rows = self.path_gen.generate(src_fp, path_fp)
-        assert rows == 12
+        assert rows == 7
