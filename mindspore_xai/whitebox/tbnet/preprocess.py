@@ -40,8 +40,8 @@ def get_args():
 
     parser.add_argument(
         '--same_relation',
-        type=bool,
         required=False,
+        action='store_true',
         default=False,
         help="only generate paths that relation1 is same as relation2"
     )
