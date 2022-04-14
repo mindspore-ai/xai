@@ -86,7 +86,7 @@ def np_saliency_to_image(saliency, original=None, cm=None, normalize=True, with_
         with_alpha(bool): Add alpha channel to the returned image. Default False.
 
     Returns:
-        PIL.Image.Image, the converted image object in RBG or RBGA (if with_alpha is True) format.
+        PIL.Image.Image, the converted image object with RGB or RGBA (if with_alpha is True) channels.
     """
     pixels = np_saliency_to_rgba(saliency, cm=cm, as_uint8=True, normalize=normalize)
     saliency_img = Image.fromarray(pixels, mode="RGBA")
@@ -118,7 +118,7 @@ def saliency_to_rgba(saliency, cm=None, alpha_factor=1.2, as_uint8=True, normali
     Convert the saliency map to a RGBA numpy array.
 
     Args:
-        saliency(np.ndarray): numpy array of saliency map in shape of (H, W).
+        saliency(Tensor, np.ndarray): Saliency map in shape of (H, W).
         cm(Callable, optional): Color map, viridis of matplotlib will be used if None is provided. Default None.
         alpha_factor(float): Alpha channel multiplier. Default 1.2.
         as_uint8(bool): Return as with UINT8 data type. Default True.
@@ -136,14 +136,14 @@ def saliency_to_image(saliency, original=None, cm=None, normalize=True, with_alp
     Convert the saliency map to a PIL.Image.Image object.
 
     Args:
-        saliency(np.ndarray): numpy array of saliency map in shape of (H, W).
+        saliency(Tensor, np.ndarray): Saliency map in shape of (H, W).
         original(PIL.Image.Image, optional): The original image.
         cm(Callable, optional): Color map, viridis of matplotlib will be used if None is provided. Default None.
         normalize(bool): Normalize the input saliency map. Default True.
         with_alpha(bool): Add alpha channel to the returned image. Default False.
 
     Returns:
-        PIL.Image.Image, the converted image object in RBG or RBGA (if with_alpha is True) format.
+        PIL.Image.Image, the converted image object with RGB or RGBA (if with_alpha is True) channels.
     """
     saliency = _unify_saliency(saliency)
     return np_saliency_to_image(saliency, original, cm, normalize, with_alpha)

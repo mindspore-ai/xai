@@ -34,7 +34,13 @@ class TestTBNet:
 
         tb_net = TBNet(num_items=self.item_count, num_references=self.ref_count,
                        num_relations=self.rel_count, embedding_dim=32)
-        self.recommender = Recommender(tb_net, top_k=self.top_k)
+
+        id_maps = {
+            'item': dict([(i+1, f'i{i+1}') for i in range(self.item_count)]),
+            'reference': dict([(i + 1, f'e{i + 1}') for i in range(self.ref_count)]),
+            'relation': dict([(i + 1, f'r{i + 1}') for i in range(self.rel_count)]),
+        }
+        self.recommender = Recommender(tb_net, id_maps=id_maps, top_k=self.top_k)
 
     @pytest.mark.level0
     @pytest.mark.platform_arm_ascend_training
@@ -49,7 +55,7 @@ class TestTBNet:
 
         batch_count = cand_count // batch_size
 
-        candidates = np.random.choice(np.arrange(self.item_count), size=cand_count, replace=False)
+        candidates = np.random.choice(np.arange(self.item_count), size=cand_count, replace=False)
         candidates += 1  # begin from 1
 
         for bi in range(batch_count):
