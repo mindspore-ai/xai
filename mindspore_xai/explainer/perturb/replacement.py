@@ -15,7 +15,7 @@
 """Modules to generate perturbations."""
 
 import numpy as np
-from scipy.ndimage.filters import gaussian_filter
+from scipy.ndimage import gaussian_filter
 
 _Array = np.ndarray
 
