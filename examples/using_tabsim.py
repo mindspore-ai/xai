@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
+import subprocess
+import shlex
+
 import sklearn.datasets
 
 if __name__ == "__main__":
@@ -26,3 +29,11 @@ if __name__ == "__main__":
             for feat in features[i]:
                 f.write("{},".format(feat))
             f.write("{}\n".format(labels[i]))
+
+    # digestion
+    dig_cmd = "mindspore_xai tabdig real_table.csv digest.json"
+    subprocess.call(shlex.split(dig_cmd))
+
+    # simulation
+    sim_cmd = "mindspore_xai tabsim digest.json sim_table.csv 200000"
+    subprocess.call(shlex.split(sim_cmd))

@@ -786,7 +786,7 @@ index 4ce2889..a289ef0 100644
 +
 +        return output_phis
 diff --git a/shap/explainers/_kernel.py b/shap/explainers/_kernel.py
-index ad6b364..9b3af36 100644
+index ad6b364..a40524b 100644
 --- a/shap/explainers/_kernel.py
 +++ b/shap/explainers/_kernel.py
 @@ -11,8 +11,9 @@ import copy
@@ -884,6 +884,17 @@ index ad6b364..9b3af36 100644
          if isinstance(model_out, (pd.DataFrame, pd.Series)):
              model_out = model_out.values
          self.fx = model_out[0]
+@@ -268,8 +287,8 @@ class Kernel(Explainer):
+             self.allocate()
+ 
+             # weight the different subset sizes
+-            num_subset_sizes = np.int(np.ceil((self.M - 1) / 2.0))
+-            num_paired_subset_sizes = np.int(np.floor((self.M - 1) / 2.0))
++            num_subset_sizes = int(np.ceil((self.M - 1) / 2.0))
++            num_paired_subset_sizes = int(np.floor((self.M - 1) / 2.0))
+             weight_vector = np.array([(self.M - 1.0) / (i * (self.M - i)) for i in range(1, num_subset_sizes + 1)])
+             weight_vector[:num_paired_subset_sizes] *= 2
+             weight_vector /= np.sum(weight_vector)
 @@ -510,7 +529,10 @@ class Kernel(Explainer):
              data = pd.concat([index, data], axis=1).set_index(self.data.index_name)
              if self.keep_index_ordered:

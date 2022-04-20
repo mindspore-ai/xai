@@ -20,6 +20,7 @@ import zipfile
 import shutil
 from pathlib import Path
 import ssl
+import filecmp
 
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
@@ -186,3 +187,65 @@ def list_third_party_src_pkg():
     """
     dirs = (root_dir / 'third_party').glob("*")
     return [d.stem for d in dirs if d.is_dir()]
+
+
+def safe_copy(src_path, dst_path):
+    """
+    safe copy file
+
+    Args:
+        src_path (Path): Source.
+        dst_path (Path): Destination.
+    """
+    if dst_path.is_file():
+        if not filecmp.cmp(str(src_path), str(dst_path)):
+            raise FileExistsError('Your local changes to the file {} would be overwritten by the patch, '
+                                  'please create a new patch from it or delete the file.'.format(dst_path))
+
+    dst_path.parent.mkdir(exist_ok=True, parents=True)
+    shutil.copyfile(str(src_path), str(dst_path))
+
+
+def apply_patch(package):
+    """
+    Apply patch
+
+    Args:
+        package (str): package name, or "all" if you want to apply patch for all third party packages
+    """
+    if package == "all":
+        packages = list_third_party_src_pkg()
+    else:
+        packages = [package]
+
+    for package in packages:
+        print("applying patch for {}".format(package))
+        url, files = load_config(package)
+        # The package location inside the xai, e.g. xai/mindspore_xai/third_party/lime
+        local_dir = get_package_local_dir(package)
+        patch_file = get_patch_file(package)
+
+        source_code_dir = cache_dir / package
+
+        get_source_code_from_url(url, package)
+        git_apply_patch(str(source_code_dir), str(patch_file))
+
+        # copy the interested files from source code directory to package local directory
+        for f in files:
+            source_code_p = source_code_dir / f
+            local_p = local_dir / f
+
+            if source_code_p.is_file():
+                safe_copy(source_code_p, local_p)
+            elif source_code_p.is_dir():
+                for src in source_code_p.rglob("*.py"):
+                    dst = str(src).replace(str(source_code_p), str(local_p))
+                    safe_copy(src, Path(dst))
+
+        # remove the source codes
+        shutil.rmtree(str(source_code_dir))
+
+        # create __init__.py
+        (local_dir / "__init__.py").touch()
+
+        print('patch applied to {}'.format(local_dir))

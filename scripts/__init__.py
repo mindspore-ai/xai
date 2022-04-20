@@ -11,15 +11,4 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Apply patch."""
-import argparse
-
-from utils import apply_patch
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='clone open source codes and apply patch')
-    parser.add_argument('package', type=str, help='package name, or "all" if you want to apply patch for all '
-                                                  'third party packages')
-
-    args = parser.parse_args()
-    apply_patch(args.package)
+"""Scripts."""
