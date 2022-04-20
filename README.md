@@ -6,7 +6,6 @@
 
 - [What is Explainable AI (XAI)](#what-is-explainable-ai-xai)
     - [System Architecture](#system-architecture)
-    - [Internal Components](#internal-components)
 - [Installation](#installation)
     - [System Requirements](#system-requirements)
     - [Installing by pip](#installing-by-pip)
