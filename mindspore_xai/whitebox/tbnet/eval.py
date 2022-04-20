@@ -20,7 +20,7 @@ import os
 import argparse
 
 from mindspore import context, Model, load_checkpoint, load_param_into_net
-from mindspore_xai.whitebox.tbnet import TBNet, NetWithLossCell, TrainStepWrapCell, EvalNet
+from mindspore_xai.whitebox.tbnet import TBNet, EvalNet
 from mindspore_xai.whitebox.tbnet import create_dataset, AUC, ACC
 
 from tbnet_config import TBNetConfig
@@ -97,9 +97,6 @@ def eval_tbnet():
     param_dict = load_checkpoint(ckpt_path)
     load_param_into_net(network, param_dict)
 
-    #loss_net = NetWithLossCell(network, cfg.kge_weight, cfg.node_weight, cfg.l2_weight)
-    #train_net = TrainStepWrapCell(loss_net, cfg.lr)
-    #train_net.set_train()
     eval_net = EvalNet(network)
     model = Model(network=network, eval_network=eval_net, metrics={'auc': AUC(), 'acc': ACC()})
 
