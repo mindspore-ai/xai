@@ -50,6 +50,7 @@ def get_args():
 
 
 def preprocess_csv(path_gen, data_home, src_name, out_name):
+    """Pre-process a csv file."""
     src_path = os.path.join(data_home, src_name)
     out_path = os.path.join(data_home, out_name)
     print(f'converting {src_path} to {out_path} ...')
@@ -58,7 +59,7 @@ def preprocess_csv(path_gen, data_home, src_name, out_name):
 
 
 def preprocess_data():
-
+    """Pre-process the dataset."""
     args = get_args()
     home = os.path.dirname(os.path.realpath(__file__))
 

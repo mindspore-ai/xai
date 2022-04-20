@@ -35,7 +35,7 @@ XAI是一个基于 [MindSpore](https://www.mindspore.cn/en) 的可解释AI工具
 
 - 操作系统: EulerOS-aarch64、CentOS-aarch64、CentOS-x86、Ubuntu-aarch64 或 Ubuntu-x86
 - 硬件平台: Ascend 910 或 GPU CUDA 10.1、11.1
-- Python 3.7.5 或以上
+- Python 3.7.5 或 3.9.0
 - MindSpore 1.7 或以上
 
 ### pip安装
