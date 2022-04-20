@@ -1,4 +1,4 @@
-# Copyright 2021 Huawei Technologies Co., Ltd.All Rights Reserved.
+# Copyright 2021-2022 Huawei Technologies Co., Ltd.All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,7 +28,8 @@ from setuptools.command.egg_info import egg_info
 from setuptools.command.build_py import build_py
 from setuptools.command.install import install
 
-apply_patch_script = os.path.join(os.path.dirname(os.path.realpath(__file__)), "scripts", "apply_patch.py")
+from scripts.utils import apply_patch
+
 package_name = 'mindspore_xai'
 
 
@@ -167,9 +168,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     if sys.argv[-1] == 'install':
-        install_cmd = 'python {} all'.format(apply_patch_script)
-        if subprocess.call(install_cmd, shell=True) != 0:
-            raise RuntimeError("failed to run command: `{}`".format(install_cmd))
+        apply_patch("all")
 
     setup(
         name=package_name,
