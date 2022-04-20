@@ -17,7 +17,6 @@ import mindspore as ms
 import mindspore.nn as nn
 from mindspore import context
 import sklearn.datasets
-from sklearn.ensemble import RandomForestClassifier
 
 from mindspore_xai.explainer import LIMETabular, SHAPGradient, SHAPKernel
 
@@ -32,11 +31,6 @@ class LinearNet(nn.Cell):
     def construct(self, x):
         x = self.linear(x)
         return x
-
-
-# define a callable function
-def predict_fn(x):
-    return net(x)
 
 
 if __name__ == "__main__":
@@ -79,9 +73,6 @@ if __name__ == "__main__":
             print(exp, '\n')
 
     # initialize the explainer
-    lime = LIMETabular(predict_fn, feature_stats, feature_names=feature_names, class_names=class_names)
-
-    # initialize the explainer
     shap_kernel = SHAPKernel(net, data, feature_names=feature_names, class_names=class_names)
     # explain
     shap_kernel_outputs = shap_kernel(inputs, targets)
@@ -90,9 +81,6 @@ if __name__ == "__main__":
         for j, exp in enumerate(exps):
             print("Explanation for sample {} class {}:".format(i, class_names[targets]))
             print(exp, '\n')
-
-    # initialize the explainer
-    shap_kernel = SHAPKernel(predict_fn, data, feature_names=feature_names, class_names=class_names)
 
     # Gradient only works under PYNATIVE_MODE.
     context.set_context(mode=context.PYNATIVE_MODE)
