@@ -173,9 +173,9 @@ class TestLIMETabular:
     def test_save_feat_stats_to_filestream(self, training_data_stats):
         """save training data stats to filestream"""
         with tempfile.NamedTemporaryFile(suffix=".json") as tmp_file:
-            with open(str(tmp_file), "w") as f:
+            with open(str(tmp_file), "w", encoding="utf-8") as f:
                 LIMETabular.save_feat_stats(training_data_stats, f)
-            with open(str(tmp_file), "r") as f:
+            with open(str(tmp_file), "r", encoding="utf-8") as f:
                 assert isinstance(LIMETabular.load_feature_stats(f), dict)
 
     @pytest.mark.level0

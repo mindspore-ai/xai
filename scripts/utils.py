@@ -218,16 +218,16 @@ def apply_patch(package):
     else:
         packages = [package]
 
-    for package in packages:
-        print("applying patch for {}".format(package))
-        url, files = load_config(package)
+    for pkg in packages:
+        print("applying patch for {}".format(pkg))
+        url, files = load_config(pkg)
         # The package location inside the xai, e.g. xai/mindspore_xai/third_party/lime
-        local_dir = get_package_local_dir(package)
-        patch_file = get_patch_file(package)
+        local_dir = get_package_local_dir(pkg)
+        patch_file = get_patch_file(pkg)
 
-        source_code_dir = cache_dir / package
+        source_code_dir = cache_dir / pkg
 
-        get_source_code_from_url(url, package)
+        get_source_code_from_url(url, pkg)
         git_apply_patch(str(source_code_dir), str(patch_file))
 
         # copy the interested files from source code directory to package local directory
