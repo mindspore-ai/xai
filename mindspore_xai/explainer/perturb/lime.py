@@ -237,7 +237,7 @@ class LIMETabular:
         if isinstance(file, IOBase):
             json.dump(stats_float, file)
         else:
-            with open(file, 'w') as file_handler:
+            with open(file, 'w', encoding='utf-8') as file_handler:
                 json.dump(stats_float, file_handler)
 
     @staticmethod
@@ -264,7 +264,7 @@ class LIMETabular:
         if isinstance(file, IOBase):
             stats_float = json.load(file)
         else:
-            with open(file, 'r') as file_handler:
+            with open(file, 'r', encoding='utf-8') as file_handler:
                 stats_float = json.load(file_handler)
 
         stats_numpy = {k: convert_to_numpy(v) for k, v in stats_float.items()}
