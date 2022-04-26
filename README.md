@@ -35,7 +35,7 @@ XAI is an explainable AI toolbox based on [MindSpore](https://www.mindspore.cn/e
 
 - OS: EulerOS-aarch64, CentOS-aarch64, CentOS-x86, Ubuntu-aarch64 or Ubuntu-x86
 - Device: Ascend 910 or GPU CUDA 10.1, 11.1
-- Python 3.7.5 or above
+- Python 3.7.5 or 3.9.0
 - MindSpore 1.7 or above
 
 ### Installing by pip
