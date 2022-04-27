@@ -324,7 +324,7 @@ class PathGen:
                 for ref in ref_list:
                     self._find_paths_by_intern_id(i, ref, hist_item, paths)
         else:
-            for i, (ref_src_list, ref_list) in enumerate(zip(subject_item.ref_src_ids, 
+            for i, (ref_src_list, ref_list) in enumerate(zip(subject_item.ref_src_ids,
                                                              subject_item.ref_ids)):
                 for src_ref, ref in zip(ref_src_list, ref_list):
                     self._find_paths_by_src(i, src_ref, ref, hist_item, paths)
@@ -389,7 +389,7 @@ class PathGen:
                 item_id = self._entity_id_counter
                 self._item_id_map[item_src] = item_id
                 self._entity_id_counter += 1
-               
+
         has_unseen_ref = False
         ref_ids = [[] for _ in range(len(ref_srcs))]
         for i, ref_src_list in enumerate(ref_srcs):

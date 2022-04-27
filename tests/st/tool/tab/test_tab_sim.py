@@ -26,12 +26,12 @@ from mindspore_xai.tool.tab.tab_sim import TabSim, CsvTabDigest, CsvTabWriter
 
 
 class TestTabSim:
-
+    """Test TabSim commandline tool."""
     @pytest.mark.level0
     @pytest.mark.platform_x86_gpu_training
     @pytest.mark.env_onecard
     def test_digest_n_sim(self):
-
+        """Test tabdig and tabsim commands."""
         np.random.seed(123456)
 
         iris = load_iris()
@@ -59,9 +59,9 @@ class TestTabSim:
         sim_buf.seek(0)
         sim_dataset = pandas.read_csv(sim_buf).to_numpy()
 
-        classifer = RandomForestClassifier()
-        classifer.fit(features, labels)
+        classifier = RandomForestClassifier()
+        classifier.fit(features, labels)
         sim_feats = sim_dataset[:, :-1]
         sim_labels = sim_dataset[:, -1]
-        score = classifer.score(sim_feats, sim_labels)
+        score = classifier.score(sim_feats, sim_labels)
         assert score >= 0.9

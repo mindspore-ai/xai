@@ -111,7 +111,7 @@ def export_tbnet():
     file_name = os.path.realpath(args.file_name)
     export(network, *inputs, file_name=file_name, file_format=args.file_format)
     if not file_name.endswith("."+args.file_format.lower()):
-         file_name = f"{file_name}.{args.file_format.lower()}"
+        file_name = f"{file_name}.{args.file_format.lower()}"
     print(f"{file_name} exported.")
 
 

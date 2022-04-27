@@ -10,3 +10,6 @@
 "xai/tests"                                                                                             "protected-access"
 "xai/tests"                                                                                             "invalid-sequence-index"
 "xai/tests"                                                                                             "no-self-use"
+
+# TB-Net
+"xai/mindspore_xai/whitebox/tbnet/src/path_gen.py"                                                      "unsupported-membership-test"

@@ -56,9 +56,9 @@ def _open(file, mode):
     """Open a file."""
     if isinstance(file, str):
         return open(file, mode=mode), True
-    elif isinstance(file, Path):
+    if isinstance(file, Path):
         return file.open(mode=mode), True
-    elif isinstance(file, IOBase):
+    if isinstance(file, IOBase):
         return file, False
     raise TypeError(f'Argument "file"({type(file)}) is not in type of str, Path or IOBase.')
 
@@ -315,10 +315,10 @@ class CsvTabDigest(TabDigest):
 
     Note:
         The expected header format is: "<name>|<type>,<name>|<type>,<name>|<type>,...". <name> is column name, allowed
-        patten is `[0-9a-zA-Z_\-]+`. <type> is column type, must be one of "int", "float", "cat" and "str". "int" and
+        pattern is `[0-9a-zA-Z_\-]+`. <type> is column type, must be one of "int", "float", "cat" and "str". "int" and
         "float" are numeric columns while "cat" and "str" are discrete columns. The maximum number of distinct values
         of discrete columns is 256. The underlying data type of "cat" is integer without ordering while "str" values'
-        allowed patten is `[0-9a-zA-Z_\-\+\.]*`. Example header: "col_A|int,col_B|float,col_C|cat". User may optionally
+        allowed pattern is `[0-9a-zA-Z_\-\+\.]*`. Example header: "col_A|int,col_B|float,col_C|cat". User may optionally
         specify a label column by adding a "*" character before the column name, example:
         "col_A|int,col_B|float,*col_C|cat", only "cat" and "str" columns can be label. At most one label column is
         allowed.
