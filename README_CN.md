@@ -6,7 +6,6 @@
 
 - [什么是可解释AI (XAI)](#什么是可解释ai-xai)
     - [系统架构](#系统架构)
-    - [内部组件](#内部组件)
 - [安装教程](#安装教程)
     - [系统要求](#系统要求)
     - [pip安装](#pip安装)
@@ -30,18 +29,14 @@ XAI是一个基于 [MindSpore](https://www.mindspore.cn/en) 的可解释AI工具
 
 ![sys_arch](./images/sys_arch_cn.png)
 
-### 内部组件
-
-![internal](./images/internal_cn.png)
-
 ## 安装教程
 
 ### 系统要求
 
 - 操作系统: EulerOS-aarch64、CentOS-aarch64、CentOS-x86、Ubuntu-aarch64 或 Ubuntu-x86
 - 硬件平台: Ascend 910 或 GPU CUDA 10.1、11.1
-- Python 3.7.5 或以上
-- MindSpore 1.4 或以上
+- Python 3.7.5 或 3.9.0
+- MindSpore 1.7 或以上
 
 ### pip安装
 
@@ -88,17 +83,13 @@ import mindspore_xai
 print(mindspore_xai.__version__)
 ```
 
-## 注意事項
-
-[MindInsight](https://www.mindspore.cn/mindinsight) 是一个可选的XAI可视化工具，请参阅[使用教程](https://mindspore.cn/mindinsight/docs/zh-CN/master/index.html)。
-
 ## 快速入门
 
 关于如何快速使用XAI为模型进行解释，请点击查看XAI[使用教程](https://www.mindspore.cn/xai/docs/zh-CN/master/index.html)。
 
-## 文档
+## API文档
 
-有关安装指南、教程和API的更多详细信息，请参阅[首頁](https://www.mindspore.cn/xai)。
+有关安API的更多详细信息，请参阅[API參考](https://www.mindspore.cn/xai)。
 
 ## 社区
 

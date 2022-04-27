@@ -26,7 +26,8 @@ __all__ = [
     'retrieve_layer_by_name',
     'retrieve_layer',
     'unify_inputs',
-    'unify_targets'
+    'unify_targets',
+    'is_notebook',
 ]
 
 from typing import Tuple, Union
@@ -298,3 +299,15 @@ def resize(inputs: Tensor, size: Tuple[int, int], mode: str) -> Tensor:
         raise ValueError('Unsupported resize mode {}.'.format(mode))
 
     return outputs
+
+
+try:
+    shell = get_ipython().__class__.__name__
+    _is_notebook = (shell == 'ZMQInteractiveShell')
+except NameError:
+    _is_notebook = False
+
+
+def is_notebook():
+    """Detect if it is running in notebook."""
+    return _is_notebook

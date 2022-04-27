@@ -38,6 +38,8 @@ write_checksum() {
     done
 }
 
+${PYTHON} ${BASEPATH}/scripts/apply_patch.py all
+
 mk_new_dir "${OUTPUT_PATH}"
 
 ${PYTHON} ${BASEPATH}/setup.py bdist_wheel
