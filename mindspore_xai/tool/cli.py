@@ -50,7 +50,7 @@ def cli_entry():
     parser_tabsim.add_argument('--batch-size', type=int, dest='batch_size', required=False, default=10000,
                                help='[optional] number of rows in each batch, default: 10000')
     parser_tabsim.add_argument('--noise', type=float, dest='noise', required=False, default=0.0,
-                               help='[optional] 0.0-1.0 noise level of value picking probabilites, 0.0 means 100% '
+                               help='[optional] 0.0-1.0 noise level of value picking probabilities, 0.0 means 100% '
                                     'flows the digested joint distributions, higher the noise level more even the '
                                     'probabilities. default: 0')
 
