@@ -52,7 +52,7 @@ def cli_entry():
     parser_tabsim.add_argument('--noise', type=float, dest='noise', required=False, default=0.0,
                                help='[optional] 0.0-1.0 noise level of value picking probabilites, 0.0 means 100% '
                                     'flows the digested joint distributions, higher the noise level more even the '
-                                    'probabilites. default: 0')
+                                    'probabilities. default: 0')
 
     args = vars(parser.parse_args())
     if args['subparser_name'] == 'tabdig':

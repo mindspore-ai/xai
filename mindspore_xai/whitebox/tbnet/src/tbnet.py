@@ -347,8 +347,8 @@ class EvalNet(nn.Cell):
 
     def construct(self, item, rl1, ref, rl2, hist_item, label):
         """Forward."""
-        scores, importances, item_embs, rl1_embs, ref_embs, rl2_embs, hist_item_embs = \
-            self.network(item, rl1, ref, rl2, hist_item)
+        outputs = self.network(item, rl1, ref, rl2, hist_item)
+        scores = outputs[0]
         probs = self.sigmoid(scores)
 
         return probs, label

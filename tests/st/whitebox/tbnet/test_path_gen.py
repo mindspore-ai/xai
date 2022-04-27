@@ -13,8 +13,8 @@
 # limitations under the License.
 # ============================================================================
 """Initialization of tests of PathGen."""
-import pytest
 import tempfile
+import pytest
 
 from mindspore_xai.whitebox.tbnet import PathGen
 

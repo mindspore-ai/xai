@@ -36,9 +36,9 @@ class TestTBNet:
                        num_relations=self.rel_count, embedding_dim=32)
 
         id_maps = {
-            'item': dict([(i+1, f'i{i+1}') for i in range(self.item_count)]),
-            'reference': dict([(i + 1, f'e{i + 1}') for i in range(self.ref_count)]),
-            'relation': dict([(i + 1, f'r{i + 1}') for i in range(self.rel_count)]),
+            'item': {i + 1: f'i{i + 1}' for i in range(self.item_count)},
+            'reference': {i + 1: f'e{i + 1}' for i in range(self.ref_count)},
+            'relation': {i: f'r{i}' for i in range(self.rel_count)}
         }
         self.recommender = Recommender(tb_net, id_maps=id_maps, top_k=self.top_k)
 
