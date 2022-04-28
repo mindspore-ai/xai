@@ -16,7 +16,7 @@ import argparse
 import shutil
 
 from utils import get_patch_file, get_package_local_dir, load_config, git_create_patch, get_source_code_from_url, \
-    cache_dir, list_third_party_src_pkg
+    cache_dir, rm_dir, list_third_party_src_pkg
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='create patch for a package'
@@ -61,6 +61,6 @@ if __name__ == "__main__":
         git_create_patch(str(source_code_dir), patch_file)
 
         # remove the source codes
-        shutil.rmtree(str(source_code_dir))
+        rm_dir(source_code_dir)
 
         print('patch saved to {}'.format(patch_file))

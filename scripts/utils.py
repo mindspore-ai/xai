@@ -49,12 +49,12 @@ def get_source_code_from_url(url, package):
 
     source_code_dir = cache_dir / package
     if source_code_dir.is_dir():
-        shutil.rmtree(str(source_code_dir))
+        rm_dir(source_code_dir)
 
     # unzip to a tmp folder first, then move to source_code_dir.
     tmp_source_code_dir = source_code_dir.with_suffix(".tmp")
     if source_code_dir.is_dir():
-        shutil.rmtree(str(tmp_source_code_dir))
+        rm_dir(tmp_source_code_dir)
     with zipfile.ZipFile(str(package_file), "r") as zip_ref:
         zip_ref.extractall(str(tmp_source_code_dir))
 
@@ -62,7 +62,7 @@ def get_source_code_from_url(url, package):
     license_file.parent.rename(source_code_dir)
 
     if tmp_source_code_dir.is_dir():
-        shutil.rmtree(str(tmp_source_code_dir))
+        rm_dir(tmp_source_code_dir)
 
     # init git
     cmd = "git init -q && git add ."
@@ -80,6 +80,14 @@ def get_git_version():
     version = out.split(' ')[2]
     # e.g. [2, 30, 1]
     return [int(x) for x in version.split('.')[:3]]
+
+
+def rm_dir(directory):
+    """Remove a directory."""
+    if os.name == 'nt':
+        subprocess.call(f'RMDIR /S /Q {str(directory)}', shell=True)
+    else:
+        shutil.rmtree(str(directory))
 
 
 def run_cmd(cmd, directory=None):
@@ -243,7 +251,7 @@ def apply_patch(package):
                     safe_copy(src, Path(dst))
 
         # remove the source codes
-        shutil.rmtree(str(source_code_dir))
+        rm_dir(source_code_dir)
 
         # create __init__.py
         (local_dir / "__init__.py").touch()

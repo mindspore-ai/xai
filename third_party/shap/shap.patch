@@ -1461,7 +1461,7 @@ index 1182042..6f9edf2 100644
      return (m1 ^ m2).sum()
  
 diff --git a/shap/utils/_legacy.py b/shap/utils/_legacy.py
-index e05a0ae..369960b 100644
+index e05a0ae..06c423d 100644
 --- a/shap/utils/_legacy.py
 +++ b/shap/utils/_legacy.py
 @@ -4,6 +4,8 @@ import scipy as sp
@@ -1473,7 +1473,7 @@ index e05a0ae..369960b 100644
  
  
  def kmeans(X, k, round_values=True):
-@@ -102,14 +104,17 @@ def convert_to_model(val):
+@@ -102,14 +104,19 @@ def convert_to_model(val):
          return Model(val, None)
  
  
@@ -1487,9 +1487,11 @@ index e05a0ae..369960b 100644
          else:
 -            out_val = model.f(data.data)
 +            if model_is_cell:
-+                out_val = model.f(Tensor(data.data, ms.float32)).asnumpy()
++                out_val = model.f(Tensor(data.data, ms.float32))
 +            else:
 +                out_val = model.f(data.data)
++            if isinstance(out_val, Tensor):
++                out_val = out_val.asnumpy()
      except:
          print("Provided model function fails when applied to the provided data set.")
          raise
@@ -1534,7 +1536,7 @@ index 2d3d081..2a8e488 100644
      # here we can assume that the outputs will always be the same size, and we need
      # to carry over evaluation outputs
 diff --git a/shap/utils/_show_progress.py b/shap/utils/_show_progress.py
-index f3391de..0c0405e 100644
+index f3391de..74b916b 100644
 --- a/shap/utils/_show_progress.py
 +++ b/shap/utils/_show_progress.py
 @@ -1,37 +1 @@

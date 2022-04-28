@@ -179,7 +179,7 @@ index d03155e..92ba2f9 100644
          predict_proba_js = ''
          if self.mode == "classification" and predict_proba:
 diff --git a/lime/lime_tabular.py b/lime/lime_tabular.py
-index f788315..4607aa0 100644
+index f788315..64bdb0f 100644
 --- a/lime/lime_tabular.py
 +++ b/lime/lime_tabular.py
 @@ -12,14 +12,14 @@ import scipy as sp
@@ -347,7 +347,7 @@ index f788315..4607aa0 100644
          Returns:
              An Explanation object (see explanation.py) with the corresponding
              explanations.
-@@ -347,12 +359,15 @@ class LimeTabularExplainer(object):
+@@ -347,12 +359,17 @@ class LimeTabularExplainer(object):
          else:
              scaled_data = (data - self.scaler.mean_) / self.scaler.scale_
          distances = sklearn.metrics.pairwise_distances(
@@ -361,13 +361,15 @@ index f788315..4607aa0 100644
  
 -        yss = predict_fn(inverse)
 +        if self._model_is_cell:
-+            yss = self._model(ms.Tensor(inverse, ms.float32)).asnumpy()
++            yss = self._model(ms.Tensor(inverse, ms.float32))
 +        else:
 +            yss = self._model(inverse)
++        if isinstance(yss, ms.Tensor):
++            yss = yss.asnumpy()
  
          # for classification, the model needs to provide a list of tuples - classes
          # along with prediction probabilities
-@@ -424,7 +439,7 @@ class LimeTabularExplainer(object):
+@@ -424,7 +441,7 @@ class LimeTabularExplainer(object):
              discretized_feature_names = copy.deepcopy(feature_names)
              for f in self.discretizer.names:
                  discretized_feature_names[f] = self.discretizer.names[f][int(
@@ -376,7 +378,7 @@ index f788315..4607aa0 100644
  
          domain_mapper = TableDomainMapper(feature_names,
                                            values,
-@@ -449,14 +464,15 @@ class LimeTabularExplainer(object):
+@@ -449,14 +466,15 @@ class LimeTabularExplainer(object):
          for label in labels:
              (ret_exp.intercept[label],
               ret_exp.local_exp[label],
@@ -400,7 +402,7 @@ index f788315..4607aa0 100644
  
          if self.mode == "regression":
              ret_exp.intercept[1] = ret_exp.intercept[0]
-@@ -508,9 +524,12 @@ class LimeTabularExplainer(object):
+@@ -508,9 +526,12 @@ class LimeTabularExplainer(object):
                  instance_sample = data_row[:, non_zero_indexes]
                  scale = scale[non_zero_indexes]
                  mean = mean[non_zero_indexes]
@@ -413,7 +415,7 @@ index f788315..4607aa0 100644
              if self.sample_around_instance:
                  data = data * scale + instance_sample
              else:
-@@ -614,7 +633,7 @@ class RecurrentTabularExplainer(LimeTabularExplainer):
+@@ -614,7 +635,7 @@ class RecurrentTabularExplainer(LimeTabularExplainer):
          # Reshape X
          n_samples, n_timesteps, n_features = training_data.shape
          training_data = np.transpose(training_data, axes=(0, 2, 1)).reshape(
@@ -422,7 +424,7 @@ index f788315..4607aa0 100644
          self.n_timesteps = n_timesteps
          self.n_features = n_features
  
-@@ -624,20 +643,20 @@ class RecurrentTabularExplainer(LimeTabularExplainer):
+@@ -624,20 +645,20 @@ class RecurrentTabularExplainer(LimeTabularExplainer):
  
          # Send off the the super class to do its magic.
          super(RecurrentTabularExplainer, self).__init__(
