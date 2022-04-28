@@ -1487,9 +1487,11 @@ index e05a0ae..369960b 100644
          else:
 -            out_val = model.f(data.data)
 +            if model_is_cell:
-+                out_val = model.f(Tensor(data.data, ms.float32)).asnumpy()
++                out_val = model.f(Tensor(data.data, ms.float32))
 +            else:
 +                out_val = model.f(data.data)
++            if isinstance(out_val, Tensor):
++                out_val = out_val.asnumpy()
      except:
          print("Provided model function fails when applied to the provided data set.")
          raise
