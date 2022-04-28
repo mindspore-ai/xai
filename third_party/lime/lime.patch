@@ -361,11 +361,9 @@ index f788315..4607aa0 100644
  
 -        yss = predict_fn(inverse)
 +        if self._model_is_cell:
-+            yss = self._model(ms.Tensor(inverse, ms.float32))
++            yss = self._model(ms.Tensor(inverse, ms.float32)).asnumpy()
 +        else:
 +            yss = self._model(inverse)
-+        if isinstance(yss, ms.Tensor):
-+            yss = yss.asnumpy()
  
          # for classification, the model needs to provide a list of tuples - classes
          # along with prediction probabilities
