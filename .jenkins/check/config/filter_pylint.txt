@@ -1,4 +1,4 @@
-# Xai
+# XAI
 
 # Examples
 "xai/examples"                                                                                          "missing-docstring"
@@ -7,6 +7,9 @@
 "xai/examples"                                                                                          "not-callable"
 
 # Tests
-"xai/tests/st/benchmark/attribution/test_localization.py"                                               "protected-access"
-"xai/tests/st/explanation/attribution/perturbation/test_perturbation.py"                                "protected-access"
-"xai/tests/st/runner/test_runner.py"                                                                    "invalid-sequence-index"
+"xai/tests"                                                                                             "protected-access"
+"xai/tests"                                                                                             "invalid-sequence-index"
+"xai/tests"                                                                                             "no-self-use"
+
+# TB-Net
+"xai/mindspore_xai/whitebox/tbnet/src/path_gen.py"                                                      "unsupported-membership-test"

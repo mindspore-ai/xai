@@ -6,7 +6,6 @@
 
 - [What is Explainable AI (XAI)](#what-is-explainable-ai-xai)
     - [System Architecture](#system-architecture)
-    - [Internal Components](#internal-components)
 - [Installation](#installation)
     - [System Requirements](#system-requirements)
     - [Installing by pip](#installing-by-pip)
@@ -30,18 +29,14 @@ XAI is an explainable AI toolbox based on [MindSpore](https://www.mindspore.cn/e
 
 ![sys_arch](./images/sys_arch_en.png)
 
-### Internal Components
-
-![internal](./images/internal_en.png)
-
 ## Installation
 
 ### System Requirements
 
 - OS: EulerOS-aarch64, CentOS-aarch64, CentOS-x86, Ubuntu-aarch64 or Ubuntu-x86
 - Device: Ascend 910 or GPU CUDA 10.1, 11.1
-- Python 3.7.5 or above
-- MindSpore 1.4 or above
+- Python 3.7.5 or 3.9.0
+- MindSpore 1.7 or above
 
 ### Installing by pip
 
@@ -88,17 +83,13 @@ import mindspore_xai
 print(mindspore_xai.__version__)
 ```
 
-## Note
-
-[MindInsight](https://mindspore.cn/mindinsight/en) is an optional tool for visualizing the model explanation from XAI. Please checkout [Tutorials](https://mindspore.cn/mindinsight/docs/en/master/index.html) for more details.
-
 ## Quick Start
 
-For a quick start of generating model explanations, please checkout [Tutorials](https://www.mindspore.cn/xai/docs/en/master/index.html).
+For the quick start tutorials, please checkout [Tutorials](https://www.mindspore.cn/xai/docs/en/master/index.html).
 
-## Docs
+## API References
 
-For more details about installation, tutorials and APIs, please checkout [Front Page](https://www.mindspore.cn/xai/en).
+For more details about the APIs, please checkout [API References](https://www.mindspore.cn/xai/en).
 
 ## Community
 

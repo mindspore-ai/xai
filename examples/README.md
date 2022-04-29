@@ -21,10 +21,11 @@ examples/
 ├── common/
 │    ├── dataset.py
 │    └── resnet.py
-├── using_explainers.py
+├── using_cv_benchmarks.py
+├── using_cv_explainers.py
 ├── using_rise_plus.py
-├── using_benchmarks.py
-└── using_mindinsight.py
+├── using_tabsim.py
+└── using_tabular_explainers.py
 ```
 
 - `xai_examples_data/`: The data package has to be downloaded for the examples, please refer to [Preparations](#preparations) for the details.
@@ -33,10 +34,11 @@ examples/
 - `xai_examples_data/train`: Example training dataset.
 - `common/dataset.py`: Dataset loader.
 - `common/resnet.py`: ResNet model definitions.
-- `using_explainers.py`: Example of using explainers, please refer to [Using Explainers](https://www.mindspore.cn/xai/docs/en/master/using_explainers.html) for the details.
-- `using_rise_plus.py`: Example of using RISEPlus explainer, the way of using it is different from other explainers, please refer to [Using RISEPlus](https://www.mindspore.cn/xai/docs/en/master/using_explainers.html#using-riseplus) for the details.
-- `using_benchmarks.py`: Example of using benchmarks, please refer to [Using Benchmarks](https://www.mindspore.cn/xai/docs/en/master/using_benchmarks.html) for the details.
-- `using_mindinsight.py`: Example of using MindInsight for visualizations, please refer to [Using MindInsight](https://www.mindspore.cn/xai/docs/en/master/using_mindinsight.html) for the details.
+- `using_cv_benchmarks.py`: Example of using cv benchmarks, please refer to [Using Benchmarks](https://www.mindspore.cn/xai/docs/en/master/using_cv_benchmarks.html) for the details.
+- `using_cv_explainers.py`: Example of using cv explainers, please refer to [Using Explainers](https://www.mindspore.cn/xai/docs/en/master/using_cv_explainers.html) for the details.
+- `using_rise_plus.py`: Example of using RISEPlus explainer, the way of using it is different from other explainers, please refer to [Using RISEPlus](https://www.mindspore.cn/xai/docs/en/master/using_cv_explainers.html#using-riseplus) for the details.
+- `using_tabsim.py`: Example of using TabSim, please refer to [Using TabSim](https://www.mindspore.cn/xai/docs/en/master/using_tabsim.html) for the details.
+- `using_tabular_explainers.py`: Example of using tabular explainers, please refer to [Using Tabular Explainers](https://www.mindspore.cn/xai/docs/en/master/using_tabular_explainers.html) for the details.
 
 ## Preparations
 
@@ -57,5 +59,5 @@ Now example scripts can be run under the working directory of `xai/examples/`:
 
 ```bash
 cd xai/examples/
-python using_explainers.py
+python using_cv_explainers.py
 ```

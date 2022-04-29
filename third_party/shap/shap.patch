@@ -1,0 +1,1582 @@
+diff --git a/shap/__init__.py b/shap/__init__.py
+index 28f0ddf..a61cbc4 100644
+--- a/shap/__init__.py
++++ b/shap/__init__.py
+@@ -29,48 +29,26 @@ from .explainers import other
+ def unsupported(*args, **kwargs):
+     warnings.warn("matplotlib is not installed so plotting is not available! Run `pip install matplotlib` to fix this.")
+ 
+-try:
+-    import matplotlib
+-    have_matplotlib = True
+-except ImportError:
+-    have_matplotlib = False
+-if have_matplotlib:
+-    from .plots._beeswarm import summary_legacy as summary_plot
+-    from .plots._decision import decision as decision_plot, multioutput_decision as multioutput_decision_plot
+-    from .plots._scatter import dependence_legacy as dependence_plot
+-    from .plots._force import force as force_plot, initjs, save_html, getjs
+-    from .plots._image import image as image_plot
+-    from .plots._monitoring import monitoring as monitoring_plot
+-    from .plots._embedding import embedding as embedding_plot
+-    from .plots._partial_dependence import partial_dependence as partial_dependence_plot
+-    from .plots._bar import bar_legacy as bar_plot
+-    from .plots._waterfall import waterfall as waterfall_plot
+-    from .plots._group_difference import group_difference as group_difference_plot
+-    from .plots._text import text as text_plot
+-else:
+-    summary_plot = unsupported
+-    decision_plot = unsupported
+-    multioutput_decision_plot = unsupported
+-    dependence_plot = unsupported
+-    force_plot = unsupported
+-    initjs = unsupported
+-    save_html = unsupported
+-    image_plot = unsupported
+-    monitoring_plot = unsupported
+-    embedding_plot = unsupported
+-    partial_dependence_plot = unsupported
+-    bar_plot = unsupported
+-    waterfall_plot = unsupported
+-    text_plot = unsupported
++summary_plot = unsupported
++decision_plot = unsupported
++multioutput_decision_plot = unsupported
++dependence_plot = unsupported
++force_plot = unsupported
++initjs = unsupported
++save_html = unsupported
++image_plot = unsupported
++monitoring_plot = unsupported
++embedding_plot = unsupported
++partial_dependence_plot = unsupported
++bar_plot = unsupported
++waterfall_plot = unsupported
++text_plot = unsupported
+ 
+ 
+ # other stuff :)
+-from . import datasets
+ from . import utils
+ from . import links
+ 
+-from .actions._optimizer import ActionOptimizer
+-
+ #from . import benchmark
+ 
+ from .utils._legacy import kmeans
+diff --git a/shap/_explanation.py b/shap/_explanation.py
+index a50cd04..6b8e892 100644
+--- a/shap/_explanation.py
++++ b/shap/_explanation.py
+@@ -7,7 +7,6 @@ import warnings
+ import copy
+ import operator
+ import sklearn
+-from slicer import Slicer, Alias, Obj
+ # from ._order import Order
+ from .utils._general import OpChain
+ 
+diff --git a/shap/_serializable.py b/shap/_serializable.py
+index 6085030..9480706 100644
+--- a/shap/_serializable.py
++++ b/shap/_serializable.py
+@@ -4,7 +4,7 @@ import inspect
+ import logging
+ #import warnings
+ import numpy as np
+-import cloudpickle
++# import cloudpickle
+ 
+ log = logging.getLogger('shap')
+ 
+diff --git a/shap/cext/tree_shap.h b/shap/cext/tree_shap.h
+index 1061e7d..4acbdb0 100644
+--- a/shap/cext/tree_shap.h
++++ b/shap/cext/tree_shap.h
+@@ -1318,7 +1318,7 @@ inline void dense_tree_interactions_path_dependent(const TreeEnsemble& trees, co
+         const int *features_row = trees.features + j * trees.max_nodes;
+         int *unique_features_row = unique_features + j * amount_of_unique_features;
+         for (unsigned k = 0; k < trees.max_nodes; ++k) {
+-            for (unsigned l = 0; l < amount_of_unique_features; ++l) {
++            for (int l = 0; l < amount_of_unique_features; ++l) {
+                 if (features_row[k] == unique_features_row[l]) break;
+                 if (unique_features_row[l] < 0) {
+                     unique_features_row[l] = features_row[k];
+@@ -1348,7 +1348,7 @@ inline void dense_tree_interactions_path_dependent(const TreeEnsemble& trees, co
+             tree_shap(tree, instance, diag_contribs, 0, 0);
+ 
+             const int *unique_features_row = unique_features + j * amount_of_unique_features;
+-            for (unsigned k = 0; k < amount_of_unique_features; ++k) {
++            for (int k = 0; k < amount_of_unique_features; ++k) {
+                 const int ind = unique_features_row[k];
+                 if (ind < 0) break; // < 0 means we have seen all the features for this tree
+ 
+diff --git a/shap/explainers/_exact.py b/shap/explainers/_exact.py
+index 1265820..44ddf93 100644
+--- a/shap/explainers/_exact.py
++++ b/shap/explainers/_exact.py
+@@ -1,6 +1,5 @@
+ import logging
+ import numpy as np
+-from numba import jit
+ from .. import links
+ from ..models import Model
+ from ..utils import MaskedModel, shapley_coefficients, make_masks, delta_minimization_order
+@@ -175,7 +174,7 @@ class Exact(Explainer):
+             "clustering": getattr(self.masker, "clustering", None)
+         }
+ 
+-@jit
++
+ def _compute_grey_code_row_values(row_values, mask, inds, outputs, shapley_coeff, extended_delta_indexes, noop_code):
+     set_size = 0
+     M = len(inds)
+@@ -201,7 +200,7 @@ def _compute_grey_code_row_values(row_values, mask, inds, outputs, shapley_coeff
+             else:
+                 row_values[j] -= out * off_coeff
+ 
+-@jit
++
+ def _compute_grey_code_row_values_st(row_values, mask, inds, outputs, shapley_coeff, extended_delta_indexes, noop_code):
+     set_size = 0
+     M = len(inds)
+diff --git a/shap/explainers/_gradient.py b/shap/explainers/_gradient.py
+index 4ce2889..a289ef0 100644
+--- a/shap/explainers/_gradient.py
++++ b/shap/explainers/_gradient.py
+@@ -1,547 +1,118 @@
++import mindspore as ms
++import mindspore.ops as ops
++from mindspore import Tensor
++from mindspore.common.initializer import Normal, Zero
+ import numpy as np
+-import warnings
+-from ..explainers._explainer import Explainer
+-from ..explainers.tf_utils import _get_session, _get_graph, _get_model_inputs, _get_model_output
+-from packaging import version
+-keras = None
+-tf = None
+-torch = None
++import matplotlib.pyplot as plt
+ 
++from mindspore_xai.explainer.backprop.backprop_utils import get_bp_weights, GradNet
++from ..utils._legacy import match_model_to_data
++from ..utils._legacy import convert_to_instance_with_index, convert_to_link, IdentityLink, convert_to_data, \
++    convert_to_model
+ 
+-class Gradient(Explainer):
+-    """ Explains a model using expected gradients (an extension of integrated gradients).
+ 
+-    Expected gradients an extension of the integrated gradients method (Sundararajan et al. 2017), a
+-    feature attribution method designed for differentiable models based on an extension of Shapley
+-    values to infinite player games (Aumann-Shapley values). Integrated gradients values are a bit
+-    different from SHAP values, and require a single reference value to integrate from. As an adaptation
+-    to make them approximate SHAP values, expected gradients reformulates the integral as an expectation
+-    and combines that expectation with sampling reference values from the background dataset. This leads
+-    to a single combined expectation of gradients that converges to attributions that sum to the
+-    difference between the expected model output and the current output.
+-    
+-    Examples
+-    --------
+-    See :ref:`Gradient Explainer Examples <gradient_explainer_examples>`
+-    """
++class Gradient:
++    def __init__(self, network, data, mode, network_num_outputs, batch_size=50, local_smoothing=0):
++        self._network = network
++        self._mode = mode
++        self._network_num_outputs = network_num_outputs
+ 
+-    def __init__(self, model, data, session=None, batch_size=50, local_smoothing=0):
+-        """ An explainer object for a differentiable model using a given background dataset.
+-
+-        Parameters
+-        ----------
+-        model : tf.keras.Model, (input : [tf.Tensor], output : tf.Tensor), torch.nn.Module, or a tuple
+-                (model, layer), where both are torch.nn.Module objects
+-
+-            For TensorFlow this can be a model object, or a pair of TensorFlow tensors (or a list and
+-            a tensor) that specifies the input and output of the model to be explained. Note that for
+-            TensowFlow 2 you must pass a tensorflow function, not a tuple of input/output tensors).
+-
+-            For PyTorch this can be a nn.Module object (model), or a tuple (model, layer), where both
+-            are nn.Module objects. The model is an nn.Module object which takes as input a tensor
+-            (or list of tensors) of shape data, and returns a single dimensional output. If the input
+-            is a tuple, the returned shap values will be for the input of the layer argument. layer must
+-            be a layer in the model, i.e. model.conv2.
+-
+-        data : [numpy.array] or [pandas.DataFrame] or [torch.tensor]
+-            The background dataset to use for integrating out features. Gradient explainer integrates
+-            over these samples. The data passed here must match the input tensors given in the
+-            first argument. Single element lists can be passed unwrapped.
+-        """
+-
+-        # first, we need to find the framework
+-        if type(model) is tuple:
+-            a, b = model
+-            try:
+-                a.named_parameters()
+-                framework = 'pytorch'
+-            except:
+-                framework = 'tensorflow'
++        if self._network_num_outputs > 1:
++            sens_param = True
+         else:
+-            try:
+-                model.named_parameters()
+-                framework = 'pytorch'
+-            except:
+-                framework = 'tensorflow'
+-
+-
+-        if framework == 'tensorflow':
+-            self.explainer = _TFGradient(model, data, session, batch_size, local_smoothing)
+-        elif framework == 'pytorch':
+-            self.explainer = _PyTorchGradient(model, data, batch_size, local_smoothing)
+-
+-    def shap_values(self, X, nsamples=200, ranked_outputs=None, output_rank_order="max", rseed=None, return_variances=False):
+-        """ Return the values for the model applied to X.
+-
+-        Parameters
+-        ----------
+-        X : list,
+-            if framework == 'tensorflow': numpy.array, or pandas.DataFrame
+-            if framework == 'pytorch': torch.tensor
+-            A tensor (or list of tensors) of samples (where X.shape[0] == # samples) on which to
+-            explain the model's output.
+-
+-        ranked_outputs : None or int
+-            If ranked_outputs is None then we explain all the outputs in a multi-output model. If
+-            ranked_outputs is a positive integer then we only explain that many of the top model
+-            outputs (where "top" is determined by output_rank_order). Note that this causes a pair
+-            of values to be returned (shap_values, indexes), where shap_values is a list of numpy arrays
+-            for each of the output ranks, and indexes is a matrix that tells for each sample which output
+-            indexes were chosen as "top".
+-
+-        output_rank_order : "max", "min", "max_abs", or "custom"
+-            How to order the model outputs when using ranked_outputs, either by maximum, minimum, or
+-            maximum absolute value. If "custom" Then "ranked_outputs" contains a list of output nodes.
+-
+-        rseed : None or int
+-            Seeding the randomness in shap value computation  (background example choice,
+-            interpolation between current and background example, smoothing).
+-
+-        Returns
+-        -------
+-        array or list
+-            For a models with a single output this returns a tensor of SHAP values with the same shape
+-            as X. For a model with multiple outputs this returns a list of SHAP value tensors, each of
+-            which are the same shape as X. If ranked_outputs is None then this list of tensors matches
+-            the number of model outputs. If ranked_outputs is a positive integer a pair is returned
+-            (shap_values, indexes), where shap_values is a list of tensors with a length of
+-            ranked_outputs, and indexes is a matrix that tells for each sample which output indexes
+-            were chosen as "top".
+-        """
+-        return self.explainer.shap_values(X, nsamples, ranked_outputs, output_rank_order, rseed, return_variances)
+-
+-
+-class _TFGradient(Explainer):
+-
+-    def __init__(self, model, data, session=None, batch_size=50, local_smoothing=0):
+-
+-        # try and import keras and tensorflow
+-        global tf, keras
+-        if tf is None:
+-            import tensorflow as tf
+-            if version.parse(tf.__version__) < version.parse("1.4.0"):
+-                warnings.warn("Your TensorFlow version is older than 1.4.0 and not supported.")
+-        if keras is None:
+-            try:
+-                import keras
+-                if version.parse(keras.__version__) < version.parse("2.1.0"):
+-                    warnings.warn("Your Keras version is older than 2.1.0 and not supported.")
+-            except:
+-                pass
+-
+-        # determine the model inputs and outputs
+-        self.model = model
+-        self.model_inputs = _get_model_inputs(model)
+-        self.model_output = _get_model_output(model)
+-        assert type(self.model_output) != list, "The model output to be explained must be a single tensor!"
+-        assert len(self.model_output.shape) < 3, "The model output must be a vector or a single value!"
+-        self.multi_output = True
+-        if len(self.model_output.shape) == 1:
+-            self.multi_output = False
+-
+-        # check if we have multiple inputs
+-        self.multi_input = True
+-        if type(self.model_inputs) != list:
+-            self.model_inputs = [self.model_inputs]
+-        self.multi_input = len(self.model_inputs) > 1
+-        if type(data) != list:
+-            data = [data]
+-
+-        self.data = data
+-        self._num_vinputs = {}
+-        self.batch_size = batch_size
+-        self.local_smoothing = local_smoothing
+-
+-        if not tf.executing_eagerly():
+-            self.session = _get_session(session)
+-            self.graph = _get_graph(self)
+-            # see if there is a keras operation we need to save
+-            self.keras_phase_placeholder = None
+-            for op in self.graph.get_operations():
+-                if 'keras_learning_phase' in op.name:
+-                    self.keras_phase_placeholder = op.outputs[0]
+-
+-        # save the expected output of the model (commented out because self.data could be huge for GradientExpliner)
+-        #self.expected_value = self.run(self.model_output, self.model_inputs, self.data).mean(0)
+-
+-        if not self.multi_output:
+-            self.gradients = [None]
+-        else:
+-            self.gradients = [None for i in range(self.model_output.shape[1])]
+-
+-    def gradient(self, i):
+-        if self.gradients[i] is None:
+-            if not tf.executing_eagerly():
+-                out = self.model_output[:,i] if self.multi_output else self.model_output
+-                self.gradients[i] = tf.gradients(out, self.model_inputs)
+-            else:
+-                @tf.function
+-                def grad_graph(x):
+-                    phase = tf.keras.backend.learning_phase()
+-                    tf.keras.backend.set_learning_phase(0)
+-
+-                    with tf.GradientTape(watch_accessed_variables=False) as tape:
+-                        tape.watch(x)
+-                        out = self.model(x)
+-                        if self.multi_output:
+-                            out = out[:,i]
+-
+-                    x_grad = tape.gradient(out, x)
+-
+-                    tf.keras.backend.set_learning_phase(phase)
+-
+-                    return x_grad
+-
+-                self.gradients[i] = grad_graph
+-
+-        return self.gradients[i]
+-
+-    def shap_values(self, X, nsamples=200, ranked_outputs=None, output_rank_order="max", rseed=None, return_variances=False):
+-
+-        # check if we have multiple inputs
+-        if not self.multi_input:
+-            assert type(X) != list, "Expected a single tensor model input!"
+-            X = [X]
+-        else:
+-            assert type(X) == list, "Expected a list of model inputs!"
+-        assert len(self.model_inputs) == len(X), "Number of model inputs does not match the number given!"
+-
+-        # rank and determine the model outputs that we will explain
+-        if not tf.executing_eagerly():
+-            model_output_values = self.run(self.model_output, self.model_inputs, X)
+-        else:
+-            model_output_values = self.run(self.model, self.model_inputs, X)
+-        if ranked_outputs is not None and self.multi_output:
+-            if output_rank_order == "max":
+-                model_output_ranks = np.argsort(-model_output_values)
+-            elif output_rank_order == "min":
+-                model_output_ranks = np.argsort(model_output_values)
+-            elif output_rank_order == "max_abs":
+-                model_output_ranks = np.argsort(np.abs(model_output_values))
+-            elif output_rank_order == "custom":
+-                model_output_ranks = ranked_outputs
+-            else:
+-                assert False, "output_rank_order must be max, min, max_abs or custom!"
+-
+-            if output_rank_order in ["max", "min", "max_abs"]:
+-                model_output_ranks = model_output_ranks[:,:ranked_outputs]
++            sens_param = False
++        self._grad_net = GradNet(self._network, sens_param=sens_param)
++
++        self._data = data
++        self._batch_size = batch_size
++        self._local_smoothing = local_smoothing
++
++        # calculate expected values
++        link = IdentityLink()
++        # convert incoming inputs to standardized iml objects
++        link = convert_to_link(link)
++        model = convert_to_model(network)
++        shap_data = convert_to_data(data.asnumpy(), keep_index=False)
++        model_null = match_model_to_data(model, shap_data, model_is_cell=True)
++        linkfv = np.vectorize(link.f)
++
++        fnull = np.sum((model_null.T * shap_data.weights).T, 0)
++        self.expected_value = linkfv(fnull)
++
++        # see if we have a vector output
++        self.vector_out = True
++        if len(fnull.shape) == 0:
++            self.expected_value = float(self.expected_value)
++
++    def _gradient(self, inputs, class_index):
++        """Mindspore gradient."""
++        if self._mode == "classification":
++            weights = get_bp_weights(self._network_num_outputs, Tensor([class_index] * len(inputs), ms.int32))
++            grads = self._grad_net(inputs, weights)
+         else:
+-            model_output_ranks = np.tile(np.arange(len(self.gradients)), (X[0].shape[0], 1))
+-
+-        # compute the attributions
+-        output_phis = []
+-        output_phi_vars = []
+-        samples_input = [np.zeros((nsamples,) + X[l].shape[1:], dtype=np.float32) for l in range(len(X))]
+-        samples_delta = [np.zeros((nsamples,) + X[l].shape[1:], dtype=np.float32) for l in range(len(X))]
+-        # use random seed if no argument given
+-        if rseed is None:
+-            rseed = np.random.randint(0, 1e6)
++            grads = self._grad_net(inputs)
+ 
+-        for i in range(model_output_ranks.shape[1]):
+-            np.random.seed(rseed) # so we get the same noise patterns for each output class
+-            phis = []
+-            phi_vars = []
+-            for k in range(len(X)):
+-                phis.append(np.zeros(X[k].shape))
+-                phi_vars.append(np.zeros(X[k].shape))
+-            for j in range(X[0].shape[0]):
+-
+-                # fill in the samples arrays
+-                for k in range(nsamples):
+-                    rind = np.random.choice(self.data[0].shape[0])
+-                    t = np.random.uniform()
+-                    for l in range(len(X)):
+-                        if self.local_smoothing > 0:
+-                            x = X[l][j] + np.random.randn(*X[l][j].shape) * self.local_smoothing
+-                        else:
+-                            x = X[l][j]
+-                        samples_input[l][k] = t * x + (1 - t) * self.data[l][rind]
+-                        samples_delta[l][k] = x - self.data[l][rind]
+-
+-                # compute the gradients at all the sample points
+-                find = model_output_ranks[j,i]
+-                grads = []
+-                for b in range(0, nsamples, self.batch_size):
+-                    batch = [samples_input[l][b:min(b+self.batch_size,nsamples)] for l in range(len(X))]
+-                    grads.append(self.run(self.gradient(find), self.model_inputs, batch))
+-                grad = [np.concatenate([g[l] for g in grads], 0) for l in range(len(X))]
+-
+-                # assign the attributions to the right part of the output arrays
+-                for l in range(len(X)):
+-                    samples = grad[l] * samples_delta[l]
+-                    phis[l][j] = samples.mean(0)
+-                    phi_vars[l][j] = samples.var(0) / np.sqrt(samples.shape[0]) # estimate variance of means
+-
+-                # TODO: this could be avoided by integrating between endpoints if no local smoothing is used
+-                # correct the sum of the values to equal the output of the model using a linear
+-                # regression model with priors of the coefficents equal to the estimated variances for each
+-                # value (note that 1e-6 is designed to increase the weight of the sample and so closely
+-                # match the correct sum)
+-                # if False and self.local_smoothing == 0: # disabled right now to make sure it doesn't mask problems
+-                #     phis_sum = np.sum([phis[l][j].sum() for l in range(len(X))])
+-                #     phi_vars_s = np.stack([phi_vars[l][j] for l in range(len(X))], 0).flatten()
+-                #     if self.multi_output:
+-                #         sum_error = model_output_values[j,find] - phis_sum - self.expected_value[find]
+-                #     else:
+-                #         sum_error = model_output_values[j] - phis_sum - self.expected_value
+-
+-                #     # this is a ridge regression with one sample of all ones with sum_error as the label
+-                #     # and 1/v as the ridge penalties. This simlified (and stable) form comes from the
+-                #     # Sherman-Morrison formula
+-                #     v = (phi_vars_s / phi_vars_s.max()) * 1e6
+-                #     adj = sum_error * (v - (v * v.sum()) / (1 + v.sum()))
+-
+-                #     # add the adjustment to the output so the sum matches
+-                #     offset = 0
+-                #     for l in range(len(X)):
+-                #         s = np.prod(phis[l][j].shape)
+-                #         phis[l][j] += adj[offset:offset+s].reshape(phis[l][j].shape)
+-                #         offset += s
+-
+-            output_phis.append(phis[0] if not self.multi_input else phis)
+-            output_phi_vars.append(phi_vars[0] if not self.multi_input else phi_vars)
+-        if not self.multi_output:
+-            if return_variances:
+-                return output_phis[0], output_phi_vars[0]
+-            else:
+-                return output_phis[0]
+-        elif ranked_outputs is not None:
+-            if return_variances:
+-                return output_phis, output_phi_vars, model_output_ranks
+-            else:
+-                return output_phis, model_output_ranks
+-        else:
+-            if return_variances:
+-                return output_phis, output_phi_vars
+-            else:
+-                return output_phis
+-
+-    def run(self, out, model_inputs, X):
+-        if not tf.executing_eagerly():
+-            feed_dict = dict(zip(model_inputs, X))
+-            if self.keras_phase_placeholder is not None:
+-                feed_dict[self.keras_phase_placeholder] = 0
+-            return self.session.run(out, feed_dict)
+-        else:
+-            # build inputs that are correctly shaped, typed, and tf-wrapped
+-            inputs = []
+-            for i in range(len(X)):
+-                shape = list(self.model_inputs[i].shape)
+-                shape[0] = -1
+-                v = tf.constant(X[i].reshape(shape), dtype=self.model_inputs[i].dtype)
+-                inputs.append(v)
+-            return out(inputs)
+-
+-
+-class _PyTorchGradient(Explainer):
+-
+-    def __init__(self, model, data, batch_size=50, local_smoothing=0):
+-
+-        # try and import pytorch
+-        global torch
+-        if torch is None:
+-            import torch
+-            if version.parse(torch.__version__) < version.parse("0.4"):
+-                warnings.warn("Your PyTorch version is older than 0.4 and not supported.")
+-
+-        # check if we have multiple inputs
+-        self.multi_input = False
+-        if type(data) == list:
+-            self.multi_input = True
+-        if type(data) != list:
+-            data = [data]
+-
+-        # for consistency, the method signature calls for data as the model input.
+-        # However, within this class, self.model_inputs is the input (i.e. the data passed by the user)
+-        # and self.data is the background data for the layer we want to assign importances to. If this layer is
+-        # the input, then self.data = self.model_inputs
+-        self.model_inputs = data
+-        self.batch_size = batch_size
+-        self.local_smoothing = local_smoothing
+-
+-        self.layer = None
+-        self.input_handle = None
+-        self.interim = False
+-        if type(model) == tuple:
+-            self.interim = True
+-            model, layer = model
+-            model = model.eval()
+-            self.add_handles(layer)
+-            self.layer = layer
+-
+-            # now, if we are taking an interim layer, the 'data' is going to be the input
+-            # of the interim layer; we will capture this using a forward hook
+-            with torch.no_grad():
+-                _ = model(*data)
+-                interim_inputs = self.layer.target_input
+-                if type(interim_inputs) is tuple:
+-                    # this should always be true, but just to be safe
+-                    self.data = [i.clone().detach() for i in interim_inputs]
+-                else:
+-                    self.data = [interim_inputs.clone().detach()]
+-        else:
+-            self.data = data
+-        self.model = model.eval()
+-
+-        multi_output = False
+-        outputs = self.model(*self.model_inputs)
+-        if len(outputs.shape) > 1 and outputs.shape[1] > 1:
+-            multi_output = True
+-        self.multi_output = multi_output
+-
+-        if not self.multi_output:
+-            self.gradients = [None]
+-        else:
+-            self.gradients = [None for i in range(outputs.shape[1])]
+-
+-    def gradient(self, idx, inputs):
+-        self.model.zero_grad()
+-        X = [x.requires_grad_() for x in inputs]
+-        outputs = self.model(*X)
+-        selected = [val for val in outputs[:, idx]]
+-        if self.input_handle is not None:
+-            interim_inputs = self.layer.target_input
+-            grads = [torch.autograd.grad(selected, input,
+-                                         retain_graph=True if idx + 1 < len(interim_inputs) else None)[0].cpu().numpy()
+-                     for idx, input in enumerate(interim_inputs)]
+-            del self.layer.target_input
+-        else:
+-            grads = [torch.autograd.grad(selected, x,
+-                                         retain_graph=True if idx + 1 < len(X) else None)[0].cpu().numpy()
+-                     for idx, x in enumerate(X)]
+         return grads
+ 
+-    @staticmethod
+-    def get_interim_input(self, input, output):
+-        try:
+-            del self.target_input
+-        except AttributeError:
+-            pass
+-        setattr(self, 'target_input', input)
+-
+-    def add_handles(self, layer):
+-        input_handle = layer.register_forward_hook(self.get_interim_input)
+-        self.input_handle = input_handle
+-
+-    def shap_values(self, X, nsamples=200, ranked_outputs=None, output_rank_order="max", rseed=None, return_variances=False):
++    def shap_values(self, X, targets, nsamples=200, rseed=None, return_variances=False):
++        inputs = Tensor(X, ms.float32)
++        inputs_batches = inputs.shape[0]
++        num_features = inputs.shape[1]
++        num_labels = targets.shape[1]
+ 
+-        # X ~ self.model_input
+-        # X_data ~ self.data
++        # (number of samples, number of target labels, number of features)
++        output_phis = Tensor(shape=(inputs_batches, num_labels, num_features), dtype=ms.float32,
++                             init=Zero()).init_data()
++        output_phi_vars = output_phis.copy()
+ 
+-        # check if we have multiple inputs
+-        if not self.multi_input:
+-            assert type(X) != list, "Expected a single tensor model input!"
+-            X = [X]
+-        else:
+-            assert type(X) == list, "Expected a list of model inputs!"
+-
+-        if ranked_outputs is not None and self.multi_output:
+-            with torch.no_grad():
+-                model_output_values = self.model(*X)
+-            # rank and determine the model outputs that we will explain
+-            if output_rank_order == "max":
+-                _, model_output_ranks = torch.sort(model_output_values, descending=True)
+-            elif output_rank_order == "min":
+-                _, model_output_ranks = torch.sort(model_output_values, descending=False)
+-            elif output_rank_order == "max_abs":
+-                _, model_output_ranks = torch.sort(torch.abs(model_output_values), descending=True)
+-            else:
+-                assert False, "output_rank_order must be max, min, or max_abs!"
+-            model_output_ranks = model_output_ranks[:, :ranked_outputs]
+-        else:
+-            model_output_ranks = (torch.ones((X[0].shape[0], len(self.gradients))).int() *
+-                                  torch.arange(0, len(self.gradients)).int())
+-
+-        # if a cleanup happened, we need to add the handles back
+-        # this allows shap_values to be called multiple times, but the model to be
+-        # 'clean' at the end of each run for other uses
+-        if self.input_handle is None and self.interim is True:
+-            self.add_handles(self.layer)
+-
+-        # compute the attributions
+-        X_batches = X[0].shape[0]
+-        output_phis = []
+-        output_phi_vars = []
+         # samples_input = input to the model
+         # samples_delta = (x - x') for the input being explained - may be an interim input
+-        samples_input = [torch.zeros((nsamples,) + X[l].shape[1:], device=X[l].device) for l in range(len(X))]
+-        samples_delta = [np.zeros((nsamples, ) + self.data[l].shape[1:]) for l in range(len(self.data))]
++        samples_input = Tensor(shape=(nsamples, num_features), dtype=ms.float32, init=Zero()).init_data()
++        samples_delta = samples_input.copy()
+ 
+         # use random seed if no argument given
+         if rseed is None:
+             rseed = np.random.randint(0, 1e6)
+-
+-        for i in range(model_output_ranks.shape[1]):
+-            np.random.seed(rseed)  # so we get the same noise patterns for each output class
+-            phis = []
+-            phi_vars = []
+-            for k in range(len(self.data)):
+-                # for each of the inputs being explained - may be an interim input
+-                phis.append(np.zeros((X_batches,) + self.data[k].shape[1:]))
+-                phi_vars.append(np.zeros((X_batches, ) + self.data[k].shape[1:]))
+-            for j in range(X[0].shape[0]):
+-                # fill in the samples arrays
++        np.random.seed(rseed)
++
++        concat = ops.Concat()
++        # for each input sample
++        for i in range(inputs_batches):
++            phis = Tensor(shape=(num_labels, num_features), dtype=ms.float32, init=Zero()).init_data()
++            phi_vars = phis.copy()
++            # for each label
++            for j in range(num_labels):
++                # fill in the samples arrays:
+                 for k in range(nsamples):
+-                    rind = np.random.choice(self.data[0].shape[0])
++                    rind = np.random.choice(self._data.shape[0])
+                     t = np.random.uniform()
+-                    for l in range(len(X)):
+-                        if self.local_smoothing > 0:
+-                            # local smoothing is added to the base input, unlike in the TF gradient explainer
+-                            x = X[l][j].clone().detach() + torch.empty(X[l][j].shape, device=X[l].device).normal_() \
+-                                * self.local_smoothing
+-                        else:
+-                            x = X[l][j].clone().detach()
+-                        samples_input[l][k] = (t * x + (1 - t) * (self.model_inputs[l][rind]).clone().detach()).\
+-                            clone().detach()
+-                        if self.input_handle is None:
+-                            samples_delta[l][k] = (x - (self.data[l][rind]).clone().detach()).cpu().numpy()
+ 
+-                    if self.interim is True:
+-                        with torch.no_grad():
+-                            _ = self.model(*[samples_input[l][k].unsqueeze(0) for l in range(len(X))])
+-                            interim_inputs = self.layer.target_input
+-                            del self.layer.target_input
+-                            if type(interim_inputs) is tuple:
+-                                if type(interim_inputs) is tuple:
+-                                    # this should always be true, but just to be safe
+-                                    for l in range(len(interim_inputs)):
+-                                        samples_delta[l][k] = interim_inputs[l].cpu().numpy()
+-                                else:
+-                                    samples_delta[0][k] = interim_inputs.cpu().numpy()
++                    if self._local_smoothing > 0:
++                        x = inputs[i].copy() + Tensor(shape=inputs[i].shape, dtype=ms.float32,
++                                                      init=Normal()).init_data() * self._local_smoothing
++                    else:
++                        x = inputs[i].copy()
++
++                    samples_input[k] = (t * x + (1 - t) * (self._data[rind]).copy()).copy()
++                    samples_delta[k] = (x - (self._data[rind]).copy()).copy()
+ 
+-                # compute the gradients at all the sample points
+-                find = model_output_ranks[j, i]
++                # target label
++                find = targets[i][j]
+                 grads = []
+-                for b in range(0, nsamples, self.batch_size):
+-                    batch = [samples_input[l][b:min(b+self.batch_size,nsamples)].clone().detach() for l in range(len(X))]
+-                    grads.append(self.gradient(find, batch))
+-                grad = [np.concatenate([g[l] for g in grads], 0) for l in range(len(self.data))]
++                for b in range(0, nsamples, self._batch_size):
++                    batch = samples_input[b:min(b + self._batch_size, nsamples)].copy()
++                    grads.append(self._gradient(batch, find))
++
++                grad = concat(grads)
+                 # assign the attributions to the right part of the output arrays
+-                for l in range(len(self.data)):
+-                    samples = grad[l] * samples_delta[l]
+-                    phis[l][j] = samples.mean(0)
+-                    phi_vars[l][j] = samples.var(0) / np.sqrt(samples.shape[0]) # estimate variance of means
++                samples = grad * samples_delta
++                phis[j] = samples.mean(0)
++                phi_vars[j] = samples.var(0) / np.sqrt(samples.shape[0])  # estimate variance of means
+ 
+-            output_phis.append(phis[0] if len(self.data) == 1 else phis)
+-            output_phi_vars.append(phi_vars[0] if not self.multi_input else phi_vars)
+-        # cleanup: remove the handles, if they were added
+-        if self.input_handle is not None:
+-            self.input_handle.remove()
+-            self.input_handle = None
+-            # note: the target input attribute is deleted in the loop
++            output_phis[i] = phis
++            output_phi_vars[i] = phi_vars
+ 
+-        if not self.multi_output:
+-            if return_variances:
+-                return output_phis[0], output_phi_vars[0]
+-            else:
+-                return output_phis[0]
+-        elif ranked_outputs is not None:
+-            if return_variances:
+-                return output_phis, output_phi_vars, model_output_ranks
+-            else:
+-                return output_phis, model_output_ranks
+-        else:
+-            if return_variances:
+-                return output_phis, output_phi_vars
+-            else:
+-                return output_phis
++        if return_variances:
++            return output_phis, output_phi_vars
++
++        return output_phis
+diff --git a/shap/explainers/_kernel.py b/shap/explainers/_kernel.py
+index ad6b364..a40524b 100644
+--- a/shap/explainers/_kernel.py
++++ b/shap/explainers/_kernel.py
+@@ -11,8 +11,9 @@ import copy
+ import itertools
+ import warnings
+ from sklearn.linear_model import LassoLarsIC, Lasso, lars_path
+-from tqdm.auto import tqdm
+ from ._explainer import Explainer
++from mindspore import Tensor
++import mindspore as ms
+ 
+ log = logging.getLogger('shap')
+ 
+@@ -59,14 +60,23 @@ class Kernel(Explainer):
+     """
+ 
+     def __init__(self, model, data, link=IdentityLink(), **kwargs):
+-
++        # check if model accept mindspore.Tensor as input
++        try:
++            model(ms.Tensor(data[:1], ms.float32))
++            self._model_is_cell = True
++        except:
++            self._model_is_cell = False
++        if isinstance(data, Tensor):
++            data = data.asnumpy()
++        if link is None:
++            link = IdentityLink()
+         # convert incoming inputs to standardized iml objects
+         self.link = convert_to_link(link)
+         self.model = convert_to_model(model)
+         self.keep_index = kwargs.get("keep_index", False)
+         self.keep_index_ordered = kwargs.get("keep_index_ordered", False)
+         self.data = convert_to_data(data, keep_index=self.keep_index)
+-        model_null = match_model_to_data(self.model, self.data)
++        model_null = match_model_to_data(self.model, self.data, model_is_cell=self._model_is_cell)
+ 
+         # enforce our current input type limitations
+         assert isinstance(self.data, DenseData) or isinstance(self.data, SparseData), \
+@@ -105,7 +115,7 @@ class Kernel(Explainer):
+             self.D = self.fnull.shape[0]
+ 
+ 
+-    def shap_values(self, X, **kwargs):
++    def shap_values(self, X, rseed=None, **kwargs):
+         """ Estimate the SHAP values for a set of samples.
+ 
+         Parameters
+@@ -136,7 +146,13 @@ class Kernel(Explainer):
+             attribute of the explainer). For models with vector outputs this returns a list
+             of such matrices, one for each output.
+         """
++        # use random seed if no argument given
++        if rseed is None:
++            rseed = np.random.randint(0, 1e6)
++        np.random.seed(rseed)
+ 
++        if isinstance(X, Tensor):
++            X = X.asnumpy()
+         # convert dataframes
+         if str(type(X)).endswith("pandas.core.series.Series'>"):
+             X = X.values
+@@ -179,7 +195,7 @@ class Kernel(Explainer):
+         # explain the whole dataset
+         elif len(X.shape) == 2:
+             explanations = []
+-            for i in tqdm(range(X.shape[0]), disable=kwargs.get("silent", False)):
++            for i in range(X.shape[0]):
+                 data = X[i:i + 1, :]
+                 if self.keep_index:
+                     data = convert_to_instance_with_index(data, column_name, index_value[i:i + 1], index_name)
+@@ -196,10 +212,10 @@ class Kernel(Explainer):
+ 
+             # single-output
+             else:
+-                out = np.zeros((X.shape[0], s[0]))
++                outs = [np.zeros((X.shape[0], s[0]))]
+                 for i in range(X.shape[0]):
+-                    out[i] = explanations[i]
+-                return out
++                    outs[0][i] = explanations[i]
++                return outs
+ 
+     def explain(self, incoming_instance, **kwargs):
+         # convert incoming input to a standardized iml object
+@@ -227,7 +243,10 @@ class Kernel(Explainer):
+         if self.keep_index:
+             model_out = self.model.f(instance.convert_to_df())
+         else:
+-            model_out = self.model.f(instance.x)
++            if issubclass(type(self.model.f), ms.nn.Cell):
++                model_out = self.model.f(Tensor(instance.x, ms.float32)).asnumpy()
++            else:
++                model_out = self.model.f(instance.x)
+         if isinstance(model_out, (pd.DataFrame, pd.Series)):
+             model_out = model_out.values
+         self.fx = model_out[0]
+@@ -268,8 +287,8 @@ class Kernel(Explainer):
+             self.allocate()
+ 
+             # weight the different subset sizes
+-            num_subset_sizes = np.int(np.ceil((self.M - 1) / 2.0))
+-            num_paired_subset_sizes = np.int(np.floor((self.M - 1) / 2.0))
++            num_subset_sizes = int(np.ceil((self.M - 1) / 2.0))
++            num_paired_subset_sizes = int(np.floor((self.M - 1) / 2.0))
+             weight_vector = np.array([(self.M - 1.0) / (i * (self.M - i)) for i in range(1, num_subset_sizes + 1)])
+             weight_vector[:num_paired_subset_sizes] *= 2
+             weight_vector /= np.sum(weight_vector)
+@@ -510,7 +529,10 @@ class Kernel(Explainer):
+             data = pd.concat([index, data], axis=1).set_index(self.data.index_name)
+             if self.keep_index_ordered:
+                 data = data.sort_index()
+-        modelOut = self.model.f(data)
++        if issubclass(type(self.model.f), ms.nn.Cell):
++            modelOut = self.model.f(Tensor(data, ms.float32)).asnumpy()
++        else:
++            modelOut = self.model.f(data)
+         if isinstance(modelOut, (pd.DataFrame, pd.Series)):
+             modelOut = modelOut.values
+         self.y[self.nsamplesRun * self.N:self.nsamplesAdded * self.N, :] = np.reshape(modelOut, (num_to_run, self.D))
+diff --git a/shap/explainers/_linear.py b/shap/explainers/_linear.py
+index b07925b..bf6958f 100644
+--- a/shap/explainers/_linear.py
++++ b/shap/explainers/_linear.py
+@@ -1,7 +1,6 @@
+ import numpy as np
+ import scipy as sp
+ import warnings
+-from tqdm.autonotebook import tqdm
+ from ._explainer import Explainer
+ from ..utils import safe_isinstance
+ from .. import maskers
+@@ -64,6 +63,9 @@ class Linear(Explainer):
+             feature_perturbation = "interventional"
+         self.feature_perturbation = feature_perturbation
+ 
++        if link is None:
++            link = links.identity
++
+         # wrap the incoming masker object as a shap.Masker object before calling
+         # parent class constructor, which does the same but without respecting
+         # the user-provided feature_perturbation choice
+@@ -190,7 +192,7 @@ class Linear(Explainer):
+         mean_transform = np.zeros((M,M))
+         x_transform = np.zeros((M,M))
+         inds = np.arange(M, dtype=np.int)
+-        for _ in tqdm(range(nsamples), "Estimating transforms"):
++        for _ in range(nsamples):
+             np.random.shuffle(inds)
+             cov_inv_SiSi = np.zeros((0,0))
+             cov_Si = np.zeros((M,0))
+@@ -243,27 +245,14 @@ class Linear(Explainer):
+     def _parse_model(model):
+         """ Attempt to pull out the coefficients and intercept from the given model object.
+         """
+-        # raw coefficents
+-        if type(model) == tuple and len(model) == 2:
+-            coef = model[0]
+-            intercept = model[1]
+-
+-        # sklearn style model
+-        elif hasattr(model, "coef_") and hasattr(model, "intercept_"):
+-            # work around for multi-class with a single class
+-            if len(model.coef_.shape) > 1 and model.coef_.shape[0] == 1:
+-                coef = model.coef_[0]
+-                try:
+-                    intercept = model.intercept_[0]
+-                except TypeError:
+-                    intercept = model.intercept_
+-            else:
+-                coef = model.coef_
+-                intercept = model.intercept_
+-        else:
+-            raise Exception("An unknown model type was passed: " + str(type(model)))
+-
+-        return coef,intercept
++        coef = intercept = None
++        for item in model.get_parameters():
++            if str(item.name).endswith("weight"):
++                coef = item.asnumpy()
++            if str(item.name).endswith("bias"):
++                intercept = item.asnumpy()
++
++        return coef, intercept
+ 
+     @staticmethod
+     def supports_model_with_masker(model, masker):
+diff --git a/shap/explainers/_partition.py b/shap/explainers/_partition.py
+index 9f773dd..99e71b6 100644
+--- a/shap/explainers/_partition.py
++++ b/shap/explainers/_partition.py
+@@ -5,14 +5,13 @@ from ..utils import MaskedModel
+ import numpy as np
+ import warnings
+ import time
+-from tqdm.auto import tqdm
+ import queue
+ from ..utils import assert_import, record_import_error, safe_isinstance, make_masks, OpChain
+ from .. import Explanation
+ from .. import maskers
+ from ._explainer import Explainer
+ from .. import links
+-import cloudpickle
++# import cloudpickle
+ import pickle
+ from ..maskers import Masker
+ from ..models import Model
+@@ -69,6 +68,8 @@ class Partition(Explainer):
+         --------
+         See `Partition explainer examples <https://shap.readthedocs.io/en/latest/api_examples/explainers/Partition.html>`_
+         """
++        if link is None:
++            link = links.identity
+ 
+         super().__init__(model, masker, link=link, linearize_link=linearize_link, algorithm="partition", \
+                          output_names = output_names, feature_names=feature_names)
+@@ -137,6 +138,29 @@ class Partition(Explainer):
+             outputs=outputs, silent=silent
+         )
+ 
++    def shap_values(self, inputs, num_samples, batch_size="auto"):
++        # loop over each sample, filling in the values array
++        values = []
++
++        if batch_size == "auto":
++            if hasattr(self.masker, "default_batch_size"):
++                batch_size = self.masker.default_batch_size
++            else:
++                batch_size = 10
++
++        for row_args in inputs:
++            row_result = self.explain_row(
++                row_args, max_evals=num_samples, main_effects=False, error_bounds=False,
++                batch_size=batch_size, outputs=None, silent=False
++            )
++            values.append(row_result.get("values", None))
++
++        values = np.array(values)
++        # (N, K, L) -> (L, N, K), #labels, #samples, #features
++        values = np.transpose(values, (2, 0, 1))
++
++        return values
++
+     def explain_row(self, *row_args, max_evals, main_effects, error_bounds, batch_size, outputs, silent, fixed_context = "auto"):
+         """ Explains a single row and returns the tuple (row_values, row_expected_values, row_mask_shapes).
+         """
+@@ -311,12 +335,6 @@ class Partition(Explainer):
+ 
+                 eval_count += len(batch_masks)
+ 
+-                if pbar is None and time.time() - start_time > 5:
+-                    pbar = tqdm(total=total_evals, disable=silent, leave=False)
+-                    pbar.update(eval_count)
+-                if pbar is not None:
+-                    pbar.update(len(batch_masks))
+-
+             # use the results of the batch to add new nodes
+             for i in range(len(batch_args)):
+ 
+@@ -450,12 +468,6 @@ class Partition(Explainer):
+ 
+                 eval_count += len(batch_masks)
+ 
+-                if pbar is None and time.time() - start_time > 5:
+-                    pbar = tqdm(total=total_evals, disable=silent, leave=False)
+-                    pbar.update(eval_count)
+-                if pbar is not None:
+-                    pbar.update(len(batch_masks))
+-
+             # use the results of the batch to add new nodes
+             for i in range(len(batch_args)):
+ 
+diff --git a/shap/explainers/_permutation.py b/shap/explainers/_permutation.py
+index 6787c1a..25b51c6 100644
+--- a/shap/explainers/_permutation.py
++++ b/shap/explainers/_permutation.py
+@@ -7,7 +7,7 @@ import numpy as np
+ import pandas as pd
+ import scipy as sp
+ import pickle
+-import cloudpickle
++# import cloudpickle
+ from .. import links
+ from .. import maskers
+ from ..maskers import Masker
+@@ -45,6 +45,9 @@ class Permutation(Explainer):
+         **call_args : valid argument to the __call__ method
+             These arguments are saved and passed to the __call__ method as the new default values for these arguments.
+         """
++        if link is None:
++            link = links.identity
++
+         super().__init__(model, masker, link=link, linearize_link=linearize_link, feature_names=feature_names)
+ 
+         if not isinstance(self.model, Model):
+@@ -76,6 +79,29 @@ class Permutation(Explainer):
+             outputs=outputs, silent=silent
+         )
+ 
++    def shap_values(self, inputs, num_samples, batch_size="auto"):
++        # loop over each sample, filling in the values array
++        values = []
++
++        if batch_size == "auto":
++            if hasattr(self.masker, "default_batch_size"):
++                batch_size = self.masker.default_batch_size
++            else:
++                batch_size = 10
++
++        for row_args in inputs:
++            row_result = self.explain_row(
++                row_args, max_evals=num_samples, main_effects=False, error_bounds=False,
++                batch_size=batch_size, outputs=None, silent=False
++            )
++            values.append(row_result.get("values", None))
++
++        values = np.array(values)
++        # (N, K, L) -> (L, N, K), #labels, #samples, #features
++        values = np.transpose(values, (2, 0, 1))
++
++        return values
++
+     def explain_row(self, *row_args, max_evals, main_effects, error_bounds, batch_size, outputs, silent):
+         """ Explains a single row and returns the tuple (row_values, row_expected_values, row_mask_shapes).
+         """
+@@ -178,34 +204,5 @@ class Permutation(Explainer):
+             "output_names": self.model.output_names if hasattr(self.model, "output_names") else None
+         }
+ 
+-
+-    def shap_values(self, X, npermutations=10, main_effects=False, error_bounds=False, batch_evals=True, silent=False):
+-        """ Legacy interface to estimate the SHAP values for a set of samples.
+-
+-        Parameters
+-        ----------
+-        X : numpy.array or pandas.DataFrame or any scipy.sparse matrix
+-            A matrix of samples (# samples x # features) on which to explain the model's output.
+-
+-        npermutations : int
+-            Number of times to cycle through all the features, re-evaluating the model at each step.
+-            Each cycle evaluates the model function 2 * (# features + 1) times on a data matrix of
+-            (# background data samples) rows. An exception to this is when PermutationExplainer can
+-            avoid evaluating the model because a feature's value is the same in X and the background
+-            dataset (which is common for example with sparse features).
+-
+-        Returns
+-        -------
+-        array or list
+-            For models with a single output this returns a matrix of SHAP values
+-            (# samples x # features). Each row sums to the difference between the model output for that
+-            sample and the expected value of the model output (which is stored as expected_value
+-            attribute of the explainer). For models with vector outputs this returns a list
+-            of such matrices, one for each output.
+-        """
+-
+-        explanation = self(X, max_evals=npermutations * X.shape[1], main_effects=main_effects)
+-        return explanation._old_format()
+-
+     def __str__(self):
+         return "shap.explainers.Permutation()"
+diff --git a/shap/explainers/_sampling.py b/shap/explainers/_sampling.py
+index 69dcc11..bbd21e4 100644
+--- a/shap/explainers/_sampling.py
++++ b/shap/explainers/_sampling.py
+@@ -6,6 +6,8 @@ from ._kernel import Kernel
+ import numpy as np
+ import pandas as pd
+ import logging
++from mindspore import Tensor
++import mindspore as ms
+ 
+ log = logging.getLogger('shap')
+ 
+@@ -79,7 +81,7 @@ class Sampling(Kernel):
+         if self.keep_index:
+             model_out = self.model.f(instance.convert_to_df())
+         else:
+-            model_out = self.model.f(instance.x)
++            model_out = self.model.f(Tensor(instance.x, ms.float32)).asnumpy()
+         if isinstance(model_out, (pd.DataFrame, pd.Series)):
+             model_out = model_out.values[0]
+         self.fx = model_out[0]
+@@ -186,7 +188,7 @@ class Sampling(Kernel):
+             X_masked[-(i+1), :] = x
+             X_masked[-(i+1), inds[pos:]] = X[rind, inds[pos:]]
+ 
+-        evals = f(X_masked)
++        evals = f(Tensor(X_masked, ms.float32)).asnumpy()
+         evals_on = evals[:nsamples]
+         evals_off = evals[nsamples:][::-1]
+         d = evals_on - evals_off
+diff --git a/shap/explainers/_tree.py b/shap/explainers/_tree.py
+index d13efee..85a2d29 100644
+--- a/shap/explainers/_tree.py
++++ b/shap/explainers/_tree.py
+@@ -202,7 +202,7 @@ class Tree(Explainer):
+ 
+         return self.model.predict(self.data, np.ones(self.data.shape[0]) * y).mean(0)
+ 
+-    def __call__(self, X, y=None, interactions=False, check_additivity=True):
++    def __call__(self, X, y=None, interactions=False, check_additivity=False):
+ 
+         start_time = time.time()
+ 
+@@ -278,7 +278,7 @@ class Tree(Explainer):
+         return X, y, X_missing, flat_output, tree_limit, check_additivity
+ 
+ 
+-    def shap_values(self, X, y=None, tree_limit=None, approximate=False, check_additivity=True, from_call=False):
++    def shap_values(self, X, y=None, tree_limit=None, approximate=False, check_additivity=False, from_call=False):
+         """ Estimate the SHAP values for a set of samples.
+ 
+         Parameters
+diff --git a/shap/explainers/other/_random.py b/shap/explainers/other/_random.py
+index d612e9a..c1ac93b 100644
+--- a/shap/explainers/other/_random.py
++++ b/shap/explainers/other/_random.py
+@@ -1,7 +1,7 @@
+ import numpy as np
+-from shap.utils import MaskedModel
+-from shap import links
+-from shap.models import Model
++from mindspore_xai.third_party.shap.shap.utils import MaskedModel
++from mindspore_xai.third_party.shap.shap import links
++from mindspore_xai.third_party.shap.shap.models import Model
+ from .._explainer import Explainer
+ 
+ class Random(Explainer):
+diff --git a/shap/links.py b/shap/links.py
+index 4865967..b6ab386 100644
+--- a/shap/links.py
++++ b/shap/links.py
+@@ -1,22 +1,19 @@
+ import numpy as np
+-import numba
+ 
+-@numba.jit
+ def identity(x):
+     """ A no-op link function.
+     """
+     return x
+-@numba.jit
++
+ def _identity_inverse(x):
+     return x
+ identity.inverse = _identity_inverse
+ 
+-@numba.jit
+ def logit(x):
+     """ A logit link function useful for going from probability units to log-odds units.
+     """
+     return np.log(x/(1-x))
+-@numba.jit
++
+ def _logit_inverse(x):
+     return 1/(1+np.exp(-x))
+ logit.inverse = _logit_inverse
+diff --git a/shap/maskers/_tabular.py b/shap/maskers/_tabular.py
+index 820ef56..51ce650 100644
+--- a/shap/maskers/_tabular.py
++++ b/shap/maskers/_tabular.py
+@@ -1,7 +1,6 @@
+ import logging
+ import pandas as pd
+ import numpy as np
+-from numba import jit
+ from .. import utils
+ from ..utils import safe_isinstance, MaskedModel
+ from ._masker import Masker
+@@ -181,7 +180,7 @@ class Tabular(Masker):
+             kwargs["clustering"] = s.load("clustering")
+         return kwargs
+ 
+-@jit
++
+ def _single_delta_mask(dind, masked_inputs, last_mask, data, x, noop_code):
+     if dind == noop_code:
+         pass
+@@ -192,7 +191,7 @@ def _single_delta_mask(dind, masked_inputs, last_mask, data, x, noop_code):
+         masked_inputs[:, dind] = x[dind]
+         last_mask[dind] = True
+ 
+-@jit
++
+ def _delta_masking(masks, x, curr_delta_inds, varying_rows_out,
+                    masked_inputs_tmp, last_mask, data, variants, masked_inputs_out, noop_code):
+     """ Implements the special (high speed) delta masking API that only flips the positions we need to.
+diff --git a/shap/models/_model.py b/shap/models/_model.py
+index f0d4d4c..8668466 100644
+--- a/shap/models/_model.py
++++ b/shap/models/_model.py
+@@ -1,6 +1,7 @@
+ import numpy as np
+ from .._serializable import Serializable, Serializer, Deserializer
+-
++from mindspore import Tensor
++import mindspore as ms
+ 
+ class Model(Serializable):
+     """ This is the superclass of all models.
+@@ -18,7 +19,10 @@ class Model(Serializable):
+             self.output_names = model.output_names
+ 
+     def __call__(self, *args):
+-        return np.array(self.inner_model(*args))
++        if issubclass(type(self.inner_model), ms.nn.Cell):
++            return self.inner_model(Tensor(*args, ms.float32)).asnumpy()
++        else:
++            return self.inner_model(*args)
+ 
+     def save(self, out_file):
+         """ Save the model to the given file stream.
+diff --git a/shap/plots/_image.py b/shap/plots/_image.py
+index 407629c..b1bf3ee 100644
+--- a/shap/plots/_image.py
++++ b/shap/plots/_image.py
+@@ -8,11 +8,11 @@ import string
+ try:
+     import matplotlib.pyplot as pl
+ except ImportError:
+-    warnings.warn("matplotlib could not be loaded!")
++    pass
+ try:
+     from IPython.core.display import display, HTML
+ except ImportError:
+-    warnings.warn("IPython could not be loaded!")
++    pass
+ from . import colors
+ from ..utils._legacy import kmeans
+ 
+diff --git a/shap/plots/_waterfall.py b/shap/plots/_waterfall.py
+index a3cec12..d21571f 100644
+--- a/shap/plots/_waterfall.py
++++ b/shap/plots/_waterfall.py
+@@ -15,7 +15,7 @@ from . import colors
+ # plot that is associated with that feature get overlayed on the plot...it would quickly allow users to answer
+ # why a feature is pushing down or up. Perhaps the best way to do this would be with an ICE plot hanging off
+ # of the bar...
+-def waterfall(shap_values, max_display=10, show=True):
++def waterfall(base_values, features, feature_names, values, sample_index, class_name, mode, max_display=10, show=True):
+     """ Plots an explantion of a single prediction as a waterfall plot.
+ 
+     The SHAP value of a feature represents the impact of the evidence provided by that feature on the model's
+@@ -27,8 +27,19 @@ def waterfall(shap_values, max_display=10, show=True):
+     
+     Parameters
+     ----------
+-    shap_values : Explanation
+-        A one-dimensional Explanation object that contains the feature values and SHAP values to plot.
++    base_values : flaat
++
++    features : numpy.ndarray
++
++    feature_names : list
++
++    values : numpy.ndarray
++
++    sample_index : int
++
++    class_name : str
++
++    mode: str
+ 
+     max_display : str
+         The maximum number of features to plot.
+@@ -40,16 +51,9 @@ def waterfall(shap_values, max_display=10, show=True):
+     
+     # Turn off interactive plot
+     if show is False:
+-        plt.ioff()
++        pl.ioff()
+     
+-
+-    base_values = shap_values.base_values
+-    
+-    features = shap_values.data
+-    feature_names = shap_values.feature_names
+-    lower_bounds = getattr(shap_values, "lower_bounds", None)
+-    upper_bounds = getattr(shap_values, "upper_bounds", None)
+-    values = shap_values.values
++    lower_bounds = upper_bounds = None
+ 
+     # make sure we only have a single output to explain
+     if (type(base_values) == np.ndarray and len(base_values) > 0) or type(base_values) == list:
+@@ -92,7 +96,7 @@ def waterfall(shap_values, max_display=10, show=True):
+     yticklabels = ["" for i in range(num_features + 1)]
+     
+     # size the plot based on how many features we are plotting
+-    pl.gcf().set_size_inches(8, num_features * row_height + 1.5)
++    pl.gcf().set_size_inches(16, num_features * row_height + 3.5)
+ 
+     # see how many individual (vs. grouped at the end) features we are plotting
+     if num_features == len(values):
+@@ -290,11 +294,17 @@ def waterfall(shap_values, max_display=10, show=True):
+     tick_labels = ax.yaxis.get_majorticklabels()
+     for i in range(num_features):
+         tick_labels[i].set_color("#999999")
+-    
++
++    if mode == "classification":
++        title = 'Explanation for sample {} for class {}'.format(sample_index, class_name)
++    else:
++        title = 'Explanation for sample {}'.format(sample_index)
++    pl.title(title)
++
+     if show:
+         pl.show()
+     else:
+-        return plt.gcf()
++        return pl.gcf()
+ 
+ 
+ 
+diff --git a/shap/utils/_clustering.py b/shap/utils/_clustering.py
+index 1182042..6f9edf2 100644
+--- a/shap/utils/_clustering.py
++++ b/shap/utils/_clustering.py
+@@ -1,11 +1,11 @@
+ import numpy as np
+ import scipy as sp
+ from scipy.spatial.distance import pdist
+-from numba import jit
+ import sklearn
+ import warnings
+ from ._general import safe_isinstance
+ from ._show_progress import show_progress
++import scipy.cluster
+ 
+ 
+ def partition_tree(X, metric="correlation"):
+@@ -31,7 +31,7 @@ def partition_tree_shuffle(indexes, index_mask, partition_tree):
+     M = len(index_mask)
+     #switch = np.random.randn(M) < 0
+     _pt_shuffle_rec(partition_tree.shape[0]-1, indexes, index_mask, partition_tree, M, 0)
+-@jit
++
+ def _pt_shuffle_rec(i, indexes, index_mask, partition_tree, M, pos):
+     if i < 0:
+         # see if we should include this index in the ordering
+@@ -50,7 +50,7 @@ def _pt_shuffle_rec(i, indexes, index_mask, partition_tree, M, pos):
+         pos = _pt_shuffle_rec(left, indexes, index_mask, partition_tree, M, pos)
+     return pos
+ 
+-@jit
++
+ def delta_minimization_order(all_masks, max_swap_size=100, num_passes=2):
+     order = np.arange(len(all_masks))
+     for _ in range(num_passes):
+@@ -59,13 +59,13 @@ def delta_minimization_order(all_masks, max_swap_size=100, num_passes=2):
+                 if _reverse_window_score_gain(all_masks, order, i, length) > 0:
+                     _reverse_window(order, i, length)
+     return order
+-@jit
++
+ def _reverse_window(order, start, length):
+     for i in range(length // 2):
+         tmp = order[start + i]
+         order[start + i] = order[start + length - i - 1]
+         order[start + length - i - 1] = tmp
+-@jit
++
+ def _reverse_window_score_gain(masks, order, start, length):
+     forward_score = _mask_delta_score(masks[order[start - 1]], masks[order[start]]) + \
+                     _mask_delta_score(masks[order[start + length-1]], masks[order[start + length]])
+@@ -73,7 +73,7 @@ def _reverse_window_score_gain(masks, order, start, length):
+                     _mask_delta_score(masks[order[start]], masks[order[start + length]])
+     
+     return forward_score - reverse_score
+-@jit
++
+ def _mask_delta_score(m1, m2):
+     return (m1 ^ m2).sum()
+ 
+diff --git a/shap/utils/_legacy.py b/shap/utils/_legacy.py
+index e05a0ae..06c423d 100644
+--- a/shap/utils/_legacy.py
++++ b/shap/utils/_legacy.py
+@@ -4,6 +4,8 @@ import scipy as sp
+ from sklearn.cluster import KMeans
+ from sklearn.impute import SimpleImputer
+ from scipy.sparse import issparse
++from mindspore import Tensor
++import mindspore as ms
+ 
+ 
+ def kmeans(X, k, round_values=True):
+@@ -102,14 +104,19 @@ def convert_to_model(val):
+         return Model(val, None)
+ 
+ 
+-def match_model_to_data(model, data):
++def match_model_to_data(model, data, model_is_cell):
+     assert isinstance(model, Model), "model must be of type Model!"
+     
+     try:
+         if isinstance(data, DenseDataWithIndex):
+             out_val = model.f(data.convert_to_df())
+         else:
+-            out_val = model.f(data.data)
++            if model_is_cell:
++                out_val = model.f(Tensor(data.data, ms.float32))
++            else:
++                out_val = model.f(data.data)
++            if isinstance(out_val, Tensor):
++                out_val = out_val.asnumpy()
+     except:
+         print("Provided model function fails when applied to the provided data set.")
+         raise
+diff --git a/shap/utils/_masked_model.py b/shap/utils/_masked_model.py
+index 2d3d081..2a8e488 100644
+--- a/shap/utils/_masked_model.py
++++ b/shap/utils/_masked_model.py
+@@ -1,9 +1,9 @@
+ import copy
+ import numpy as np
+ import scipy.sparse
+-from numba import jit
+ from .. import links
+-
++import mindspore as ms
++from mindspore import Tensor
+ 
+ class MaskedModel():
+     """ This is a utility class that combines a model, a masker object, and a current input.
+@@ -287,7 +287,6 @@ def _convert_delta_mask_to_full(masks, full_masks):
+             full_masks[i,masks[masks_pos]] = ~full_masks[i,masks[masks_pos]]
+         masks_pos += 1
+ 
+-#@jit # TODO: figure out how to jit this function, or most of it
+ def _build_delta_masked_inputs(masks, batch_positions, num_mask_samples, num_varying_rows, delta_indexes,
+                                varying_rows, args, masker, variants, variants_column_sums):
+     all_masked_inputs = [[] for a in args]
+@@ -358,7 +357,6 @@ def _build_fixed_output(averaged_outs, last_outs, outputs, batch_positions, vary
+     else:
+         _build_fixed_multi_output(averaged_outs, last_outs, outputs, batch_positions, varying_rows, num_varying_rows, link, linearizing_weights)
+ 
+-@jit # we can't use this when using a custom link function...
+ def _build_fixed_single_output(averaged_outs, last_outs, outputs, batch_positions, varying_rows, num_varying_rows, link, linearizing_weights):
+     # here we can assume that the outputs will always be the same size, and we need
+     # to carry over evaluation outputs
+@@ -380,7 +378,6 @@ def _build_fixed_single_output(averaged_outs, last_outs, outputs, batch_position
+         else:
+             averaged_outs[i] = averaged_outs[i-1]
+ 
+-@jit
+ def _build_fixed_multi_output(averaged_outs, last_outs, outputs, batch_positions, varying_rows, num_varying_rows, link, linearizing_weights):
+     # here we can assume that the outputs will always be the same size, and we need
+     # to carry over evaluation outputs
+diff --git a/shap/utils/_show_progress.py b/shap/utils/_show_progress.py
+index f3391de..74b916b 100644
+--- a/shap/utils/_show_progress.py
++++ b/shap/utils/_show_progress.py
+@@ -1,37 +1 @@
+-import time
+-import tqdm
+-
+-
+-class ShowProgress():
+-    """ This is a simple wrapper around tqdm that includes a starting delay before printing.
+-    """
+-    def __init__(self, iterable, total, desc, silent, start_delay):
+-        self.iter = iter(iterable)
+-        self.start_time = time.time()
+-        self.pbar = None
+-        self.total = total
+-        self.desc = desc
+-        self.start_delay = start_delay
+-        self.silent = silent
+-        self.unshown_count = 0
+-    
+-    def __next__(self):
+-        if self.pbar is None and time.time() - self.start_time > self.start_delay:
+-           self.pbar = tqdm.tqdm(total=self.total, initial=self.unshown_count, desc=self.desc, disable=self.silent)
+-           self.pbar.start_t = self.start_time
+-        if self.pbar is not None:
+-            self.pbar.update(1)
+-        else:
+-            self.unshown_count += 1
+-        try:
+-            return next(self.iter)
+-        except StopIteration as e:
+-            if self.pbar is not None:
+-                self.pbar.close()
+-            raise e
+-
+-    def __iter__(self):
+-        return self
+-
+-def show_progress(iterable, total=None, desc=None, silent=False, start_delay=10):
+-    return ShowProgress(iterable, total, desc, silent, start_delay)
+\ No newline at end of file
++show_progress = None
+\ No newline at end of file

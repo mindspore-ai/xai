@@ -1,4 +1,4 @@
-# Copyright 2021 Huawei Technologies Co., Ltd.All Rights Reserved.
+# Copyright 2021-2022 Huawei Technologies Co., Ltd.All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ from setuptools.command.egg_info import egg_info
 from setuptools.command.build_py import build_py
 from setuptools.command.install import install
 
+from scripts.utils import apply_patch
 
 package_name = 'mindspore_xai'
 
@@ -166,6 +167,9 @@ if __name__ == '__main__':
         sys.stderr.write('Python version should be at least 3.7\r\n')
         sys.exit(1)
 
+    if sys.argv[-1] == 'install':
+        apply_patch("all")
+
     setup(
         name=package_name,
         version=get_version(),
@@ -186,6 +190,11 @@ if __name__ == '__main__':
             'build_py': BuildPy,
             'install': Install,
         },
+        entry_points={
+            'console_scripts': [
+                'mindspore_xai=mindspore_xai.tool.cli:cli_entry',
+            ],
+        },
         python_requires='>=3.7',
         install_requires=get_install_requires(),
         classifiers=[
@@ -196,7 +205,7 @@ if __name__ == '__main__':
             'License :: OSI Approved :: Apache Software License',
             'Programming Language :: Python :: 3 :: Only',
             'Programming Language :: Python :: 3.7',
-            'Programming Language :: Python :: 3.8',
+            'Programming Language :: Python :: 3.9',
             'Topic :: Scientific/Engineering',
             'Topic :: Scientific/Engineering :: Artificial Intelligence',
             'Topic :: Software Development',
