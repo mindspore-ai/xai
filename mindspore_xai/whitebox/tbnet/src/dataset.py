@@ -72,5 +72,5 @@ def _csv_generator(csv_path, per_item_paths):
             hist_item[p] = id_list[offset + 3]
 
         # item, relation1, reference, relation2, hist_item, label
-        yield np.array(item, dtype=np.int), relation1, reference, relation2, hist_item, \
+        yield np.array(item, dtype=np.int32), relation1, reference, relation2, hist_item, \
             np.array(label, dtype=np.float32)

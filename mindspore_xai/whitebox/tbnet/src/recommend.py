@@ -40,7 +40,20 @@ def _reverse_id_maps(id_maps):
 
 
 class RelationPath:
-    """Relation path."""
+    """
+    Relation path connects the suggested item and the historical item.
+
+    Args:
+        relation1 (str): Source id of relation 1.
+        reference (str): Source id of the reference entity.
+        relation2 (str): Source id of relation 2.
+        hist_item (str): Source id of the historical item.
+        rl1_intern_id (int): Internal id of relation 1.
+        ref_intern_id (int): Internal id of the reference entity.
+        rl2_intern_id (int): Internal id of relation 1.
+        hist_intern_id (int): Internal id of the historical item.
+        importance (float): Path importance.
+    """
     def __init__(self,
                  relation1, reference, relation2, hist_item,
                  rl1_intern_id, ref_intern_id, rl2_intern_id, hist_intern_id,
@@ -57,13 +70,22 @@ class RelationPath:
 
 
 class Suggestion:
-    """Recommended item id with explanations."""
-    def __init__(self, item, item_intern_id, score):
+    """
+    Recommended item id with relation paths as explanations.
+
+    Args:
+        item (str): Source id of the suggested item.
+        item_intern_id (int): Internal id of the suggested item.
+        score (float): Recommendation score, higher the score, more the item got recommended.
+        paths (list[RelationPath]): List of relation paths connect to the historical items, must be in descending order
+            by importance.
+    """
+    def __init__(self, item, item_intern_id, score, paths):
         self.item = item
         self.item_intern_id = item_intern_id
         self.score = score
         # paths must be sorted with importance in descending order
-        self.paths = []
+        self.paths = paths
 
 
 class Recommender:
@@ -174,7 +196,7 @@ class Recommender:
     def _to_suggestion(self, item, relations1, references, relations2, hist_items, score, importances):
         """Converts a single infer result to an item suggestion."""
         src_item = self._intern2src_id('item', item)
-        suggestion = Suggestion(src_item, item, score)
+        suggestion = Suggestion(src_item, item, score, [])
         num_paths = importances.shape[0]
         for i in range(num_paths):
             relation1 = self._intern2src_id('relation', relations1[i])
