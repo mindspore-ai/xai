@@ -21,8 +21,7 @@ import io
 import argparse
 import json
 
-from mindspore_xai.whitebox.tbnet import PathGen
-
+from src.path_gen import PathGen
 from tbnet_config import TBNetConfig
 
 

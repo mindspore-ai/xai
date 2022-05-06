@@ -47,7 +47,7 @@ TB-Net将用户和物品的交互信息以及商品的属性信息在知识图�
 
 # [快速入门](#目录)
 
-请参考 [使用TB-Net](https://www.mindspore.cn/xai/docs/en/master/using_tbnet.html) 以了解如何快快速入门。
+请参考 [使用TB-Net](https://www.mindspore.cn/xai/docs/en/master/using_tbnet.html) 以了解如何快速入门。
 
 # [脚本说明](#目录)
 

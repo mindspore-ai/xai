@@ -12,24 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""TB-Net API."""
-
-from .src.tbnet import TBNet, NetWithLossCell, TrainStepWrapCell, EvalNet
-from .src.dataset import create_dataset
-from .src.metrics import AUC, ACC
-from .src.recommend import Recommender, RelationPath, Suggestion
-from .src.path_gen import PathGen
-
-__all__ = [
-    'TBNet',
-    'NetWithLossCell',
-    'TrainStepWrapCell',
-    'EvalNet',
-    'create_dataset',
-    'AUC',
-    'ACC',
-    'Recommender',
-    'RelationPath',
-    'Suggestion',
-    'PathGen'
-]
+"""TB-Net."""

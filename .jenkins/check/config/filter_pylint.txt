@@ -12,4 +12,4 @@
 "xai/tests"                                                                                             "no-self-use"
 
 # TB-Net
-"xai/mindspore_xai/whitebox/tbnet/src/path_gen.py"                                                      "unsupported-membership-test"
+"xai/models/whitebox/tbnet/src/path_gen.py"                                                             "unsupported-membership-test"

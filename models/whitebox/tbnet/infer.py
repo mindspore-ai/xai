@@ -22,8 +22,10 @@ import argparse
 import json
 
 from mindspore import load_checkpoint, load_param_into_net, context
-from mindspore_xai.whitebox.tbnet import TBNet, Recommender, create_dataset
 
+from src.tbnet import TBNet
+from src.recommend import Recommender
+from src.dataset import create_dataset
 from tbnet_config import TBNetConfig
 
 
