@@ -23,9 +23,10 @@ import numpy as np
 from mindspore import context, Model, Tensor
 from mindspore.train.serialization import save_checkpoint
 from mindspore.train.callback import Callback, TimeMonitor
-from mindspore_xai.whitebox.tbnet import TBNet, NetWithLossCell, TrainStepWrapCell, EvalNet
-from mindspore_xai.whitebox.tbnet import create_dataset, AUC, ACC
 
+from src.tbnet import TBNet, NetWithLossCell, TrainStepWrapCell, EvalNet
+from src.dataset import create_dataset
+from src.metrics import AUC, ACC
 from tbnet_config import TBNetConfig
 
 

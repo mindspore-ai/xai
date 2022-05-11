@@ -12,45 +12,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""TB-Net evaluation app."""
+"""TB-Net exporting app."""
 
 # This script should be run directly with 'python <script> <args>'.
 
 import os
 import argparse
 
-from mindspore import context, Model, load_checkpoint, load_param_into_net
-from mindspore_xai.whitebox.tbnet import TBNet, EvalNet
-from mindspore_xai.whitebox.tbnet import create_dataset, AUC, ACC
+import numpy as np
+from mindspore import context, load_checkpoint, load_param_into_net, Tensor, export
 
+from src.tbnet import TBNet
 from tbnet_config import TBNetConfig
 
 
 def get_args():
     """Parse commandline arguments."""
-    parser = argparse.ArgumentParser(description='Eval TB-Net.')
+    parser = argparse.ArgumentParser(description='Export TB-Net.')
 
     parser.add_argument(
-        '--dataset',
+        '--config_path',
         type=str,
-        required=False,
-        default='steam',
-        help="'steam' dataset is supported currently"
-    )
-
-    parser.add_argument(
-        '--csv',
-        type=str,
-        required=False,
-        default='test.csv',
-        help="the evaluation csv datafile inside the dataset folder (e.g. test.csv)"
-    )
-
-    parser.add_argument(
-        '--checkpoint_id',
-        type=int,
         required=True,
-        help="use which checkpoint(.ckpt) file to infer"
+        default='',
+        help="json file for TBNet config"
+    )
+
+    parser.add_argument(
+        '--checkpoint_path',
+        type=str,
+        required=True,
+        help="use which checkpoint(.ckpt) file to export"
     )
 
     parser.add_argument(
@@ -70,17 +62,33 @@ def get_args():
         help="run code by GRAPH mode or PYNATIVE mode"
     )
 
+    parser.add_argument(
+        '--file_name',
+        type=str,
+        default='tbnet',
+        help="model name."
+    )
+
+    parser.add_argument(
+        '--file_format',
+        type=str,
+        default='MINDIR',
+        choices=['MINDIR', 'AIR'],
+        help="model format."
+    )
     return parser.parse_args()
 
 
-def eval_tbnet():
-    """Evaluation process."""
+def export_tbnet():
+    """Export pre-trained TBNet model."""
     args = get_args()
 
-    home = os.path.dirname(os.path.realpath(__file__))
-    config_path = os.path.join(home, 'data', args.dataset, 'config.json')
-    test_csv_path = os.path.join(home, 'data', args.dataset, args.csv)
-    ckpt_path = os.path.join(home, 'checkpoints', args.dataset, f'tbnet_epoch{args.checkpoint_id}.ckpt')
+    config_path = args.config_path
+    ckpt_path = args.checkpoint_path
+    if not os.path.exists(config_path):
+        raise ValueError("please check the config path.")
+    if not os.path.exists(ckpt_path):
+        raise ValueError("please check the checkpoint path.")
 
     context.set_context(device_id=args.device_id)
     if args.run_mode == 'GRAPH':
@@ -88,22 +96,24 @@ def eval_tbnet():
     else:
         context.set_context(mode=context.PYNATIVE_MODE)
 
-    print(f"creating dataset from {test_csv_path}...")
     cfg = TBNetConfig(config_path)
-    eval_ds = create_dataset(test_csv_path, cfg.per_item_paths).batch(cfg.batch_size)
 
-    print(f"creating TBNet from checkpoint {args.checkpoint_id} for evaluation...")
     network = TBNet(cfg.num_items, cfg.num_references, cfg.num_relations, cfg.embedding_dim)
     param_dict = load_checkpoint(ckpt_path)
     load_param_into_net(network, param_dict)
 
-    eval_net = EvalNet(network)
-    model = Model(network=network, eval_network=eval_net, metrics={'auc': AUC(), 'acc': ACC()})
-
-    print("evaluating...")
-    e_out = model.eval(eval_ds, dataset_sink_mode=False)
-    print(f'Test AUC:{e_out ["auc"]} ACC:{e_out ["acc"]}')
+    item = Tensor(np.ones((1,)).astype(np.int))
+    rl1 = Tensor(np.ones((1, cfg.per_item_paths)).astype(np.int))
+    ref = Tensor(np.ones((1, cfg.per_item_paths)).astype(np.int))
+    rl2 = Tensor(np.ones((1, cfg.per_item_paths)).astype(np.int))
+    his = Tensor(np.ones((1, cfg.per_item_paths)).astype(np.int))
+    inputs = [item, rl1, ref, rl2, his]
+    file_name = os.path.realpath(args.file_name)
+    export(network, *inputs, file_name=file_name, file_format=args.file_format)
+    if not file_name.endswith("."+args.file_format.lower()):
+        file_name = f"{file_name}.{args.file_format.lower()}"
+    print(f"{file_name} exported.")
 
 
 if __name__ == '__main__':
-    eval_tbnet()
+    export_tbnet()

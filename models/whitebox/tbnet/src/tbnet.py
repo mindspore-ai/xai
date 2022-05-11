@@ -23,11 +23,7 @@ from mindspore.parallel._utils import _get_device_num, _get_parallel_mode, _get_
 from mindspore.context import ParallelMode
 from mindspore.nn.wrap.grad_reducer import DistributedGradReducer
 
-try:
-    from .embedding import EmbeddingMatrix
-except ValueError:
-    # in case the model scripts are copied and used outside the package
-    from embedding import EmbeddingMatrix
+from .embedding import EmbeddingMatrix
 
 
 class TBNet(nn.Cell):

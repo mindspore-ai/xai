@@ -4,13 +4,13 @@
 
 ### Major Features and Improvements
 
-- [STABLE] mindspore_xai.explanation renamed to mindspore_xai.explainer.
-- [STABLE] mindspore_xai.explanation.ood_net renamed to mindspore_xai.tool.cv.odd_net.
-- [STABLE] MindInsight visualization runner mindspore_xai.runner removed.
-- [BETA] LIME explainer.
-- [BETA] SHAPKernel and SHAPGradient explainer.
-- [BETA] TabSim data simulator.
-- [BETA] TB-Net whitebox recommendation model.
+- [STABLE] mindspore_xai.explanation is renamed to mindspore_xai.explainer.
+- [STABLE] mindspore_xai.explanation.ood_net is renamed to mindspore_xai.tool.cv.odd_net.
+- [STABLE] MindInsight visualization interface mindspore_xai.runner is removed.
+- [BETA] Adds LIMETabular explainer.
+- [BETA] Adds SHAPKernel and SHAPGradient explainer.
+- [BETA] Adds TabSim data simulator.
+- [BETA] Adds TB-Net whitebox recommendation model.
 
 ## XAI 1.5.0 Release Notes
 
