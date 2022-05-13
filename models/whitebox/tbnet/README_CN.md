@@ -32,7 +32,7 @@ TB-Net将用户和物品的交互信息以及商品的属性信息在知识图�
 
 本示例提供Kaggle上的Steam游戏平台公开数据集，包含 [用户与游戏的交互记录](https://www.kaggle.com/tamber/steam-video-games) 和 [游戏的属性信息](https://www.kaggle.com/nikdavis/steam-store-games?select=steam.csv) 。
 
-请参考 [下载数据集](https://www.mindspore.cn/xai/docs/zh-CN/master/using_tbnet.html#id3) 以了解如何取得用例数据集及其文件格式。
+请参考 [下载数据集](https://www.mindspore.cn/xai/docs/zh-CN/master/using_tbnet.html#下载数据集) 以了解如何取得用例数据集及其文件格式。
 
 # [环境要求](#目录)
 
@@ -40,14 +40,14 @@ TB-Net将用户和物品的交互信息以及商品的属性信息在知识图�
     - 支持GPU。
 - 框架
     - [MindSpore](https://www.mindspore.cn/install)
-    - [MindSpore XAI](https://www.mindspore.cn/xai/docs/zh-CN/master/installation.html)
+    - [MindSpore XAI](https://www.mindspore.cn/xai/docs/zh-CN/master/index.html)
 - 如需查看详情，请参见如下资源：
-    - [MindSpore教程](https://www.mindspore.cn/tutorials/zh-CN/master/index.html)
+    - [MindSpore 教程](https://www.mindspore.cn/tutorials/zh-CN/master/index.html)
     - [MindSpore Python API](https://www.mindspore.cn/docs/api/zh-CN/master/index.html)
 
 # [快速入门](#目录)
 
-请参考 [使用TB-Net](https://www.mindspore.cn/xai/docs/en/master/using_tbnet.html) 以了解如何快速入门。
+请参考 [使用TB-Net](https://www.mindspore.cn/xai/docs/zh-CN/master/using_tbnet.html) 以了解如何快速入门。
 
 # [脚本说明](#目录)
 
@@ -59,18 +59,18 @@ TB-Net将用户和物品的交互信息以及商品的属性信息在知识图�
   ├─README.md
   ├─README_CN.md
   ├─data
-    ├─steam
-        ├─config.json               # 超参和训练配置
-        ├─src_infer.csv             # 推理用原始数据
-        ├─src_test.csv              # 测试用原始数据
-        └─src_train.csv             # 训练用原始数据
+  │ └─steam
+  │   ├─config.json                 # 超参和训练配置
+  │   ├─src_infer.csv               # 推理用原始数据
+  │   ├─src_test.csv                # 测试用原始数据
+  │   └─src_train.csv               # 训练用原始数据
   ├─src
-    ├─dataset.py                    # 数据集加载器
-    ├─embedding.py                  # 实体嵌入模组
-    ├─metrics.py                    # 模型度量
-    ├─path_gen.py                   # 数据预处理器
-    ├─recommend.py                  # 推理结果集成器
-    └─tbnet.py                      # TB-Net网络架构
+  │ ├─dataset.py                    # 数据集加载器
+  │ ├─embedding.py                  # 实体嵌入模组
+  │ ├─metrics.py                    # 模型度量
+  │ ├─path_gen.py                   # 数据预处理器
+  │ ├─recommend.py                  # 推理结果集成器
+  │ └─tbnet.py                      # TB-Net网络架构
   ├─export.py                       # 导出MINDIR/AIR文件脚本
   ├─preprocess.py                   # 数据预处理脚本
   ├─eval.py                         # 评估网络脚本

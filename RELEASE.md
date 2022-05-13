@@ -4,9 +4,9 @@
 
 ### Major Features and Improvements
 
-- [STABLE] mindspore_xai.explanation is renamed to mindspore_xai.explainer.
-- [STABLE] mindspore_xai.explanation.ood_net is renamed to mindspore_xai.tool.cv.odd_net.
-- [STABLE] MindInsight visualization interface mindspore_xai.runner is removed.
+- [STABLE] Renames mindspore_xai.explanation to mindspore_xai.explainer.
+- [STABLE] Renames mindspore_xai.explanation.ood_net to mindspore_xai.tool.cv.odd_net.
+- [STABLE] Removes MindInsight visualization interface mindspore_xai.runner.
 - [BETA] Adds LIMETabular explainer.
 - [BETA] Adds SHAPKernel and SHAPGradient explainer.
 - [BETA] Adds TabSim data simulator.

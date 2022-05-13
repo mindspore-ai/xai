@@ -12,8 +12,7 @@
     - [Installing from Source Code](#installing-from-source-code)
     - [Installation Verification](#installation-verification)
 - [Note](#note)
-- [Quick Start](#quick-start)
-- [Docs](#docs)
+- [Quick Start and API References](#quick-start-and-api-references)
 - [Community](#community)
     - [Governance](#governance)
 - [Contributing](#contributing)
@@ -83,13 +82,9 @@ import mindspore_xai
 print(mindspore_xai.__version__)
 ```
 
-## Quick Start
+## Quick Start and API References
 
-For the quick start tutorials, please checkout [Tutorials](https://www.mindspore.cn/xai/docs/en/master/index.html).
-
-## API References
-
-For more details about the APIs, please checkout [API References](https://www.mindspore.cn/xai/en).
+For the quick start guide and API references, please checkout [XAI Homepage](https://www.mindspore.cn/xai/docs/en/master/index.html).
 
 ## Community
 
