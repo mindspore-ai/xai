@@ -12,8 +12,7 @@
     - [从源码安装](#从源码安装)
     - [验证是否安装成功](#验证是否安装成功)
 - [注意事項](#注意事項)
-- [快速入门](#快速入门)
-- [文档](#文档)
+- [快速入门及API文档](#快速入门及API文档)
 - [社区](#社区)
     - [治理](#治理)
 - [贡献](#贡献)
@@ -83,13 +82,9 @@ import mindspore_xai
 print(mindspore_xai.__version__)
 ```
 
-## 快速入门
+## 快速入门及API文档
 
-关于如何快速使用XAI为模型进行解释，请点击查看XAI[使用教程](https://www.mindspore.cn/xai/docs/zh-CN/master/index.html)。
-
-## API文档
-
-有关安API的更多详细信息，请参阅[API參考](https://www.mindspore.cn/xai)。
+关于如何快速使用XAI为模型进行解释及API文档，请点击查看[XAI官網](https://www.mindspore.cn/xai/docs/zh-CN/master/index.html)。
 
 ## 社区
 

@@ -31,7 +31,7 @@ TB-Net constructs subgraphs in knowledge graph based on the interaction between 
 We provide an example dataset that created from
 [Interaction of users and games](https://www.kaggle.com/tamber/steam-video-games) and [games' feature data](https://www.kaggle.com/nikdavis/steam-store-games?select=steam.csv) of the game platform Steam that are publicly available on Kaggle.
 
-Please refer to [Downloading Data Package](https://www.mindspore.cn/xai/docs/en/master/using_tbnet.html#id3) for the way of obtaining the example dataset and the file format descriptions.
+Please refer to [Downloading Data Package](https://www.mindspore.cn/xai/docs/en/master/using_tbnet.html#downloading-data-package) for the way of obtaining the example dataset and the file format descriptions.
 
 # [Environment Requirements](#contents)
 
@@ -39,7 +39,7 @@ Please refer to [Downloading Data Package](https://www.mindspore.cn/xai/docs/en/
     - Supports GPU.
 - Framework
     - [MindSpore](https://www.mindspore.cn/install/en)
-    - [MindSpore XAI](https://www.mindspore.cn/xai/docs/en/master/installation.html)
+    - [MindSpore XAI](https://www.mindspore.cn/xai/docs/en/master/index.html)
 - For more information, please check the resources below：
     - [MindSpore Tutorials](https://www.mindspore.cn/tutorials/en/master/index.html)
     - [MindSpore Python API](https://www.mindspore.cn/docs/api/en/master/index.html)
@@ -58,19 +58,19 @@ Please refer to [Using TB-Net](https://www.mindspore.cn/xai/docs/en/master/using
   ├─README.md
   ├─README_CN.md
   ├─data
-    ├─steam
-        ├─LICENSE
-        ├─config.json               # hyper-parameters and training configuration
-        ├─src_infer.csv             # source datafile for inference
-        ├─src_test.csv              # source datafile for evaluation
-        └─src_train.csv             # source datafile for training
+  │ └─steam
+  │   ├─LICENSE
+  │   ├─config.json                 # hyper-parameters and training configuration
+  │   ├─src_infer.csv               # source datafile for inference
+  │   ├─src_test.csv                # source datafile for evaluation
+  │   └─src_train.csv               # source datafile for training
   ├─src
-    ├─dataset.py                    # dataset loader
-    ├─embedding.py                  # embedding module
-    ├─metrics.py                    # model metrics
-    ├─path_gen.py                   # data preprocessor
-    ├─recommend.py                  # result aggregator
-    └─tbnet.py                      # TB-Net architecture
+  │ ├─dataset.py                    # dataset loader
+  │ ├─embedding.py                  # embedding module
+  │ ├─metrics.py                    # model metrics
+  │ ├─path_gen.py                   # data preprocessor
+  │ ├─recommend.py                  # result aggregator
+  │ └─tbnet.py                      # TB-Net architecture
   ├─export.py                       # export MINDIR/AIR script
   ├─preprocess.py                   # data pre-processing script
   ├─eval.py                         # evaluation script
