@@ -39,7 +39,13 @@ XAI is an explainable AI toolbox based on [MindSpore](https://www.mindspore.cn/e
 
 ### Installing by pip
 
-Download the `.whl` package from [MindSpore XAI download page](https://www.mindspore.cn/versions/en) and install with `pip`.
+The simplest way to do it:
+
+```bash
+pip install mindspore-xai
+```
+
+Or you may install with a downloaded `.whl` package from [MindSpore XAI download page](https://www.mindspore.cn/versions/en):
 
 ```bash
 pip install mindspore_xai-{version}-py3-none-any.whl

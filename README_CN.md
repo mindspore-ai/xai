@@ -39,7 +39,13 @@ XAI是一个基于 [MindSpore](https://www.mindspore.cn/en) 的可解释AI工具
 
 ### pip安装
 
-从[MindSpore XAI下载页面](https://www.mindspore.cn/versions)下载并安装whl包。
+最简单的做法:
+
+```bash
+pip install mindspore-xai
+```
+
+或者从[MindSpore XAI下载页面](https://www.mindspore.cn/versions)下载并安装whl包。
 
 ```bash
 pip install mindspore_xai-{version}-py3-none-any.whl
