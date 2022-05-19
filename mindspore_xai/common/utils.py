@@ -85,18 +85,25 @@ def unify_inputs(inputs) -> tuple:
     return inputs
 
 
-def unify_targets(targets) -> ms.Tensor:
+def unify_targets(batch_size, targets) -> ms.Tensor:
     """Unify targets labels of explainer."""
-    if isinstance(targets, ms.Tensor):
-        return targets
-    if isinstance(targets, list):
+    if isinstance(targets, (tuple, list)):
         targets = ms.Tensor(targets, dtype=ms.int32)
-    if isinstance(targets, int):
-        targets = ms.Tensor([targets], dtype=ms.int32)
-    else:
+    elif isinstance(targets, int):
+        targets = ms.Tensor([targets] * batch_size, dtype=ms.int32)
+    elif isinstance(targets, ms.Tensor) and not targets.shape:
+        targets = ms.Tensor([int(targets)] * batch_size, dtype=ms.int32)
+    elif not isinstance(targets, ms.Tensor):
         raise TypeError(
             'targets must be one of [int, list or ms.Tensor], '
-            'but get {}'.format(type(targets)))
+            'but got {}'.format(type(targets)))
+
+    if len(targets.shape) != 1 or targets.shape[0] != batch_size:
+        raise ValueError(
+            'targets.shape must has length of 1 and targets.shape[0] must be equals to the batch size: {},'
+            'but got {}'.format(str(batch_size), str(targets.shape))
+        )
+
     return targets
 
 

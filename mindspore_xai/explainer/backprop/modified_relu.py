@@ -60,7 +60,7 @@ class ModifiedReLU(Gradient):
 
         self._verify_data(inputs, targets)
         inputs = unify_inputs(inputs)
-        targets = unify_targets(targets)
+        targets = unify_targets(inputs[0].shape[0], targets)
 
         weights = self._get_bp_weights(inputs, targets)
         gradients = self._grad_net(*inputs, weights)
@@ -103,8 +103,9 @@ class Deconvolution(ModifiedReLU):
 
     Inputs:
         - **inputs** (Tensor) - The input data to be explained, a 4D tensor of shape :math:`(N, C, H, W)`.
-        - **targets** (Tensor, int) - The label of interest. It should be a 1D or 0D tensor, or an integer.
-          If it is a 1D tensor, its length should be the same as `inputs`.
+        - **targets** (Tensor, int, tuple, list) - The label of interest. It should be a 1D or 0D tensor, or an integer
+          , or an tuple/list of integers. If it is a 1D tensor, tuple or list, its length should be the same as
+          `inputs`.
         - **ret** (str): The return object type. 'tensor' means returns a Tensor object, 'image' means return a
           PIL.Image object. Default: 'tensor'.
         - **show** (bool): Automatically show the saliency images if it is running on JupiterLab or Notebook. Default:
@@ -163,8 +164,8 @@ class GuidedBackprop(ModifiedReLU):
 
     Inputs:
         - **inputs** (Tensor) - The input data to be explained, a 4D tensor of shape :math:`(N, C, H, W)`.
-        - **targets** (Tensor, int) - The label of interest. It should be a 1D or 0D tensor, or an integer.
-          If it is a 1D tensor, its length should be the same as `inputs`.
+        - **targets** (Tensor, int, tuple, list) - The label of interest. It should be a 1D or 0D tensor, or an integer
+          , or an tuple/list of integers. If it is a 1D tensor, tuple or list, its length should be :math:`N`.
         - **ret** (str): The return object type. 'tensor' means returns a Tensor object, 'image' means return a
           PIL.Image.Image list. Default is 'tensor'.
         - **show** (bool, optional): Automatically show the saliency images if it is running on JupiterLab or Notebook.

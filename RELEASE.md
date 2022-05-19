@@ -5,7 +5,7 @@
 ### Major Features and Improvements
 
 - [STABLE] Renames mindspore_xai.explanation to mindspore_xai.explainer.
-- [STABLE] Renames mindspore_xai.explanation.ood_net to mindspore_xai.tool.cv.odd_net.
+- [STABLE] Renames mindspore_xai.explanation.OoDNet to mindspore_xai.tool.cv.OoDNet.
 - [STABLE] Removes MindInsight visualization interface mindspore_xai.runner.
 - [BETA] Adds LIMETabular explainer.
 - [BETA] Adds SHAPKernel and SHAPGradient explainer.

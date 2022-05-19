@@ -41,6 +41,9 @@ class ClassSensitivity(LabelAgnosticMetric):
         """
         Evaluate class sensitivity on a single data sample.
 
+        Note:
+             Currently only single sample (:math:`N=1`) at each call is supported.
+
         Args:
             explainer (Explanation): The explainer to be evaluated, see `mindspore_xai.explanation`.
             inputs (Tensor): A data sample, a 4D tensor of shape :math:`(N, C, H, W)`.
@@ -50,6 +53,7 @@ class ClassSensitivity(LabelAgnosticMetric):
 
         Raises:
             TypeError: Be raised for any argument type problem.
+            ValueError: Be raised if :math:`N` is not 1.
 
         Examples:
             >>> import numpy as np
