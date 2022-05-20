@@ -24,7 +24,8 @@ from mindspore_xai.common.utils import (
     ForwardProbe,
     rank_pixels,
     retrieve_layer,
-    retrieve_layer_by_name)
+    retrieve_layer_by_name,
+    unify_targets)
 from mindspore_xai.explainer.backprop.backprop_utils import GradNet, get_bp_weights
 
 
@@ -105,7 +106,7 @@ def test_forward_probe():
     inputs = ms.Tensor(inputs, ms.float32)
     gt_activation = model.fc3(model.fc2(model.fc1(inputs))).asnumpy()
 
-    targets = 1
+    targets = unify_targets(inputs.shape[0], 1)
     weights = get_bp_weights(10, targets=targets)
 
     gradnet = GradNet(model)

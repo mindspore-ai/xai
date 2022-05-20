@@ -100,7 +100,7 @@ class Localization(LabelSensitiveMetric):
             explainer (Explanation): The explainer to be evaluated, see `mindspore_xai.explanation`.
             inputs (Tensor): A data sample, a 4D tensor of shape :math:`(N, C, H, W)`.
             targets (Tensor, int): The label of interest. It should be a 1D or 0D tensor, or an integer.
-                If `targets` is a 1D tensor, its length should be the same as `inputs`.
+                If `targets` is a 1D tensor, its length should be :math:`N`.
             saliency (Tensor, optional): The saliency map to be evaluated, a 4D tensor of shape :math:`(N, 1, H, W)`.
                 If it is None, the parsed `explainer` will generate the saliency map with `inputs` and `targets` and
                 continue the evaluation. Default: None.
@@ -111,7 +111,8 @@ class Localization(LabelSensitiveMetric):
             numpy.ndarray, 1D array of shape :math:`(N,)`, result of localization evaluated on `explainer`.
 
         Raises:
-            ValueError: Be raised for any argument value problem.
+            TypeError: Be raised for any argument type problem.
+            ValueError: Be raised if :math:`N` is not 1.
 
         Examples:
             >>> import numpy as np

@@ -19,7 +19,7 @@ import numpy as np
 import mindspore as ms
 import mindspore.nn as nn
 
-from mindspore_xai.common.utils import abs_max
+from mindspore_xai.common.utils import abs_max, unify_targets
 from .ablation import Ablation
 from .perturbation import PerturbationAttribution
 from .replacement import Constant
@@ -48,6 +48,9 @@ class Occlusion(PerturbationAttribution):
 
     For more details, please refer to the original paper via: `<https://arxiv.org/abs/1311.2901>`_.
 
+    Note:
+         Currently only single sample (:math:`N=1`) at each call is supported.
+
     Args:
         network (Cell): The black-box model to be explained.
         activation_fn (Cell): The activation layer that transforms logits to prediction probabilities. For
@@ -60,8 +63,8 @@ class Occlusion(PerturbationAttribution):
 
     Inputs:
         - **inputs** (Tensor) - The input data to be explained, a 4D tensor of shape :math:`(N, C, H, W)`.
-        - **targets** (Tensor, int) - The label of interest. It should be a 1D or 0D tensor, or an integer.
-          If it is a 1D tensor, its length should be the same as `inputs`.
+        - **targets** (Tensor, int, tuple, list) - The label of interest. It should be a 1D or 0D tensor, or an integer
+          , or an tuple/list of integers. If it is a 1D tensor, tuple or list, its length should be :math:`N`.
         - **ret** (str): The return object type. 'tensor' means returns a Tensor object, 'image' means return a
           PIL.Image.Image list. Default: 'tensor'.
         - **show** (bool, optional): Show the saliency images, `None` means auto. Default: `None`.
@@ -110,7 +113,7 @@ class Occlusion(PerturbationAttribution):
         self._verify_other_args(ret, show)
 
         inputs = inputs.asnumpy()
-        targets = targets.asnumpy() if isinstance(targets, ms.Tensor) else np.array([targets], int)
+        targets = unify_targets(inputs.shape[0], targets).asnumpy()
 
         batch_size = inputs.shape[0]
         window_size, strides = self._get_window_size_and_strides(inputs)

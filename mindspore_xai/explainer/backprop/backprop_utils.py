@@ -17,16 +17,16 @@
 from mindspore.nn import Cell
 from mindspore.ops.composite import GradOperation
 
-from mindspore_xai.common.utils import unify_targets, generate_one_hot
+from mindspore_xai.common.utils import generate_one_hot
 
 
-def get_bp_weights(num_classes, targets=None, weights=None):
+def get_bp_weights(num_classes, targets, weights=None):
     r"""
     Compute the gradient of output w.r.t input.
 
     Args:
         num_classes (int): The number of classes.
-        targets (int, optional): Target label id specifying which category to compute gradient. Default: None.
+        targets (Tensor): Target label id specifying which category to compute gradient.
         weights (Tensor, optional): Custom weights for computing gradients. The shape of weights should match the model
             outputs. If None is provided, an one-hot weights with one in targets positions will be used instead.
             Default: None.
@@ -34,10 +34,7 @@ def get_bp_weights(num_classes, targets=None, weights=None):
     Returns:
         Tensor, signal to be back-propagated to the input.
     """
-    if targets is None and weights is None:
-        raise ValueError('Must provide one of targets or weights')
     if weights is None:
-        targets = unify_targets(targets)
         weights = generate_one_hot(targets, num_classes)
     return weights
 
