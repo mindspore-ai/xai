@@ -52,12 +52,13 @@ class SHAPGradient(_SHAP):
         - **inputs** (Tensor) - The input data to be explained, a 2D float tensor of shape :math:`(N, K)`.
         - **targets** (Tensor, numpy.ndarray, list, int, optional) - The labels of interest to be explained. When
           `targets` is an integer, all the inputs will generate attribution map w.r.t this integer. When `targets` is a
-          tensor or numpy array or list, it should be of shape :math:`(N, l)` (l being the number of labels for each
-          sample) or :math:`(N,)` :math:`()`. Default: 0.
+          tensor or numpy array or list, it should be of shape :math:`(N, L)` (L being the number of labels for each
+          sample), :math:`(N,)` or :math:`()`. Default: 0.
         - **show** (bool, optional): Show the explanation figures, `None` means auto. Default: `None`.
 
     Outputs:
-        Tensor, a 3D tensor of shape :math:`(N, l, K)`, nth sample, jth label, kth feature weight.
+        Tensor, a 3D tensor of shape :math:`(N, L, K)`. The first dimension represents inputs.
+        The second dimension represents targets. The third dimension represents feature weight.
 
     Supported Platforms:
         ``Ascend`` ``GPU``
@@ -67,20 +68,16 @@ class SHAPGradient(_SHAP):
         >>> import mindspore as ms
         >>> import mindspore.nn as nn
         >>> from mindspore import context
-        >>>
         >>> from mindspore_xai.explainer import SHAPGradient
-        >>>
         >>> context.set_context(mode=context.PYNATIVE_MODE)
         >>> # Linear classification model
         >>> class LinearNet(nn.Cell):
-        >>>     def __init__(self, num_inputs, num_class):
-        >>>         super(LinearNet, self).__init__()
-        >>>         self.fc = nn.Dense(num_inputs, num_class, activation=nn.Softmax())
-        >>>
-        >>>     def construct(self, x):
-        >>>         x = self.fc(x)
-        >>>         return x
-        >>>
+        ...     def __init__(self, num_inputs, num_class):
+        ...         super(LinearNet, self).__init__()
+        ...         self.fc = nn.Dense(num_inputs, num_class, activation=nn.Softmax())
+        ...     def construct(self, x):
+        ...         x = self.fc(x)
+        ...         return x
         >>> net = LinearNet(4, 3)
         >>> # use iris data as example
         >>> feature_names = ['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
@@ -90,18 +87,8 @@ class SHAPGradient(_SHAP):
         >>> inputs = ms.Tensor(np.random.rand(2, 4), ms.float32)
         >>> targets = ms.Tensor([[1, 2], [1, 2]], ms.int32)
         >>> exps = shap(inputs, targets)
-        >>> for i, sample_exp in enumerate(exps):
-        >>>     for j, class_exp in enumerate(sample_exp):
-        >>>         print('Explanation for sample {} class {}'.format(i, class_names[targets[i][j]]))
-        >>>         print(class_exp)
-        Explanation for sample 0 class versicolor
-        [-9.155238e-05 -5.68398721e-04 7.3885032e-04 7.2399845934e-04]
-        Explanation for sample 0 class virginica
-        [-9.855238e-05 -6.6594721e-04 4.34355032e-04 7.0332132434e-04]
-        Explanation for sample 1 class versicolor
-        [-8.342348e-05 -6.6594721e-04 3.43243232e-04 5.5435432132e-04]
-        Explanation for sample 1 class virginica
-        [-7.8321345-05 -6.3213331e-04 4.31211032e-04 7.4324332434e-04]
+        >>> print(exps.shape)
+        (2, 2, 4)
 """
 
     def __init__(self, network, features, feature_names=None, class_names=None, num_neighbours=200, max_features=10):

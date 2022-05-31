@@ -39,7 +39,7 @@ class LIMETabular:
             shape :math:`(N, L)`. For regreesion model, it accepts a 2D array/tensor of shape :math:`(N, K)` as input
             and outputs a 1D array/tensor of shape :math:`(N)`.
         train_feat_stats (dict): a dict object having the details of training data statistics. The stats can be
-            generated using static method LIETabular.to_feature_stats(training_data).
+            generated using static method LIMETabular.to_feat_stats(training_data).
         feature_names (list, optional): list of names (strings) corresponding to the columns in the training data.
             Default: `None`.
         categorical_features_indexes (list, optional): list of indices (ints) corresponding to the categorical columns.
@@ -54,12 +54,14 @@ class LIMETabular:
           numpy array of shape :math:`(N, K)`.
         - **targets** (Tensor, numpy.ndarray, list, int, optional) - The labels of interest to be explained. When
           `targets` is an integer, all the inputs will generate attribution map w.r.t this integer. When `targets` is a
-          tensor or numpy array or list, it should be of shape :math:`(N, l)` (l being the number of labels for each
-          sample) or :math:`(N,)` :math:`()`. For regression model, this parameter will be ignored. Default: 0.
+          tensor, numpy array or list, it should be of shape :math:`(N, L)` (L being the number of labels for each
+          sample), :math:`(N,)` or :math:`()`. For regression model, this parameter will be ignored. Default: 0.
         - **show** (bool, optional): Show the explanation figures, `None` means auto. Default: `None`.
 
     Outputs:
-        list[list[list[(str, float)]]], for nth sample, jth label, kth feature description and weight.
+        list[list[list[(str, float)]]], a 3-dimension list of tuple. The first dimension represents inputs.
+        The second dimension represents targets. The third dimension represents features.
+        The tuple represents feature description and weight.
 
     Raises:
         TypeError: Be raised for any argument or input type problem.
@@ -72,19 +74,15 @@ class LIMETabular:
         >>> import numpy as np
         >>> import mindspore as ms
         >>> import mindspore.nn as nn
-        >>>
         >>> from mindspore_xai.explainer import LIMETabular
-        >>>
         >>> # Linear classification model
         >>> class LinearNet(nn.Cell):
-        >>>     def __init__(self, num_inputs, num_class):
-        >>>         super(LinearNet, self).__init__()
-        >>>         self.fc = nn.Dense(num_inputs, num_class, activation=nn.Softmax())
-        >>>
-        >>>     def construct(self, x):
-        >>>         x = self.fc(x)
-        >>>         return x
-        >>>
+        ...     def __init__(self, num_inputs, num_class):
+        ...         super(LinearNet, self).__init__()
+        ...         self.fc = nn.Dense(num_inputs, num_class, activation=nn.Softmax())
+        ...     def construct(self, x):
+        ...         x = self.fc(x)
+        ...         return x
         >>> net = LinearNet(4, 3)
         >>> # use iris data as example
         >>> feature_names = ['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
@@ -95,18 +93,9 @@ class LIMETabular:
         >>> inputs = ms.Tensor(np.random.rand(2, 4), ms.float32)
         >>> targets = ms.Tensor([[1, 2], [1, 2]], ms.int32)
         >>> exps = lime(inputs, targets)
-        >>> for i, sample_exp in enumerate(exps):
-        >>>     for j, class_exp in enumerate(sample_exp):
-        >>>         print('Local explanation for sample {} class {}'.format(i, class_names[targets[i][j]]))
-        >>>         print(class_exp)
-        Local explanation for sample 0 class versicolor
-        [('sepal width (cm) <= 0.25', 0.001606624848945185), ...]
-        Local explanation for sample 0 class virginica
-        [('petal length (cm) <= 0.29', 0.0033004810806473504), ...]
-        Local explanation for sample 1 class versicolor
-        [('petal width (cm) <= 0.20', 0.002856020026411598), ...]
-        Local explanation for sample 1 class virginica
-        [('petal length (cm) > 0.80', -0.0031887318983352536), ...]
+        >>> # output is a 3-dimension list of tuple
+        >>> print((len(exps), len(exps[0]), len(exps[0][0])))
+        (2, 2, 4)
 """
 
     def __init__(self, predictor,
