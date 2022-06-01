@@ -230,7 +230,7 @@ class LIMETabular:
                 json.dump(stats_float, file_handler)
 
     @staticmethod
-    def load_feature_stats(file):
+    def load_feat_stats(file):
         """
         Load feature stats from disk.
 

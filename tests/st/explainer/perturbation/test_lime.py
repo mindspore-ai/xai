@@ -151,7 +151,7 @@ class TestLIMETabular:
         with tempfile.NamedTemporaryFile(suffix=".json") as tmp_file:
             f = str(tmp_file)
             LIMETabular.save_feat_stats(training_data_stats, f)
-            assert isinstance(LIMETabular.load_feature_stats(f), dict)
+            assert isinstance(LIMETabular.load_feat_stats(f), dict)
 
     @pytest.mark.level0
     @pytest.mark.platform_arm_ascend_training
@@ -163,7 +163,7 @@ class TestLIMETabular:
         with tempfile.NamedTemporaryFile(suffix=".json") as tmp_file:
             f = Path(str(tmp_file))
             LIMETabular.save_feat_stats(training_data_stats, f)
-            assert isinstance(LIMETabular.load_feature_stats(f), dict)
+            assert isinstance(LIMETabular.load_feat_stats(f), dict)
 
     @pytest.mark.level0
     @pytest.mark.platform_arm_ascend_training
@@ -176,7 +176,7 @@ class TestLIMETabular:
             with open(str(tmp_file), "w", encoding="utf-8") as f:
                 LIMETabular.save_feat_stats(training_data_stats, f)
             with open(str(tmp_file), "r", encoding="utf-8") as f:
-                assert isinstance(LIMETabular.load_feature_stats(f), dict)
+                assert isinstance(LIMETabular.load_feat_stats(f), dict)
 
     @pytest.mark.level0
     @pytest.mark.platform_arm_ascend_training
