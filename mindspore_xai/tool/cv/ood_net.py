@@ -61,8 +61,8 @@ class OoDNet(nn.Cell):
         num_classes (int): The number of classes for the classifier.
 
     Returns:
-        Tensor, classification logits (if set_train(True) was called) or
-            OOD scores (if set_train(False) was called). In the shape of :math:`(batch_size, num_classes)`.
+        Tensor, classification logits (if set_train(True) was called) or OOD scores (if set_train(False) was called).
+        In the shape of :math:`(batch_size, num_classes)`.
 
     Raises:
         TypeError: Be raised for any argument or input type problem.
