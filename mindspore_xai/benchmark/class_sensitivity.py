@@ -45,7 +45,7 @@ class ClassSensitivity(LabelAgnosticMetric):
              Currently only single sample (:math:`N=1`) at each call is supported.
 
         Args:
-            explainer (Explanation): The explainer to be evaluated, see `mindspore_xai.explanation`.
+            explainer (Explainer): The explainer to be evaluated, see `mindspore_xai.explainer`.
             inputs (Tensor): A data sample, a 4D tensor of shape :math:`(N, C, H, W)`.
 
         Returns:

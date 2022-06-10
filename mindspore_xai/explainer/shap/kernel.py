@@ -31,7 +31,7 @@ class SHAPKernel(_SHAP):
     Args:
         predictor (Callable): The black-box model to be explained, should be a callable function. For classification
             model, it accepts a 2D array/tensor of shape :math:`(N, K)` as input and outputs a 2D array/tensor of
-            shape :math:`(N, L)`. For regreesion model, it accepts a 2D array/tensor of shape :math:`(N, K)` as input
+            shape :math:`(N, L)`. For regression model, it accepts a 2D array/tensor of shape :math:`(N, K)` as input
             and outputs a 1D array/tensor of shape :math:`(N)`.
         features (Tensor, numpy.ndarray): 2D tensor or 2D numpy array of shape :math:`(N, K)` (N being the number of
             samples, K being the number of features). The background dataset to use for integrating out features,

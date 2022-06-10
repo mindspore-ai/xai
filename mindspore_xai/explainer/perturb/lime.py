@@ -36,7 +36,7 @@ class LIMETabular:
     Args:
         predictor (Callable): The black-box model to be explained, should be a callable function. For classification
             model, it accepts a 2D array/tensor of shape :math:`(N, K)` as input and outputs a 2D array/tensor of
-            shape :math:`(N, L)`. For regreesion model, it accepts a 2D array/tensor of shape :math:`(N, K)` as input
+            shape :math:`(N, L)`. For regression model, it accepts a 2D array/tensor of shape :math:`(N, K)` as input
             and outputs a 1D array/tensor of shape :math:`(N)`.
         train_feat_stats (dict): a dict object having the details of training data statistics. The stats can be
             generated using static method LIMETabular.to_feat_stats(training_data).

@@ -69,7 +69,7 @@ class Robustness(LabelSensitiveMetric):
                 continue the evaluation. Default: None.
 
         Returns:
-            numpy.ndarray, 1D array of shape :math:`(N,)`, result of localization evaluated on `explainer`.
+            numpy.ndarray, 1D array of shape :math:`(N,)`, result of robustness evaluated on `explainer`.
 
         Raises:
             TypeError: Be raised for any argument type problem.

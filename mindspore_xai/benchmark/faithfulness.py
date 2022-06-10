@@ -367,7 +367,7 @@ class Faithfulness(LabelSensitiveMetric):
             single label classification tasks, `nn.Softmax` is usually applied. As for multi-label classification
             tasks, `nn.Sigmoid` is usually be applied. Users can also pass their own customized `activation_fn` as long
             as when combining this function with network, the final output is the probability of the input.
-        metric (str, optional): The specifi metric to quantify faithfulness.
+        metric (str, optional): The specific metric to quantify faithfulness.
             Options: "DeletionAUC", "InsertionAUC", "NaiveFaithfulness".
             Default: 'NaiveFaithfulness'.
 
@@ -406,7 +406,7 @@ class Faithfulness(LabelSensitiveMetric):
             Currently only single sample (:math:`N=1`) at each call is supported.
 
         Args:
-            explainer (Explanation): The explainer to be evaluated, see `mindspore_xai.explanation`.
+            explainer (Explainer): The explainer to be evaluated, see `mindspore_xai.explainer`.
             inputs (Tensor): A data sample, a 4D tensor of shape :math:`(N, C, H, W)`.
             targets (Tensor, int): The label of interest. It should be a 1D or 0D tensor, or an integer.
                 If `targets` is a 1D tensor, its length should be :math:`N`.

@@ -61,8 +61,8 @@ class OoDNet(nn.Cell):
         num_classes (int): The number of classes for the classifier.
 
     Returns:
-        Tensor, classification logits (if set_train(True) was called) or OOD scores (if set_train(False) was called).
-        In the shape of :math:`(batch_size, num_classes)`.
+        Tensor, classification logits (if `set_train(True)` was called) or OOD scores (if `set_train(False)` was
+        called). In the shape of :math:`(N, L)` (L is number of classes).
 
     Raises:
         TypeError: Be raised for any argument or input type problem.
@@ -209,7 +209,7 @@ class OoDNet(nn.Cell):
 
         Returns:
             Tensor, logits of softmax with temperature (if `set_train(True)` was called) or OOD scores
-            (if `set_train(False)` was called). In the shape of :math:`(batch_size, num_classes)`.
+            (if `set_train(False)` was called). In the shape of :math:`(N, L)` (L is number of classes).
         """
         self._underlying.output_features = True
         feat = self._underlying(x)
@@ -295,7 +295,7 @@ class OoDNet(nn.Cell):
         Args:
             dataset (Dataset): The training dataset, expecting (data, one-hot label) items.
             loss_fn (Cell): The loss function, if the classifier's activation function is `nn.Softmax`, then use
-                `nn.SoftmaxCrossEntropyWithLogits`, if the activation function is `nn.Sigmod`, then use
+                `nn.SoftmaxCrossEntropyWithLogits`, if the activation function is `nn.Sigmoid`, then use
                 `nn.BCEWithLogitsLoss`.
             callbacks (Callback, optional): The train callbacks.
             epoch (int, optional): The number of epochs to be trained. Default: 90.

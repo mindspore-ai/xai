@@ -72,7 +72,7 @@ class RISEPlus(RISE):
     Examples:
         >>> import numpy as np
         >>> import mindspore as ms
-        >>> from mindspore import nn, context, load_checkpoint, load_param_into_net
+        >>> from mindspore import nn, context
         >>> from mindspore.common.initializer import Normal
         >>> from mindspore_xai.explainer import RISEPlus
         >>> from mindspore_xai.tool.cv import OoDNet
