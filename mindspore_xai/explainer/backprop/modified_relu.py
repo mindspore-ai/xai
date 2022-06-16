@@ -88,7 +88,7 @@ class Deconvolution(ModifiedReLU):
     Deconvolution explanation.
 
     Deconvolution method is a modified version of Gradient method. For the original ReLU operation in the network to be
-    explained, Deconvolution modifies the propagation rule from directly backpropagating gradients to backprpagating
+    explained, Deconvolution modifies the propagation rule from directly backpropagating gradients to backpropagating
     positive gradients.
 
     Note:
@@ -104,7 +104,7 @@ class Deconvolution(ModifiedReLU):
     Inputs:
         - **inputs** (Tensor) - The input data to be explained, a 4D tensor of shape :math:`(N, C, H, W)`.
         - **targets** (Tensor, int, tuple, list) - The label of interest. It should be a 1D or 0D tensor, or an integer
-          , or an tuple/list of integers. If it is a 1D tensor, tuple or list, its length should be the same as
+          , or a tuple/list of integers. If it is a 1D tensor, tuple or list, its length should be the same as
           `inputs`.
         - **ret** (str): The return object type. 'tensor' means returns a Tensor object, 'image' means return a
           PIL.Image object. Default: 'tensor'.

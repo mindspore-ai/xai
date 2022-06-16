@@ -42,7 +42,7 @@ class Localization(LabelSensitiveMetric):
     r"""
     Provides evaluation on the localization capability of XAI methods.
 
-    Three specific metrics to obtain quantified results are supported: "PointingGame", and "IoSR"
+    Two specific metrics to obtain quantified results are supported: "PointingGame", and "IoSR"
     (Intersection over Salient Region).
 
     For metric "PointingGame", the localization capability is calculated as the ratio of data in which the max position
@@ -97,7 +97,7 @@ class Localization(LabelSensitiveMetric):
              Currently only single sample (:math:`N=1`) at each call is supported.
 
         Args:
-            explainer (Explanation): The explainer to be evaluated, see `mindspore_xai.explanation`.
+            explainer (Explainer): The explainer to be evaluated, see `mindspore_xai.explainer`.
             inputs (Tensor): A data sample, a 4D tensor of shape :math:`(N, C, H, W)`.
             targets (Tensor, int): The label of interest. It should be a 1D or 0D tensor, or an integer.
                 If `targets` is a 1D tensor, its length should be :math:`N`.
