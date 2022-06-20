@@ -72,7 +72,7 @@ class RISEPlus(RISE):
     Examples:
         >>> import numpy as np
         >>> import mindspore as ms
-        >>> from mindspore import nn, context
+        >>> from mindspore import nn, set_context, PYNATIVE_MODE
         >>> from mindspore.common.initializer import Normal
         >>> from mindspore_xai.explainer import RISEPlus
         >>> from mindspore_xai.tool.cv import OoDNet
@@ -113,7 +113,7 @@ class RISEPlus(RISE):
         ...        x = self.fc3(x)
         ...        return x
         >>>
-        >>> context.set_context(mode=context.PYNATIVE_MODE)
+        >>> set_context(mode=PYNATIVE_MODE)
         >>> # prepare trained classifier
         >>> net = MyLeNet5(10, num_channel=3)
         >>> # prepare OoD network

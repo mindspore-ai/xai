@@ -14,8 +14,8 @@
 # ============================================================================
 import numpy as np
 import mindspore as ms
+from mindspore import set_context, PYNATIVE_MODE
 import mindspore.nn as nn
-from mindspore import context
 import sklearn.datasets
 
 from mindspore_xai.explainer import LIMETabular, SHAPGradient, SHAPKernel
@@ -83,7 +83,7 @@ if __name__ == "__main__":
             print(exp, '\n')
 
     # Gradient only works under PYNATIVE_MODE.
-    context.set_context(mode=context.PYNATIVE_MODE)
+    set_context(mode=PYNATIVE_MODE)
     # initialize the explainer
     shap_gradient = SHAPGradient(net, data, feature_names=feature_names, class_names=class_names)
     # explain

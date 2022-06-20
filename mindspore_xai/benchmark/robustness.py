@@ -60,7 +60,7 @@ class Robustness(LabelSensitiveMetric):
             Currently only single sample (:math:`N=1`) at each call is supported.
 
         Args:
-            explainer (Explanation): The explainer to be evaluated, see `mindspore_xai.explanation`.
+            explainer (Explainer): The explainer to be evaluated, see `mindspore_xai.explainer`.
             inputs (Tensor): A data sample, a 4D tensor of shape :math:`(N, C, H, W)`.
             targets (Tensor, int): The label of interest. It should be a 1D or 0D tensor, or an integer.
                 If `targets` is a 1D tensor, its length should be :math:`N`.
@@ -78,12 +78,11 @@ class Robustness(LabelSensitiveMetric):
         Examples:
             >>> import numpy as np
             >>> import mindspore as ms
-            >>> from mindspore import context
-            >>> from mindspore import nn
+            >>> from mindspore import nn, set_context, PYNATIVE_MODE
             >>> from mindspore_xai.explainer import Gradient
             >>> from mindspore_xai.benchmark import Robustness
             >>>
-            >>> context.set_context(mode=context.PYNATIVE_MODE)
+            >>> set_context(mode=PYNATIVE_MODE)
             >>> # Initialize a Robustness benchmarker passing num_labels of the dataset.
             >>> num_labels = 10
             >>> activation_fn = nn.Softmax()

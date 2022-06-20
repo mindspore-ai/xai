@@ -72,10 +72,10 @@ class RISE(PerturbationAttribution):
     Examples:
         >>> import numpy as np
         >>> import mindspore as ms
-        >>> from mindspore import context
-        >>> from mindspore_xai.explanation import RISE
+        >>> from mindspore_xai.explainer import RISE
+        >>> from mindspore import set_context, PYNATIVE_MODE
         >>>
-        >>> context.set_context(mode=context.PYNATIVE_MODE)
+        >>> set_context(mode=PYNATIVE_MODE)
         >>> # The detail of LeNet5 is shown in model_zoo.official.cv.lenet.src.lenet.py
         >>> net = LeNet5(10, num_channel=3)
         >>> # initialize RISE explainer with the pretrained model and activation function

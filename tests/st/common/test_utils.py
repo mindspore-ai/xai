@@ -17,8 +17,8 @@
 import numpy as np
 import pytest
 import mindspore as ms
-from mindspore import context
 import mindspore.nn as nn
+from mindspore import set_context, PYNATIVE_MODE
 
 from mindspore_xai.common.utils import (
     ForwardProbe,
@@ -29,7 +29,7 @@ from mindspore_xai.common.utils import (
 from mindspore_xai.explainer.backprop.backprop_utils import GradNet, get_bp_weights
 
 
-context.set_context(mode=context.PYNATIVE_MODE)
+set_context(mode=PYNATIVE_MODE)
 
 
 class CustomNet(nn.Cell):

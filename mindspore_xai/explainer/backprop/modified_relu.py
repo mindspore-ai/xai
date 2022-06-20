@@ -125,10 +125,10 @@ class Deconvolution(ModifiedReLU):
     Examples:
         >>> import numpy as np
         >>> import mindspore as ms
-        >>> from mindspore import context
-        >>> from mindspore_xai.explanation import Deconvolution
+        >>> from mindspore import set_context, PYNATIVE_MODE
+        >>> from mindspore_xai.explainer import Deconvolution
         >>>
-        >>> context.set_context(mode=context.PYNATIVE_MODE)
+        >>> set_context(mode=PYNATIVE_MODE)
         >>> # The detail of LeNet5 is shown in model_zoo.official.cv.lenet.src.lenet.py
         >>> net = LeNet5(10, num_channel=3)
         >>> deconvolution = Deconvolution(net)
@@ -185,10 +185,10 @@ class GuidedBackprop(ModifiedReLU):
     Examples:
         >>> import numpy as np
         >>> import mindspore as ms
-        >>> from mindspore import context
-        >>> from mindspore_xai.explanation import GuidedBackprop
+        >>> from mindspore_xai.explainer import GuidedBackprop
+        >>> from mindspore import set_context, PYNATIVE_MODE
         >>>
-        >>> context.set_context(mode=context.PYNATIVE_MODE)
+        >>> set_context(mode=PYNATIVE_MODE)
         >>> # The detail of LeNet5 is shown in model_zoo.official.cv.lenet.src.lenet.py
         >>> net = LeNet5(10, num_channel=3)
         >>> gbp = GuidedBackprop(net)

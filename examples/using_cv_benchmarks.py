@@ -14,7 +14,7 @@
 # ============================================================================
 import numpy as np
 import mindspore as ms
-from mindspore import context, Tensor, load_checkpoint, load_param_into_net
+from mindspore import set_context, PYNATIVE_MODE, Tensor, load_checkpoint, load_param_into_net
 from mindspore.nn import Softmax
 from mindspore_xai.explainer import GradCAM
 from mindspore_xai.benchmark import Robustness, Localization
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     # Preparing
 
     # only PYNATIVE_MODE is supported
-    context.set_context(mode=context.PYNATIVE_MODE)
+    set_context(mode=PYNATIVE_MODE)
 
     # 20 classes
     num_classes = 20

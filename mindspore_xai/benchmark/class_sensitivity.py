@@ -58,11 +58,11 @@ class ClassSensitivity(LabelAgnosticMetric):
         Examples:
             >>> import numpy as np
             >>> import mindspore as ms
-            >>> from mindspore import context
+            >>> from mindspore import set_context, PYNATIVE_MODE
             >>> from mindspore_xai.benchmark import ClassSensitivity
             >>> from mindspore_xai.explainer import Gradient
             >>>
-            >>> context.set_context(mode=context.PYNATIVE_MODE)
+            >>> set_context(mode=PYNATIVE_MODE)
             >>> # The detail of LeNet5 is shown in model_zoo.official.cv.lenet.src.lenet.py
             >>> net = LeNet5(10, num_channel=3)
             >>> # prepare your explainer to be evaluated, e.g., Gradient.
