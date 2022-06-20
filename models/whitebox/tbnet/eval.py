@@ -19,7 +19,7 @@
 import os
 import argparse
 
-from mindspore import context, Model, load_checkpoint, load_param_into_net
+from mindspore import Model, load_checkpoint, load_param_into_net, set_context, PYNATIVE_MODE, GRAPH_MODE
 
 from src.tbnet import TBNet, EvalNet
 from src.dataset import create_dataset
@@ -83,11 +83,11 @@ def eval_tbnet():
     test_csv_path = os.path.join(home, 'data', args.dataset, args.csv)
     ckpt_path = os.path.join(home, 'checkpoints', args.dataset, f'tbnet_epoch{args.checkpoint_id}.ckpt')
 
-    context.set_context(device_id=args.device_id)
+    set_context(device_id=args.device_id)
     if args.run_mode == 'GRAPH':
-        context.set_context(mode=context.GRAPH_MODE)
+        set_context(mode=GRAPH_MODE)
     else:
-        context.set_context(mode=context.PYNATIVE_MODE)
+        set_context(mode=PYNATIVE_MODE)
 
     print(f"creating dataset from {test_csv_path}...")
     cfg = TBNetConfig(config_path)

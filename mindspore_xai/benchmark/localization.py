@@ -117,11 +117,11 @@ class Localization(LabelSensitiveMetric):
         Examples:
             >>> import numpy as np
             >>> import mindspore as ms
-            >>> from mindspore import context
+            >>> from mindspore import set_context, PYNATIVE_MODE
             >>> from mindspore_xai.explainer import Gradient
             >>> from mindspore_xai.benchmark import Localization
             >>>
-            >>> context.set_context(mode=context.PYNATIVE_MODE)
+            >>> set_context(mode=PYNATIVE_MODE)
             >>> num_labels = 10
             >>> localization = Localization(num_labels, "PointingGame")
             >>>

@@ -15,12 +15,12 @@
 """Tests of SHAP gradient explainer."""
 import pytest
 import mindspore as ms
-from mindspore import context
+from mindspore import set_context, PYNATIVE_MODE
 
 from mindspore_xai.explainer import SHAPGradient
 from .conftest import NUM_INPUTS, NUM_FEATURES
 
-context.set_context(mode=context.PYNATIVE_MODE)
+set_context(mode=PYNATIVE_MODE)
 
 
 @pytest.fixture(scope='module', name="classification_net_shap")

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-from mindspore import context, save_checkpoint, load_checkpoint, load_param_into_net
+from mindspore import save_checkpoint, load_checkpoint, load_param_into_net, set_context, PYNATIVE_MODE
 from mindspore.nn import Softmax, SoftmaxCrossEntropyWithLogits
 from mindspore_xai.explainer import RISEPlus
 from mindspore_xai.tool.cv import OoDNet
@@ -25,7 +25,7 @@ if __name__ == "__main__":
     # Preparing
 
     # only PYNATIVE_MODE is supported
-    context.set_context(mode=context.PYNATIVE_MODE)
+    set_context(mode=PYNATIVE_MODE)
 
     num_classes = 20
 

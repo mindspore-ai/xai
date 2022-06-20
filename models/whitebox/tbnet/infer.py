@@ -21,7 +21,7 @@ import io
 import argparse
 import json
 
-from mindspore import load_checkpoint, load_param_into_net, context
+from mindspore import load_checkpoint, load_param_into_net, set_context, PYNATIVE_MODE, GRAPH_MODE
 
 from src.tbnet import TBNet
 from src.recommend import Recommender
@@ -95,11 +95,11 @@ def get_args():
 def infer_tbnet():
     """Inference process."""
     args = get_args()
-    context.set_context(device_id=args.device_id)
+    set_context(device_id=args.device_id)
     if args.run_mode == 'GRAPH':
-        context.set_context(mode=context.GRAPH_MODE)
+        set_context(mode=GRAPH_MODE)
     else:
-        context.set_context(mode=context.PYNATIVE_MODE)
+        set_context(mode=PYNATIVE_MODE)
 
     home = os.path.dirname(os.path.realpath(__file__))
     config_path = os.path.join(home, 'data', args.dataset, 'config.json')

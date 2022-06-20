@@ -157,7 +157,7 @@ mindspore_xai.explainer
 
     **输入：**
 
-    - **inputs** (Tensor) - 要解释的输入数据，shape 为 :math:`(N, K)` 的2D float Tensor。
+    - **inputs** (Tensor) - 要解释的输入数据，shape 为 :math:`(N, K)` 的 2D float Tensor。
     - **targets** (Tensor, numpy.ndarray, list, int, 可选) - 要解释的目标分类。当 `target` 为 integer，所有输入都将参考它生成归因图 (attribution map)。而当 `target` 为 Tensor、numpy 数组 或 list 时，它的 shape 则为 :math:`(N, L)` (L是每个样例的标签数量)， :math:`(N,)` 或者 :math:`()` 。默认值：0。
     - **show** (bool, 可选) - 显示解释图像， `None` 表示自动。默认值： `None` 。
 

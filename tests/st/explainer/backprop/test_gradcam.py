@@ -18,15 +18,14 @@ from unittest.mock import patch
 import numpy as np
 import pytest
 import mindspore as ms
-from mindspore import context
 import mindspore.ops.operations as op
-from mindspore import nn
+from mindspore import nn, set_context, PYNATIVE_MODE
 
 from mindspore_xai.explainer import GradCAM
 from mindspore_xai.explainer.backprop.gradcam import _gradcam_aggregation as aggregation
 
 
-context.set_context(mode=context.PYNATIVE_MODE)
+set_context(mode=PYNATIVE_MODE)
 
 
 class SimpleAvgLinear(nn.Cell):

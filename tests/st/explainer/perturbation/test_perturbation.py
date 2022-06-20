@@ -18,13 +18,12 @@ import numpy as np
 from numpy import random
 import pytest
 import mindspore as ms
-from mindspore import context
-from mindspore import nn
+from mindspore import nn, set_context, PYNATIVE_MODE
 
 from mindspore_xai.explainer import RISE, RISEPlus, Occlusion
 from mindspore_xai.tool.cv import OoDNet
 
-context.set_context(mode=context.PYNATIVE_MODE)
+set_context(mode=PYNATIVE_MODE)
 
 C, H, W = 3, 16, 16
 num_classes = 2

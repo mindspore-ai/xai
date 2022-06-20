@@ -20,7 +20,7 @@ import os
 import argparse
 
 import numpy as np
-from mindspore import context, load_checkpoint, load_param_into_net, Tensor, export
+from mindspore import load_checkpoint, load_param_into_net, Tensor, export, set_context, PYNATIVE_MODE, GRAPH_MODE
 
 from src.tbnet import TBNet
 from tbnet_config import TBNetConfig
@@ -90,11 +90,11 @@ def export_tbnet():
     if not os.path.exists(ckpt_path):
         raise ValueError("please check the checkpoint path.")
 
-    context.set_context(device_id=args.device_id)
+    set_context(device_id=args.device_id)
     if args.run_mode == 'GRAPH':
-        context.set_context(mode=context.GRAPH_MODE)
+        set_context(mode=GRAPH_MODE)
     else:
-        context.set_context(mode=context.PYNATIVE_MODE)
+        set_context(mode=PYNATIVE_MODE)
 
     cfg = TBNetConfig(config_path)
 

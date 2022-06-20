@@ -17,14 +17,13 @@
 import numpy as np
 import pytest
 import mindspore as ms
-from mindspore import context
 import mindspore.ops.operations as P
-from mindspore import nn
+from mindspore import nn, set_context, PYNATIVE_MODE
 
 from mindspore_xai.explainer import Gradient
 
 
-context.set_context(mode=context.PYNATIVE_MODE)
+set_context(mode=PYNATIVE_MODE)
 
 
 class SimpleLinear(nn.Cell):

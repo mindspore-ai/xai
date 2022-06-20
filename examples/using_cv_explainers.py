@@ -13,7 +13,7 @@
 # limitations under the License.
 # ============================================================================
 import mindspore as ms
-from mindspore import Tensor, context, load_checkpoint, load_param_into_net
+from mindspore import Tensor, load_checkpoint, load_param_into_net, set_context, PYNATIVE_MODE
 from mindspore_xai.explainer import GradCAM
 
 from common.dataset import load_dataset, load_image_tensor
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     # Preparing
 
     # only PYNATIVE_MODE is supported
-    context.set_context(mode=context.PYNATIVE_MODE)
+    set_context(mode=PYNATIVE_MODE)
 
     # 20 classes
     num_classes = 20

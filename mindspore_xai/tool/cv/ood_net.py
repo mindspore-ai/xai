@@ -75,7 +75,7 @@ class OoDNet(nn.Cell):
     Examples:
         >>> import numpy as np
         >>> import mindspore as ms
-        >>> from mindspore import context, nn
+        >>> from mindspore import nn, set_context, PYNATIVE_MODE
         >>> from mindspore_xai.tool.cv import OoDNet
         >>> from mindspore.common.initializer import Normal
         >>>
@@ -115,7 +115,7 @@ class OoDNet(nn.Cell):
         ...        x = self.fc3(x)
         ...        return x
         >>>
-        >>> context.set_context(mode=context.PYNATIVE_MODE)
+        >>> set_context(mode=PYNATIVE_MODE)
         >>> # prepare classifier
         >>> net = MyLeNet5(10, num_channel=3)
         >>> # prepare OoD network

@@ -67,9 +67,10 @@ class SHAPGradient(_SHAP):
         >>> import numpy as np
         >>> import mindspore as ms
         >>> import mindspore.nn as nn
-        >>> from mindspore import context
+        >>> from mindspore import set_context, PYNATIVE_MODE
         >>> from mindspore_xai.explainer import SHAPGradient
-        >>> context.set_context(mode=context.PYNATIVE_MODE)
+        >>>
+        >>> set_context(mode=PYNATIVE_MODE)
         >>> # Linear classification model
         >>> class LinearNet(nn.Cell):
         ...     def __init__(self, num_inputs, num_class):

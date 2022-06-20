@@ -27,7 +27,7 @@ CV类工具。
     - **ValueError** - 在任何输入的值出现问题时抛出。
     - **AttributeError** - 在缺少任何必需的属性时抛出。
 
-    .. py:function:: construct(x)
+    .. py:method:: construct(x)
 
         向前推断 classification logits 或分布外分数.
 
@@ -39,7 +39,7 @@ CV类工具。
 
         Tensor，如果 `set_train(True)` 被调用，返回有温度 softmax 的 logits。而如果 `set_train(False)` 被调用，返回分布外分数。 Shape 则为 :math:`(batch\_size,num\_classes)` 。
 
-    .. py:function:: get_train_parameters(train_underlying=False)
+    .. py:method:: get_train_parameters(train_underlying=False)
 
         训练参数。
 
@@ -60,7 +60,7 @@ CV类工具。
 
         int，类的数量。
 
-    .. py:function:: prepare_train(learning_rate=0.1, momentum=0.9, weight_decay=0.0001, lr_base_factor=0.1, lr_epoch_denom=30, train_underlying=False)
+    .. py:method:: prepare_train(learning_rate=0.1, momentum=0.9, weight_decay=0.0001, lr_base_factor=0.1, lr_epoch_denom=30, train_underlying=False)
 
         准备训练。
 
@@ -73,7 +73,7 @@ CV类工具。
         - **lr_epoch_denom** (int) - 学习率调度器的 epoch 分母。
         - **train_underlying** (bool) - 如果训练下游分类器，则为 `True` 。
 
-    .. py:function:: set_train(mode=True)
+    .. py:method:: set_train(mode=True)
 
         训练模式。
 
@@ -81,7 +81,7 @@ CV类工具。
 
         - **mode** (bool) - 训练模式。
 
-    .. py:function:: train(dataset, loss_fn, callbacks=None, epoch=90, optimizer=None, scheduler=None, **kwargs)
+    .. py:method:: train(dataset, loss_fn, callbacks=None, epoch=90, optimizer=None, scheduler=None, **kwargs)
 
         训练分布外网络。
 
@@ -103,4 +103,3 @@ CV类工具。
         **返回：**
 
         `nn.Cell`，下游分类器。
-

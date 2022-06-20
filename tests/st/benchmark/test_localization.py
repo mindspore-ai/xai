@@ -18,14 +18,13 @@ from unittest.mock import patch
 import numpy as np
 import pytest
 import mindspore as ms
-from mindspore import context
-from mindspore import nn
+from mindspore import nn, set_context, PYNATIVE_MODE
 
 from mindspore_xai.benchmark import Localization
 from mindspore_xai.explainer import Gradient
 
 
-context.set_context(mode=context.PYNATIVE_MODE)
+set_context(mode=PYNATIVE_MODE)
 
 H, W = 4, 4
 SALIENCY = ms.Tensor(np.random.rand(1, 1, H, W), ms.float32)
