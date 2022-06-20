@@ -83,7 +83,7 @@ class Occlusion(PerturbationAttribution):
     Example:
         >>> import numpy as np
         >>> import mindspore as ms
-        >>> from mindspore.explainer import Occlusion
+        >>> from mindspore_xai.explainer import Occlusion
         >>> from mindspore import set_context, PYNATIVE_MODE
         >>>
         >>> set_context(mode=PYNATIVE_MODE)
