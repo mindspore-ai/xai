@@ -272,7 +272,7 @@ mindspore_xai.explainer
 
     - **ood_net** (`OoDNet <https://www.mindspore.cn/xai/docs/zh-CN/master/mindspore_xai.tool.html>`_) - 用于生成内值分数的 OoD 网络。
     - **network** (Cell) - 要解释的黑盒模型。
-    - **activation_fn** (Cell) - 将 logits 转换为预测概率的激活层。对于单标签分类任务，通常应用 `nn.Softmax` 。而对于多标签分类任务，则通常应用 `nn.Sigmoid` 。用户还可以将自己自定义的`activation_fn`传递为只要将此函数与网络结合时，最终输出是输入的概率。
+    - **activation_fn** (Cell) - 将 logits 转换为预测概率的激活层。对于单标签分类任务，通常应用 `nn.Softmax` 。而对于多标签分类任务，则通常应用 `nn.Sigmoid` 。用户还可以将自己自定义的 `activation_fn` 传递为只要将此函数与网络结合时，最终输出是输入的概率。
     - **perturbation_per_eval** (int, 可选) - 推断扰动样本期间，每个推断的扰动数。在内存容量内，通常此数字越大，越快得到解释。默认值：32。
 
     **输入：**

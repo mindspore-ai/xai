@@ -73,6 +73,11 @@ CV类工具。
         - **lr_epoch_denom** (int) - 学习率调度器的 epoch 分母。
         - **train_underlying** (bool) - 如果训练下游分类器，则为 `True` 。
 
+        **返回：**
+
+        - Optimizer，优化器。
+        - LearningRateScheduler，学习率调度器。
+
     .. py:method:: set_train(mode=True)
 
         训练模式。
