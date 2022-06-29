@@ -1,6 +1,6 @@
-# XAI 1.8.0
+# XAI 1.8.1
 
-## XAI 1.8.0 Release Notes
+## XAI 1.8.1 Release Notes
 
 ### Major Features and Improvements
 
