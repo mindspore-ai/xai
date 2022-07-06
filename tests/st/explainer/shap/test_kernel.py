@@ -136,3 +136,19 @@ class TestSHAPKernel:
         exps = classification_net_shap(inputs, targets)
         assert exps.shape == (NUM_INPUTS, 3, NUM_FEATURES)
         set_context(mode=PYNATIVE_MODE)
+
+    @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
+    @pytest.mark.platform_x86_ascend_training
+    @pytest.mark.platform_x86_gpu_training
+    @pytest.mark.env_onecard
+    def test_callable_function_with_tensor_input(self, training_data_tensor, inputs):
+        """predictor is a callable function, input is tensor."""
+        linear = ms.nn.Dense(4, 3, activation=ms.nn.Softmax())
+
+        def predict_fn(x):
+            return linear(x)
+        shap = SHAPKernel(predict_fn, training_data_tensor)
+        targets = 0
+        exps = shap(inputs, targets)
+        assert exps.shape == (NUM_INPUTS, 1, NUM_FEATURES)

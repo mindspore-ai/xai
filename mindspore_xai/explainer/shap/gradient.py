@@ -97,6 +97,8 @@ class SHAPGradient(_SHAP):
         check_value_type("features", features, ms.Tensor)
         check_value_type("num_neighbours", num_neighbours, int)
         check_value_type("max_features", max_features, int)
+        check_value_type("feature_names", feature_names, [list, type(None)])
+        check_value_type("class_names", class_names, [list, type(None)])
 
         super().__init__(network, features, feature_names, class_names)
 

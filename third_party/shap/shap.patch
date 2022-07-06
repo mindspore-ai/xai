@@ -786,7 +786,7 @@ index 4ce2889..a289ef0 100644
 +
 +        return output_phis
 diff --git a/shap/explainers/_kernel.py b/shap/explainers/_kernel.py
-index ad6b364..a40524b 100644
+index ad6b364..8746765 100644
 --- a/shap/explainers/_kernel.py
 +++ b/shap/explainers/_kernel.py
 @@ -11,8 +11,9 @@ import copy
@@ -800,19 +800,17 @@ index ad6b364..a40524b 100644
  
  log = logging.getLogger('shap')
  
-@@ -59,14 +60,23 @@ class Kernel(Explainer):
+@@ -59,14 +60,21 @@ class Kernel(Explainer):
      """
  
      def __init__(self, model, data, link=IdentityLink(), **kwargs):
 -
 +        # check if model accept mindspore.Tensor as input
-+        try:
-+            model(ms.Tensor(data[:1], ms.float32))
-+            self._model_is_cell = True
-+        except:
-+            self._model_is_cell = False
 +        if isinstance(data, Tensor):
++            self._model_is_cell = True
 +            data = data.asnumpy()
++        else:
++            self._model_is_cell = False
 +        if link is None:
 +            link = IdentityLink()
          # convert incoming inputs to standardized iml objects
@@ -826,7 +824,7 @@ index ad6b364..a40524b 100644
  
          # enforce our current input type limitations
          assert isinstance(self.data, DenseData) or isinstance(self.data, SparseData), \
-@@ -105,7 +115,7 @@ class Kernel(Explainer):
+@@ -105,7 +113,7 @@ class Kernel(Explainer):
              self.D = self.fnull.shape[0]
  
  
@@ -835,7 +833,7 @@ index ad6b364..a40524b 100644
          """ Estimate the SHAP values for a set of samples.
  
          Parameters
-@@ -136,7 +146,13 @@ class Kernel(Explainer):
+@@ -136,7 +144,13 @@ class Kernel(Explainer):
              attribute of the explainer). For models with vector outputs this returns a list
              of such matrices, one for each output.
          """
@@ -849,7 +847,7 @@ index ad6b364..a40524b 100644
          # convert dataframes
          if str(type(X)).endswith("pandas.core.series.Series'>"):
              X = X.values
-@@ -179,7 +195,7 @@ class Kernel(Explainer):
+@@ -179,7 +193,7 @@ class Kernel(Explainer):
          # explain the whole dataset
          elif len(X.shape) == 2:
              explanations = []
@@ -858,7 +856,7 @@ index ad6b364..a40524b 100644
                  data = X[i:i + 1, :]
                  if self.keep_index:
                      data = convert_to_instance_with_index(data, column_name, index_value[i:i + 1], index_name)
-@@ -196,10 +212,10 @@ class Kernel(Explainer):
+@@ -196,10 +210,10 @@ class Kernel(Explainer):
  
              # single-output
              else:
@@ -872,19 +870,19 @@ index ad6b364..a40524b 100644
  
      def explain(self, incoming_instance, **kwargs):
          # convert incoming input to a standardized iml object
-@@ -227,7 +243,10 @@ class Kernel(Explainer):
+@@ -227,7 +241,10 @@ class Kernel(Explainer):
          if self.keep_index:
              model_out = self.model.f(instance.convert_to_df())
          else:
 -            model_out = self.model.f(instance.x)
-+            if issubclass(type(self.model.f), ms.nn.Cell):
++            if self._model_is_cell:
 +                model_out = self.model.f(Tensor(instance.x, ms.float32)).asnumpy()
 +            else:
 +                model_out = self.model.f(instance.x)
          if isinstance(model_out, (pd.DataFrame, pd.Series)):
              model_out = model_out.values
          self.fx = model_out[0]
-@@ -268,8 +287,8 @@ class Kernel(Explainer):
+@@ -268,8 +285,8 @@ class Kernel(Explainer):
              self.allocate()
  
              # weight the different subset sizes
@@ -895,12 +893,12 @@ index ad6b364..a40524b 100644
              weight_vector = np.array([(self.M - 1.0) / (i * (self.M - i)) for i in range(1, num_subset_sizes + 1)])
              weight_vector[:num_paired_subset_sizes] *= 2
              weight_vector /= np.sum(weight_vector)
-@@ -510,7 +529,10 @@ class Kernel(Explainer):
+@@ -510,7 +527,10 @@ class Kernel(Explainer):
              data = pd.concat([index, data], axis=1).set_index(self.data.index_name)
              if self.keep_index_ordered:
                  data = data.sort_index()
 -        modelOut = self.model.f(data)
-+        if issubclass(type(self.model.f), ms.nn.Cell):
++        if self._model_is_cell:
 +            modelOut = self.model.f(Tensor(data, ms.float32)).asnumpy()
 +        else:
 +            modelOut = self.model.f(data)
