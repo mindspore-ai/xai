@@ -91,7 +91,7 @@ class Localization(LabelSensitiveMetric):
 
     def evaluate(self, explainer, inputs, targets, saliency=None, mask=None):
         """
-        Evaluate localization on a single data sample.
+        Evaluate localization on the explainer.
 
         Note:
              Currently only single sample (:math:`N=1`) at each call is supported.
@@ -99,13 +99,13 @@ class Localization(LabelSensitiveMetric):
         Args:
             explainer (Explainer): The explainer to be evaluated, see `mindspore_xai.explainer`.
             inputs (Tensor): A data sample, a 4D tensor of shape :math:`(N, C, H, W)`.
-            targets (Tensor, int): The label of interest. It should be a 1D or 0D tensor, or an integer.
+            targets (Tensor, int): The label of interest. It should be a 1D or scalar tensor, or an integer.
                 If `targets` is a 1D tensor, its length should be :math:`N`.
             saliency (Tensor, optional): The saliency map to be evaluated, a 4D tensor of shape :math:`(N, 1, H, W)`.
                 If it is None, the parsed `explainer` will generate the saliency map with `inputs` and `targets` and
-                continue the evaluation. Default: None.
-            mask (Tensor, numpy.ndarray): Ground truth bounding box/masks for the inputs w.r.t targets, a 4D tensor
-                or numpy.ndarray of shape :math:`(N, 1, H, W)`.
+                continue the evaluation. Default: `None`.
+            mask (Tensor, numpy.ndarray): Ground truth bounding box/masks for the `inputs` w.r.t `targets`, a 4D tensor
+                or numpy.ndarray of shape :math:`(N, 1, H, W)`. Default: `None`.
 
         Returns:
             numpy.ndarray, 1D array of shape :math:`(N,)`, result of localization evaluated on `explainer`.

@@ -26,6 +26,9 @@ from .rise import RISE
 
 class RISEPlus(RISE):
     r"""
+
+    Provides RISEPlus explanation method.
+
     RISEPlus is a perturbation-based method that generates attribution maps by sampling on multiple random binary
     masks. An OoD detector is adopted to produce an 'inlier score', estimating the probability that a sample is
     generated from the distribution. Then the inlier score is aggregated to the weighted sum of the random masks, with
@@ -34,8 +37,8 @@ class RISEPlus(RISE):
     .. math::
         attribution = \sum_{i}s_if_c(I\odot M_i)  M_i
 
-    For more details, please refer to the original paper: Resisting Out-of-Distribution Samples for Perturbation-based
-    XAI.
+    For more details, please refer to the original paper:
+    `Resisting Out-of-Distribution Data Problem in Perturbation of XAI <https://arxiv.org/abs/2107.14000>`_ .
 
     Args:
         ood_net (OoDNet): The OoD network for generating inlier score.
@@ -52,14 +55,14 @@ class RISEPlus(RISE):
         - **inputs** (Tensor) - The input data to be explained, a 4D tensor of shape :math:`(N, C, H, W)`.
         - **targets** (Tensor, int) - The labels of interest to be explained. When `targets` is an integer,
           all of the inputs will generates attribution map w.r.t this integer. When `targets` is a tensor, it
-          should be of shape :math:`(N, l)` (l being the number of labels for each sample) or :math:`(N,)` :math:`()`.
+          should be of shape :math:`(N, L)` (L being the number of labels for each sample) or :math:`(N,)` :math:`()`.
         - **ret** (str): The return object type. 'tensor' means returns a Tensor object, 'image' means return a
           PIL.Image.Image list. Default: 'tensor'.
         - **show** (bool, optional): Show the saliency images, `None` means auto. Default: `None`.
 
     Outputs:
-        Tensor, a 4D tensor of shape :math:`(N, l, H, W)` when targets is a tensor of shape :math:`(N, l)`, otherwise a
-        tensor of shape :math:`(N, 1, H, w)`, saliency maps. Or list[list[PIL.Image.Image]], the normalized saliency
+        Tensor, a 4D tensor of shape :math:`(N, L, H, W)` when `targets` is a tensor of shape :math:`(N, L)`, otherwise
+        a tensor of shape :math:`(N, 1, H, W)`, saliency maps. Or list[list[PIL.Image.Image]], the normalized saliency
         images if `ret` was set to 'image'.
 
     Raises:

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""Explainers."""
+"""Deep neural network explainers."""
 
 from .backprop.gradient import Gradient
 from .backprop.gradcam import GradCAM

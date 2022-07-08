@@ -61,7 +61,7 @@ class OoDNet(nn.Cell):
         num_classes (int): The number of classes for the classifier.
 
     Returns:
-        Tensor, classification logits (if `set_train(True)` was called) or OOD scores (if `set_train(False)` was
+        Tensor, classification logits (if `set_train(True)` was called) or OoD scores (if `set_train(False)` was
         called). In the shape of :math:`(N, L)` (L is number of classes).
 
     Raises:
@@ -195,7 +195,7 @@ class OoDNet(nn.Cell):
         Set training mode.
 
         Args:
-            mode (bool): It is in training mode.
+            mode (bool): It is in training mode. Default: `True`.
         """
         super(OoDNet, self).set_train(mode)
         self._is_train = mode
@@ -241,7 +241,7 @@ class OoDNet(nn.Cell):
         Get the training parameters.
 
         Args:
-            train_underlying (bool): Set to True to include the underlying classifier parameters.
+            train_underlying (bool): Set to True to include the underlying classifier parameters. Default: `False`.
 
         Returns:
             list[Parameter], parameters.
@@ -265,12 +265,12 @@ class OoDNet(nn.Cell):
         Creates necessities for training.
 
         Args:
-            learning_rate (float): The optimizer learning rate.
-            momentum (float): The optimizer momentum.
-            weight_decay (float): The optimizer weight decay.
-            lr_base_factor (float): The base scaling factor of learning rate scheduler.
-            lr_epoch_denom (int): The epoch denominator of learning rate scheduler.
-            train_underlying (bool): True to train the underlying classifier as well.
+            learning_rate (float): The optimizer learning rate. Default: 0.1.
+            momentum (float): The optimizer momentum. Default: 0.9.
+            weight_decay (float): The optimizer weight decay. Default: 0.0001.
+            lr_base_factor (float): The base scaling factor of learning rate scheduler. Default: 0.1.
+            lr_epoch_denom (int): The epoch denominator of learning rate scheduler. Default: 30.
+            train_underlying (bool): True to train the underlying classifier as well.Default: `False`.
 
         Returns:
             - Optimizer, optimizer.
@@ -290,19 +290,19 @@ class OoDNet(nn.Cell):
               scheduler=None,
               **kwargs):
         """
-        Trains this OOD net.
+        Trains this OoD net.
 
         Args:
             dataset (Dataset): The training dataset, expecting (data, one-hot label) items.
             loss_fn (Cell): The loss function, if the classifier's activation function is `nn.Softmax`, then use
                 `nn.SoftmaxCrossEntropyWithLogits`, if the activation function is `nn.Sigmoid`, then use
                 `nn.BCEWithLogitsLoss`.
-            callbacks (Callback, optional): The train callbacks.
+            callbacks (Callback, optional): The train callbacks. Default: `None`.
             epoch (int, optional): The number of epochs to be trained. Default: 90.
             optimizer (Optimizer, optional): The optimizer. The one from `prepare_train()` will be used if which is set
-                to None.
+                to None. Default: `None`.
             scheduler (LearningRateScheduler, optional): The learning rate scheduler. The one from `prepare_train()`
-                will be used if which is set to None.
+                will be used if which is set to None. Default: `None`.
             **kwargs (any, optional): Keyword arguments for `prepare_train()`.
         """
         self.set_train(True)

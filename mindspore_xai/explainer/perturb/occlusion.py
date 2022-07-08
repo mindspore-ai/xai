@@ -40,13 +40,16 @@ def _generate_patches(array, window_size: Tuple, strides: Tuple):
 
 
 class Occlusion(PerturbationAttribution):
-    """
+    r"""
+    Provides Occlusion explanation method.
+
     Occlusion uses a sliding window to replace the pixels with a reference value (e.g. constant value), and computes
     the output difference w.r.t the original output. The output difference caused by perturbed pixels are assigned as
     feature importance to those pixels. For pixels involved in multiple sliding windows, the feature importance is the
     averaged differences from multiple sliding windows.
 
-    For more details, please refer to the original paper via: `<https://arxiv.org/abs/1311.2901>`_.
+    For more details, please refer to the original paper via:
+    `Visualizing and Understanding Convolutional Networks <https://arxiv.org/abs/1311.2901>`_.
 
     Note:
          Currently only single sample (:math:`N=1`) at each call is supported.
@@ -63,8 +66,8 @@ class Occlusion(PerturbationAttribution):
 
     Inputs:
         - **inputs** (Tensor) - The input data to be explained, a 4D tensor of shape :math:`(N, C, H, W)`.
-        - **targets** (Tensor, int, tuple, list) - The label of interest. It should be a 1D or 0D tensor, or an integer
-          , or a tuple/list of integers. If it is a 1D tensor, tuple or list, its length should be :math:`N`.
+        - **targets** (Tensor, int, tuple, list) - The label of interest. It should be a 1D or scalar tensor, or an
+          integer, or a tuple/list of integers. If it is a 1D tensor, tuple or list, its length should be :math:`N`.
         - **ret** (str): The return object type. 'tensor' means returns a Tensor object, 'image' means return a
           PIL.Image.Image list. Default: 'tensor'.
         - **show** (bool, optional): Show the saliency images, `None` means auto. Default: `None`.
@@ -80,7 +83,7 @@ class Occlusion(PerturbationAttribution):
     Supported Platforms:
         ``Ascend`` ``GPU``
 
-    Example:
+    Examples:
         >>> import numpy as np
         >>> import mindspore as ms
         >>> from mindspore_xai.explainer import Occlusion

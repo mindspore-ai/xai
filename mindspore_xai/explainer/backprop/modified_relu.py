@@ -85,7 +85,7 @@ class ModifiedReLU(Gradient):
 
 class Deconvolution(ModifiedReLU):
     """
-    Deconvolution explanation.
+    Provides Deconvolution explanation method.
 
     Deconvolution method is a modified version of Gradient method. For the original ReLU operation in the network to be
     explained, Deconvolution modifies the propagation rule from directly backpropagating gradients to backpropagating
@@ -103,12 +103,12 @@ class Deconvolution(ModifiedReLU):
 
     Inputs:
         - **inputs** (Tensor) - The input data to be explained, a 4D tensor of shape :math:`(N, C, H, W)`.
-        - **targets** (Tensor, int, tuple, list) - The label of interest. It should be a 1D or 0D tensor, or an integer
-          , or a tuple/list of integers. If it is a 1D tensor, tuple or list, its length should be the same as
+        - **targets** (Tensor, int, tuple, list) - The label of interest. It should be a 1D or scalar tensor, or an
+          integer, or a tuple/list of integers. If it is a 1D tensor, tuple or list, its length should be the same as
           `inputs`.
         - **ret** (str): The return object type. 'tensor' means returns a Tensor object, 'image' means return a
           PIL.Image object. Default: 'tensor'.
-        - **show** (bool): Automatically show the saliency images if it is running on JupiterLab or Notebook. Default:
+        - **show** (bool): Automatically show the saliency images if it is running on JupyterLab or Notebook. Default:
           `True`.
 
     Outputs:
@@ -146,7 +146,7 @@ class Deconvolution(ModifiedReLU):
 
 class GuidedBackprop(ModifiedReLU):
     """
-    Guided-Backpropagation explanation.
+    Provides Guided-Backpropagation explanation method.
 
     Guided-Backpropagation method is an extension of Gradient method. On top of the original ReLU operation in the
     network to be explained, Guided-Backpropagation introduces another ReLU operation to filter out the negative
@@ -164,11 +164,11 @@ class GuidedBackprop(ModifiedReLU):
 
     Inputs:
         - **inputs** (Tensor) - The input data to be explained, a 4D tensor of shape :math:`(N, C, H, W)`.
-        - **targets** (Tensor, int, tuple, list) - The label of interest. It should be a 1D or 0D tensor, or an integer
-          , or an tuple/list of integers. If it is a 1D tensor, tuple or list, its length should be :math:`N`.
+        - **targets** (Tensor, int, tuple, list) - The label of interest. It should be a 1D or scalar tensor, or an
+          integer, or an tuple/list of integers. If it is a 1D tensor, tuple or list, its length should be :math:`N`.
         - **ret** (str): The return object type. 'tensor' means returns a Tensor object, 'image' means return a
           PIL.Image.Image list. Default is 'tensor'.
-        - **show** (bool, optional): Automatically show the saliency images if it is running on JupiterLab or Notebook.
+        - **show** (bool, optional): Automatically show the saliency images if it is running on JupyterLab or Notebook.
           Default: `None`.
 
     Outputs:
