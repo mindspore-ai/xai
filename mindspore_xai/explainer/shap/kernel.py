@@ -24,7 +24,7 @@ from .shap import _SHAP
 
 class SHAPKernel(_SHAP):
     r"""
-    Provides SHAP kernel explanation method.
+    Provides Kernel SHAP explanation method.
 
     Uses the Kernel SHAP method to explain the output of any function.
 

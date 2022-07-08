@@ -25,7 +25,7 @@ from .metric import LabelAgnosticMetric
 
 class ClassSensitivity(LabelAgnosticMetric):
     """
-    Class sensitivity metric used to evaluate attribution-based explanations.
+    Class sensitivity metric used to evaluate attribution-based explainers.
 
     Reasonable atrribution-based explainers are expected to generate distinct saliency maps for different labels,
     especially for labels of highest confidence and low confidence. ClassSensitivity evaluates the explainer through
@@ -39,7 +39,7 @@ class ClassSensitivity(LabelAgnosticMetric):
 
     def evaluate(self, explainer, inputs):
         """
-        Evaluate class sensitivity on a single data sample.
+        Evaluate class sensitivity on the explainer.
 
         Note:
              Currently only single sample (:math:`N=1`) at each call is supported.

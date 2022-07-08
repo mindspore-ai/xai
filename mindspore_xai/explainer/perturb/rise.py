@@ -29,9 +29,9 @@ class RISE(PerturbationAttribution):
     RISE: Randomized Input Sampling for Explanation of Black-box Model.
 
     RISE is a perturbation-based method that generates attribution maps by sampling on multiple random binary masks.
-    The original image is randomly masked, and then fed into the black-box model to get predictions. The final
-    attribution map is the weighted sum of these random masks, with the weights being the corresponding output on the
-    node of interest:
+    The original image :math:`I` is randomly masked, and then fed into the black-box model to get predictions. The final
+    attribution map is the weighted sum of these random masks :math:`M_i` , with the weights being the corresponding
+    output on the node of interest:
 
     .. math::
         attribution = \sum_{i}f_c(I\odot M_i)  M_i
@@ -52,15 +52,15 @@ class RISE(PerturbationAttribution):
         - **inputs** (Tensor) - The input data to be explained, a 4D tensor of shape :math:`(N, C, H, W)`.
         - **targets** (Tensor, int) - The labels of interest to be explained. When `targets` is an integer,
           all of the inputs will generates attribution map w.r.t this integer. When `targets` is a tensor, it
-          should be of shape :math:`(N, l)` (l being the number of labels for each sample) or :math:`(N,)` :math:`()`.
+          should be of shape :math:`(N, L)` (L being the number of labels for each sample) or :math:`(N,)` :math:`()`.
         - **ret** (str): The return object type. 'tensor' means returns a Tensor object, 'image' means return a
           PIL.Image.Image list. Default: 'tensor'.
         - **show** (bool, optional): Show the saliency images, `None` means auto. Default: `None`.
 
     Outputs:
-        Tensor, a 4D tensor of shape :math:`(N, l, H, W)` when targets is a tensor of shape (N, l), otherwise a tensor
-        of shape (N, 1, H, w), saliency maps. Or list[list[PIL.Image.Image]], the normalized saliency images if `ret`
-        was set to 'image'.
+        Tensor, a 4D tensor of shape :math:`(N, L, H, W)` when `targets` is a tensor of shape :math:`(N, L)`, otherwise
+        a tensor of shape :math:`(N, 1, H, W)`, saliency maps. Or list[list[PIL.Image.Image]], the normalized saliency
+        images if `ret` was set to 'image'.
 
     Raises:
         TypeError: Be raised for any argument or input type problem.
