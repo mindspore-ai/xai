@@ -170,7 +170,7 @@ class LIMETabular:
 
         Args:
             features (Tensor, numpy.ndarray): training data.
-            feature_names (list, None): feature names. Default: `None`.
+            feature_names (list, optional): feature names. Default: `None`.
             categorical_features_indexes (list, optional): list of indices (ints) corresponding to the categorical
                 columns. Everything else will be considered continuous. Values in these columns MUST be integers.
                 Default: `None`.
@@ -178,6 +178,8 @@ class LIMETabular:
         Returns:
             dict, training data stats
         """
+        check_value_type("feature_names", feature_names, [list, type(None)])
+        check_value_type("categorical_features_indexes", categorical_features_indexes, [list, type(None)])
 
         # dummy model
         def func(array):

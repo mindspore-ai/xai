@@ -34,9 +34,9 @@ class SHAPGradient(_SHAP):
         operations.
 
     Args:
-        network (Cell): The mindspore cell to be explained. For classification, it accepts a 2D array/tensor of
-            shape :math:`(N, K)` as input and outputs a 2D array/tensor of shape :math:`(N, L)`. For regression, it
-            accepts a 2D array/tensor of shape :math:`(N, K)` as input and outputs a 1D array/tensor of
+        network (Cell): The mindspore cell to be explained. For classification, it accepts a 2D tensor of
+            shape :math:`(N, K)` as input and outputs a 2D tensor of shape :math:`(N, L)`. For regression, it
+            accepts a 2D tensor of shape :math:`(N, K)` as input and outputs a 1D tensor of
             shape :math:`(N)`.
         features (Tensor): 2D tensor of shape :math:`(N, K)` (N being the number of samples, K being the number of
             features). The background dataset to use for integrating out features, accept (whole or part of) training
