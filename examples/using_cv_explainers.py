@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
     test_ds = load_dataset('xai_examples_data/test').batch(4)
 
-    for images, labels in test_ds:
+    for images, _ in test_ds:
         saliencies = grad_cam(images, targets=Tensor([5, 5, 5, 5], dtype=ms.int32))
         # [4, 1, 224, 224] Tensor
         print(f'saliencies.shape: {saliencies.shape}')

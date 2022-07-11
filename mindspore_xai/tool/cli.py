@@ -23,11 +23,12 @@ def cli_entry():
     """Entry point for XAI CLI."""
     parser = argparse.ArgumentParser(
         prog='mindspore_xai',
-        description='XAI CLI entry point (version: {})'.format(mindspore_xai.__version__))
+        description='XAI CLI entry point (version: {})'.format(mindspore_xai.__version__),
+        allow_abbrev=False)
     subparsers = parser.add_subparsers(help='sub-command help', dest='subparser_name')
 
     # tabular digest
-    parser_tabdig = subparsers.add_parser('tabdig', help='tabular data digest', allow_abbrev=False)
+    parser_tabdig = subparsers.add_parser('tabdig', help='digest tabular data', allow_abbrev=False)
     parser_tabdig.add_argument(type=str, dest='real_datafile',
                                help='path of the real CSV table to be simulated.')
     parser_tabdig.add_argument(type=str, dest='digest_file',
@@ -40,7 +41,7 @@ def cli_entry():
                                     'disable the value clipping.')
 
     # tabular simulate
-    parser_tabsim = subparsers.add_parser('tabsim', help='tabular data simulate', allow_abbrev=False)
+    parser_tabsim = subparsers.add_parser('tabsim', help='simulate tabular data', allow_abbrev=False)
     parser_tabsim.add_argument(type=str, dest='digest_file',
                                help='path of the digest file of the real data.')
     parser_tabsim.add_argument(type=str, dest='sim_datafile',
@@ -50,9 +51,9 @@ def cli_entry():
     parser_tabsim.add_argument('--batch-size', type=int, dest='batch_size', required=False, default=10000,
                                help='[optional] number of rows in each batch, default: 10000')
     parser_tabsim.add_argument('--noise', type=float, dest='noise', required=False, default=0.0,
-                               help='[optional] 0.0-1.0 noise level of value picking probabilities, 0.0 means 100% '
-                                    'flows the digested joint distributions, higher the noise level more even the '
-                                    'probabilities. default: 0')
+                               help='[optional] 0.0-1.0 noise level of value picking probabilities, 0.0 means flows '
+                                    'exactly the digested joint distributions, higher the noise level more even the '
+                                    'probabilities. default: 0.0')
 
     args = vars(parser.parse_args())
     if args['subparser_name'] == 'tabdig':

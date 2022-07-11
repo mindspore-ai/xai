@@ -18,6 +18,7 @@ import json
 from collections import OrderedDict
 from pathlib import Path
 from io import IOBase
+import re
 
 import numpy as np
 
@@ -50,6 +51,10 @@ _S2D_TYPE_MAP = {
     'float': float,
     'str': str
 }
+
+# column name and str value patterns
+_COL_PATTERN = re.compile(r'[0-9a-zA-Z_\-]+')
+_STR_PATTERN = re.compile(r'[0-9a-zA-Z_\-\+\.]*')
 
 
 def _open(file, mode):
@@ -368,12 +373,12 @@ class CsvTabDigest(TabDigest):
         self._reset()
         self._cache = dict()
         header = True
-        for row in csv_reader:
+        for i, row in enumerate(csv_reader):
             if header:
                 self._read_header(row, col_types, label_col)
                 header = False
             else:
-                self._read_record(row)
+                self._read_record(row, i+1)
 
         self._digest_columns()
         self._calc_iqr_mat()
@@ -417,13 +422,17 @@ class CsvTabDigest(TabDigest):
         """Create a new column digest."""
         splited = title.split('|')
         col_name = splited[0].strip()
-        if not col_name or (len(col_name) == 1 and col_name[0] == '*'):
+        if not col_name or col_name == '*':
             raise IOError('Column name can not be empty.')
         if col_name[0] == '*':
             is_label = True
             col_name = col_name[1:]
         else:
             is_label = False
+
+        if not _COL_PATTERN.fullmatch(col_name):
+            raise IOError(f"Invalid column name:{col_name}, allowed pattern:'{_COL_PATTERN.pattern}'.")
+
         if col_types:
             col_type = col_types[idx]
         else:
@@ -450,7 +459,7 @@ class CsvTabDigest(TabDigest):
         col.is_label = is_label
         return col
 
-    def _read_record(self, row):
+    def _read_record(self, row, line_no):
         """Read a data row."""
         for i, val_str in enumerate(row):
             col = self.columns[i]
@@ -458,11 +467,16 @@ class CsvTabDigest(TabDigest):
             if col.is_numeric:
                 self._values[i].append(val)
                 continue
+
+            if col.ctype == 'str' and not _STR_PATTERN.fullmatch(val):
+                raise IOError(f"Line:{line_no}, invalid str value:{val}, allowed pattern:'{_STR_PATTERN.pattern}'.")
+
             idx = self._distincts[i].get(val, -1)
             if idx == -1:
                 idx = len(self._distincts[i])
                 if idx >= _MAX_DIS_VAL:
-                    raise IOError(f'Number of distinct values of column[{i}] is more than {_MAX_DIS_VAL}.')
+                    raise IOError(f'Line:{line_no}, number of distinct values of column[{i}] is more than '
+                                  f'{_MAX_DIS_VAL}.')
                 self._distincts[i][val] = idx
             self._values[i].append(idx)
 

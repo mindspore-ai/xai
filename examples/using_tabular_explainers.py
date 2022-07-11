@@ -68,7 +68,7 @@ if __name__ == "__main__":
     lime_outputs = lime(inputs, targets)
     print("LIMETabular:")
     for i, exps in enumerate(lime_outputs):
-        for j, exp in enumerate(exps):
+        for exp in exps:
             print("Explanation for sample {} class {}:".format(i, class_names[targets]))
             print(exp, '\n')
 
@@ -78,7 +78,7 @@ if __name__ == "__main__":
     shap_kernel_outputs = shap_kernel(inputs, targets)
     print("SHAPKernel:")
     for i, exps in enumerate(shap_kernel_outputs):
-        for j, exp in enumerate(exps):
+        for exp in exps:
             print("Explanation for sample {} class {}:".format(i, class_names[targets]))
             print(exp, '\n')
 
@@ -90,6 +90,6 @@ if __name__ == "__main__":
     shap_gradient_outputs = shap_gradient(inputs, targets)
     print("SHAPGradient:")
     for i, exps in enumerate(shap_gradient_outputs):
-        for j, exp in enumerate(exps):
+        for exp in exps:
             print("Explanation for sample {} class {}:".format(i, class_names[targets]))
             print(exp, '\n')
