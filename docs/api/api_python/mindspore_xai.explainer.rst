@@ -148,7 +148,7 @@ mindspore_xai.explainer
 
     **参数：**
 
-    - **network** (Cell) - 要解释的 MindSpore cell。对于分类，它接受shape为 :math:`(N, K)` 的2D 数组/Tensor作为输入并输出shape为 :math:`(N, L)` 的2D数组/Tensor。对于回归，它接受shape为 :math:`(N, K)` 的2D数组/Tensor作为输入，并输出shape为 :math:`(N)` 的1D数组/Tensor。
+    - **network** (Cell) - 要解释的 MindSpore cell。对于分类，它接受shape为 :math:`(N, K)` 的2D Tensor作为输入并输出shape为 :math:`(N, L)` 的2D Tensor。对于回归，它接受shape为 :math:`(N, K)` 的2D Tensor作为输入，并输出shape为 :math:`(N)` 的1D Tensor。
     - **features** (Tensor) - shape为 :math:`(N, K)` 的2DTensor，N是样本数，而K是特征数。用于集成特征的背景数据集，接受全部或部分的训练数据集。
     - **feature_names** (list, 可选) - 训练数据中的列的名称（string）的list。默认值： `None` 。
     - **class_names** (list, 可选) - 类名的list，排序根据分类器的类名排序。如果没有，类名将被设为'0'、'1'、... 默认值： `None` 。
@@ -350,7 +350,7 @@ mindspore_xai.explainer
         **参数：**
 
         - **features** (Tensor, numpy.ndarray) - 训练数据。
-        - **feature_names** (list, None) - 特征名称。默认值： `None` 。
+        - **feature_names** (list, 可选) - 特征名称。默认值： `None` 。
         - **categorical_features_indexes** (list, 可选) - 分类列的索引（ints）的list。其他列都将被视为连续的，这些列中的值必须是integer。默认值：`None` 。
 
         **返回：**

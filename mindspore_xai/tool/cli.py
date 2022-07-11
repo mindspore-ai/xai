@@ -27,7 +27,7 @@ def cli_entry():
     subparsers = parser.add_subparsers(help='sub-command help', dest='subparser_name')
 
     # tabular digest
-    parser_tabdig = subparsers.add_parser('tabdig', help='tabular data digest')
+    parser_tabdig = subparsers.add_parser('tabdig', help='tabular data digest', allow_abbrev=False)
     parser_tabdig.add_argument(type=str, dest='real_datafile',
                                help='path of the real CSV table to be simulated.')
     parser_tabdig.add_argument(type=str, dest='digest_file',
@@ -40,7 +40,7 @@ def cli_entry():
                                     'disable the value clipping.')
 
     # tabular simulate
-    parser_tabsim = subparsers.add_parser('tabsim', help='tabular data simulate')
+    parser_tabsim = subparsers.add_parser('tabsim', help='tabular data simulate', allow_abbrev=False)
     parser_tabsim.add_argument(type=str, dest='digest_file',
                                help='path of the digest file of the real data.')
     parser_tabsim.add_argument(type=str, dest='sim_datafile',

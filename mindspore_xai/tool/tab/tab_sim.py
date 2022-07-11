@@ -398,6 +398,11 @@ class CsvTabDigest(TabDigest):
     def _read_header(self, row, col_types, label_col):
         """Read the header row."""
         self.columns = [self._new_column(i, title, col_types, label_col) for i, title in enumerate(row)]
+        columns_names = [x.name for x in self.columns]
+        duplicates = {x for x in columns_names if columns_names.count(x) > 1}
+        if duplicates:
+            raise ValueError("Column name must be unique but got duplicate column {}.".format(list(duplicates)))
+
         for i, col in enumerate(self.columns):
             if col.is_label:
                 if self.label_col_idx >= 0:
