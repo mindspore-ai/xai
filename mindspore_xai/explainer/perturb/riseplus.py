@@ -57,8 +57,9 @@ class RISEPlus(RISE):
           all of the inputs will generates attribution map w.r.t this integer. When `targets` is a tensor, it
           should be of shape :math:`(N, L)` (L being the number of labels for each sample) or :math:`(N,)` :math:`()`.
         - **ret** (str): The return object type. 'tensor' means returns a Tensor object, 'image' means return a
-          PIL.Image.Image list. Default: 'tensor'.
-        - **show** (bool, optional): Show the saliency images, `None` means auto. Default: `None`.
+          PIL.Image.Image list. Default: `tensor`.
+        - **show** (bool, optional): Show the saliency images, `None` means automatically show the saliency images if it
+          is running on JupyterLab. Default: `None`.
 
     Outputs:
         Tensor, a 4D tensor of shape :math:`(N, L, H, W)` when `targets` is a tensor of shape :math:`(N, L)`, otherwise

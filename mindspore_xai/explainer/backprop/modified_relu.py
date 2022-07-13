@@ -107,13 +107,13 @@ class Deconvolution(ModifiedReLU):
           integer, or a tuple/list of integers. If it is a 1D tensor, tuple or list, its length should be the same as
           `inputs`.
         - **ret** (str): The return object type. 'tensor' means returns a Tensor object, 'image' means return a
-          PIL.Image object. Default: 'tensor'.
-        - **show** (bool): Automatically show the saliency images if it is running on JupyterLab or Notebook. Default:
-          `True`.
+          PIL.Image.Image list. Default: `tensor`.
+        - **show** (bool, optional): Show the saliency images, `None` means automatically show the saliency images if it
+          is running on JupyterLab. Default: `None`.
 
     Outputs:
-        Tensor, a 4D tensor of shape :math:`(N, 1, H, W)`. Or list[PIL.Image.Image], the normalized saliency images if
-        `ret` was set to 'image'.
+        Tensor, a 4D tensor of shape :math:`(N, 1, H, W)`. Or list[list[PIL.Image.Image]], the
+        normalized saliency images if `ret` was set to 'image'.
 
     Raises:
         TypeError: Be raised for any argument or input type problem.
@@ -167,9 +167,9 @@ class GuidedBackprop(ModifiedReLU):
         - **targets** (Tensor, int, tuple, list) - The label of interest. It should be a 1D or scalar tensor, or an
           integer, or an tuple/list of integers. If it is a 1D tensor, tuple or list, its length should be :math:`N`.
         - **ret** (str): The return object type. 'tensor' means returns a Tensor object, 'image' means return a
-          PIL.Image.Image list. Default is 'tensor'.
-        - **show** (bool, optional): Automatically show the saliency images if it is running on JupyterLab or Notebook.
-          Default: `None`.
+          PIL.Image.Image list. Default: `tensor`.
+        - **show** (bool, optional): Show the saliency images, `None` means automatically show the saliency images if it
+          is running on JupyterLab. Default: `None`.
 
     Outputs:
         Tensor, a 4D tensor of shape :math:`(N, 1, H, W)`, saliency maps. Or list[list[PIL.Image.Image]], the

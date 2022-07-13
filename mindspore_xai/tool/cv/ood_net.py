@@ -67,7 +67,7 @@ class OoDNet(nn.Cell):
     Raises:
         TypeError: Be raised for any argument or input type problem.
         ValueError: Be raised for any input value problem.
-        AttributeError: Be raised for underlying is missing any required attribute.
+        AttributeError: Be raised for `underlying` is missing any required attribute.
 
     Supported Platforms:
         ``Ascend`` ``GPU``

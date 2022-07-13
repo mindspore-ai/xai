@@ -68,8 +68,9 @@ class GradCAM(IntermediateLayerAttribution):
         - **targets** (Tensor, int, tuple, list) - The label of interest. It should be a 1D or scalar tensor, or an
           integer, or a tuple/list of integers. If it is a 1D tensor, tuple or list, its length should be :math:`N`.
         - **ret** (str): The return object type. 'tensor' means returns a Tensor object, 'image' means return a
-          PIL.Image.Image list. Default: 'tensor'.
-        - **show** (bool, optional): Show the saliency images, `None` means auto. Default: `None`.
+          PIL.Image.Image list. Default: `tensor`.
+        - **show** (bool, optional): Show the saliency images, `None` means automatically show the saliency images if it
+          is running on JupyterLab. Default: `None`.
 
     Outputs:
         Tensor, a 4D tensor of shape :math:`(N, 1, H, W)`, saliency maps. Or list[list[PIL.Image.Image]], the

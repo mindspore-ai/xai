@@ -27,8 +27,8 @@ mindspore_xai.benchmark
 
         **异常：**
 
-        - **TypeError** - 在出现任何参数类型问题时抛出。
-        - **ValueError** - 在 :math:`N` 不是1时抛出。
+        - **TypeError** - 参数或输入类型错误。
+        - **ValueError** - :math:`N` 不是1。
 
 .. py:class:: mindspore_xai.benchmark.Faithfulness(num_labels, activation_fn, metric="NaiveFaithfulness")
 
@@ -47,12 +47,12 @@ mindspore_xai.benchmark
     **参数：**
 
     - **num_labels** (int) - 标签的数量。
-    - **activation_fn** (Cell) - 将logits转换为预测概率的激活层。对于单标签分类任务，通常使用 `nn.Softmax` 。而对于多标签分类任务，则较常使用 `nn.Sigmoid` 。用户也可以将自定义的 `activation_fn` 与网络结合，而最终的输出便是输入的概率。
+    - **activation_fn** (Cell) - 将logits转换为预测概率的激活层。单标签分类任务通常使用 `nn.Softmax` ，而多标签分类任务较常使用 `nn.Sigmoid` 。用户也可以将自定义的 `activation_fn` 与网络结合，而最终的输出便是输入的概率。
     - **metric** (str, 可选) - 量化忠诚度的特定指标。可选项："DeletionAUC"，"InsertionAUC"，"NaiveFaithfulness"。默认值："NaiveFaithfulness"。
 
     **异常：**
 
-    - **TypeError** - 在出现任何参数类型问题时抛出。
+    - **TypeError** - 参数或输入类型错误。
 
     .. py:method:: evaluate(explainer, inputs, targets, saliency=None)
 
@@ -74,8 +74,8 @@ mindspore_xai.benchmark
 
         **异常：**
 
-        - **TypeError** - 在出现任何参数类型问题时抛出。
-        - **ValueError** - 在 :math:`N` 不是1时抛出。
+        - **TypeError** - 参数或输入类型错误。
+        - **ValueError** - :math:`N` 不是1。
 
 .. py:class:: mindspore_xai.benchmark.Localization(num_labels, metric="PointingGame")
 
@@ -83,7 +83,7 @@ mindspore_xai.benchmark
 
     支持两个量化指标："PointingGame" 和 "IoSR"（显著区域的相交）。
 
-    "PointingGame"指标会计算热力图峰值位置位于边界框内的比例。具体来说，对于单个样本, 如果热力图的峰值位置位于边界框内，结果为1，否则为0。
+    "PointingGame"指标会计算热力图峰值位置位于边界框内的比例。具体来说，如果单个样本的热力图的峰值位置位于边界框内，结果为1，否则为0。
 
     "IoSR"指标是边界框和显着区域的相交面积除以显着区域面积。显着区域是指显着值高于 :math:`\theta * \max{saliency}`。
 
@@ -94,7 +94,7 @@ mindspore_xai.benchmark
 
     **异常：**
 
-    - **TypeError** - 在出现任何参数类型问题时抛出。
+    - **TypeError** - 参数或输入类型错误。
 
     .. py:method:: evaluate(explainer, inputs, targets, saliency=None, mask=None)
 
@@ -118,8 +118,8 @@ mindspore_xai.benchmark
 
         **异常：**
 
-        - **TypeError** - 在出现任何参数类型问题时抛出。
-        - **ValueError** - 在 :math:`(N,)` 不是1时抛出。
+        - **TypeError** - 参数或输入类型错误。
+        - **ValueError** - :math:`(N,)` 不是1。
 
 .. py:class:: mindspore_xai.benchmark.Robustness(num_labels, activation_fn)
 
@@ -128,11 +128,11 @@ mindspore_xai.benchmark
     **参数：**
 
     - **num_labels** (int) - 数据集中的类数。
-    - **activation_fn** (Cell) - 将logits转换为预测概率的激活层。对于单标签分类任务，通常使用 `nn.Softmax` 。而对于多标签分类任务，则较常使用 `nn.Sigmoid` 。用户也可以将自定义的 `activation_fn` 与网络结合，最终的输出便是输入的概率。
+    - **activation_fn** (Cell) - 将logits转换为预测概率的激活层。单标签分类任务通常使用 `nn.Softmax` ，而多标签分类任务较常使用 `nn.Sigmoid` 。用户也可以将自定义的 `activation_fn` 与网络结合，最终的输出便是输入的概率。
 
     **异常：**
 
-    - **TypeError** - 在出现任何参数类型问题时抛出。
+    - **TypeError** - 参数或输入类型错误。
 
     .. py:method:: evaluate(explainer, inputs, targets, saliency=None)
 
@@ -155,5 +155,5 @@ mindspore_xai.benchmark
 
         **异常：**
 
-        - **TypeError** - 在出现任何参数类型问题时抛出。
-        - **ValueError** - 在 :math:`N` 不是1时抛出。
+        - **TypeError** - 参数或输入类型错误。
+        - **ValueError** - :math:`N` 不是1。
