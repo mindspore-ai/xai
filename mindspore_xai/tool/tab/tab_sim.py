@@ -27,7 +27,7 @@ _EPS = 1e-9
 
 # max. no. of bins in a column group
 # group no. of bins = product of all member column no. of bins
-_COL_GRP_MAX_BIN = 1000
+_COL_GRP_MAX_BIN = 1024
 
 # min. information quality ratio in a column grouping
 _COL_GRP_MIN_IQR = 0.1
@@ -329,7 +329,7 @@ class CsvTabDigest(TabDigest):
         allowed.
 
     Args:
-        num_bins (int): Number of bins for numeric columns. Default: 10.
+        num_bins (int): Number of bins for numeric columns, must be in range of :math:`[2, 32]`. Default: 10.
         clip_sd (int, float): Number of standard deviations for clipping numeric column values. Disable the
             clipping by providing zero. Default: 3.
 
@@ -340,6 +340,8 @@ class CsvTabDigest(TabDigest):
     def __init__(self, num_bins=10, clip_sd=3):
         if not isinstance(num_bins, int):
             raise TypeError(f'Argument "num_bins" must be in type of int.')
+        if num_bins < 2 or num_bins > 32:
+            raise ValueError(f'Argument "num_bins" must be in range of [2, 32], but got {num_bins}.')
         if not isinstance(clip_sd, (int, float)):
             raise TypeError(f'Argument "clip_sd" must be in type of int or float.')
         super().__init__()

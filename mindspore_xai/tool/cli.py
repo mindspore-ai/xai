@@ -33,8 +33,9 @@ def cli_entry():
                                help='path of the real CSV table to be simulated.')
     parser_tabdig.add_argument(type=str, dest='digest_file',
                                help='path of the digest file to be saved.')
-    parser_tabdig.add_argument('--bins', type=int, dest='num_bins', required=False, default=10,
-                               help='[optional] number of bins for discretizing numeric columns, default: 10')
+    parser_tabdig.add_argument('--bins', type=int, dest='num_bins', required=False, choices=range(2, 33),
+                               default=10, metavar="[2-32]",
+                               help='[optional] number of bins (2-32) for discretizing numeric columns, default: 10')
     parser_tabdig.add_argument('--clip-sd', type=float, dest='clip_sd', required=False, default=3,
                                help='[optional] number of standard deviations away from the mean that defines the '
                                     'outliers, outlier values will be clipped. default: 3, setting to 0 or less will '
