@@ -50,7 +50,8 @@ class SHAPKernel(_SHAP):
           `targets` is an integer, all the inputs will generate attribution map w.r.t this integer. When `targets` is a
           tensor or numpy array or list, it should be of shape :math:`(N, L)` (L being the number of labels for each
           sample), :math:`(N,)` or :math:`()`. Default: 0.
-        - **show** (bool, optional): Show the explanation figures, `None` means auto. Default: `None`.
+        - **show** (bool, optional): Show the explanation figures, `None` means automatically show the explanation
+          figures if it is running on JupyterLab. Default: `None`.
 
     Outputs:
         Tensor, a 3D tensor of shape :math:`(N, L, K)`. The first dimension represents inputs.

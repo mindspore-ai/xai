@@ -19,13 +19,13 @@ CV类工具。
 
     **返回：**
 
-    Tensor，如果 `set_train(True)` 被调用，将返回分类logits。而如果 `set_train(False)` 被调用，则返回分布外分数。返回的shape均为 :math:`(N, L)` ，L 是类数。
+    Tensor，如果 `set_train(True)` 被调用，将返回分类logits。而如果 `set_train(False)` 被调用，返回分布外分数。返回的shape均为 :math:`(N, L)` ，L 是类数。
 
     **异常：**
 
-    - **TypeError** - 在出现任何参数或输入类型问题时抛出。
-    - **ValueError** - 在任何输入的值出现问题时抛出。
-    - **AttributeError** - 在缺少任何必需的属性时抛出。
+    - **TypeError** - 参数或输入类型错误。
+    - **ValueError** - 输入值错误。
+    - **AttributeError** - `underlying` 缺少必需的属性。
 
     .. py:method:: construct(x)
 
@@ -37,7 +37,7 @@ CV类工具。
 
         **返回：**
 
-        Tensor，如果 `set_train(True)` 被调用，将返回logits of softmax with temperature。而如果 `set_train(False)` 被调用，则返回分布外分数。返回的shape均为 :math:`(N, L)` ，L 是类数。
+        Tensor，如果 `set_train(True)` 被调用，将返回logits of softmax with temperature。而如果 `set_train(False)` 被调用，返回分布外分数。返回的shape均为 :math:`(N, L)` ，L 是类数。
 
     .. py:method:: get_train_parameters(train_underlying=False)
 
