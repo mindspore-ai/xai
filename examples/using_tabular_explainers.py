@@ -14,11 +14,10 @@
 # ============================================================================
 import numpy as np
 import mindspore as ms
-from mindspore import set_context, PYNATIVE_MODE
 import mindspore.nn as nn
 import sklearn.datasets
 
-from mindspore_xai.explainer import LIMETabular, SHAPGradient, SHAPKernel
+from mindspore_xai.explainer import LIMETabular, SHAPGradient, SHAPKernel, PseudoLinearCoef
 
 
 class LinearNet(nn.Cell):
@@ -82,8 +81,6 @@ if __name__ == "__main__":
             print("Explanation for sample {} class {}:".format(i, class_names[targets]))
             print(exp, '\n')
 
-    # Gradient only works under PYNATIVE_MODE.
-    set_context(mode=PYNATIVE_MODE)
     # initialize the explainer
     shap_gradient = SHAPGradient(net, data, feature_names=feature_names, class_names=class_names)
     # explain
@@ -93,3 +90,21 @@ if __name__ == "__main__":
         for exp in exps:
             print("Explanation for sample {} class {}:".format(i, class_names[targets]))
             print(exp, '\n')
+
+    # initialize the explainer
+    plc_explainer = PseudoLinearCoef(classifier=net, num_classes=len(class_names))
+    # explain
+    plc, relative_plc = plc_explainer(data)
+
+    print("Pseudo Linear Coef.:")
+    for target, target_name in enumerate(class_names):
+        print(f"class {target_name}")
+        print(str(plc[target]))
+
+    print("\nRelative Pseudo Linear Coef.:")
+    for target, target_name in enumerate(class_names):
+        for view_point, view_point_name in enumerate(class_names):
+            if target == view_point:
+                continue
+            print(f"{target_name} relative to {view_point_name}")
+            print(str(relative_plc[target, view_point]))

@@ -22,6 +22,7 @@ from .perturb.occlusion import Occlusion
 from .perturb.rise import RISE
 from .perturb.riseplus import RISEPlus
 from .perturb.lime import LIMETabular
+from .neighbor.pseudo_linear_coef import PseudoLinearCoef
 
 __all__ = [
     'Gradient',
@@ -33,5 +34,6 @@ __all__ = [
     'Occlusion',
     'RISE',
     'RISEPlus',
-    'LIMETabular'
+    'LIMETabular',
+    'PseudoLinearCoef'
 ]
