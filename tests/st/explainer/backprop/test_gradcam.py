@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""Tests of GradCAM of mindspore_xai.explanation."""
+"""Tests of GradCAM of mindspore_xai.explainer."""
 
 from unittest.mock import patch
 import numpy as np

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""Tests of perturbation explainers of xai.explanation."""
+"""Tests of perturbation explainers of xai.explainer."""
 
 import numpy as np
 from numpy import random
