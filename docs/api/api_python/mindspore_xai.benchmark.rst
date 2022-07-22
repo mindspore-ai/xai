@@ -16,19 +16,16 @@ mindspore_xai.benchmark
         .. note::
              目前，每个调用仅支持单个样本（ :math:`N=1` ）。
 
-        **参数：**
+        参数：
+            - **explainer** (Explainer) - 要评估的解释器，请参见 `mindspore_xai.explainer` 。
+            - **inputs** (Tensor) - 数据样本，shape为 :math:`(N, C, H, W)` 的4D Tensor。
 
-        - **explainer** (Explainer) - 要评估的解释器，请参见 `mindspore_xai.explainer` 。
-        - **inputs** (Tensor) - 数据样本，shape为 :math:`(N, C, H, W)` 的4D Tensor。
+        返回：
+            numpy.ndarray，shape为 :math:`(N,)` 的1D数组，为 `explainer` 的类敏感度评估结果。
 
-        **返回：**
-
-        numpy.ndarray，shape为 :math:`(N,)` 的1D数组，为 `explainer` 的类敏感度评估结果。
-
-        **异常：**
-
-        - **TypeError** - 参数或输入类型错误。
-        - **ValueError** - :math:`N` 不是1。
+        异常：
+            - **TypeError** - 参数或输入类型错误。
+            - **ValueError** - :math:`N` 不是1。
 
 .. py:class:: mindspore_xai.benchmark.Faithfulness(num_labels, activation_fn, metric="NaiveFaithfulness")
 
@@ -44,15 +41,13 @@ mindspore_xai.benchmark
 
     对于这三个指标，值越高表示忠诚度越高。
 
-    **参数：**
+    参数：
+        - **num_labels** (int) - 标签的数量。
+        - **activation_fn** (Cell) - 将logits转换为预测概率的激活层。单标签分类任务通常使用 `nn.Softmax` ，而多标签分类任务较常使用 `nn.Sigmoid` 。用户也可以将自定义的 `activation_fn` 与网络结合，而最终的输出便是输入的概率。
+        - **metric** (str, 可选) - 量化忠诚度的特定指标。可选项："DeletionAUC"，"InsertionAUC"，"NaiveFaithfulness"。默认值："NaiveFaithfulness"。
 
-    - **num_labels** (int) - 标签的数量。
-    - **activation_fn** (Cell) - 将logits转换为预测概率的激活层。单标签分类任务通常使用 `nn.Softmax` ，而多标签分类任务较常使用 `nn.Sigmoid` 。用户也可以将自定义的 `activation_fn` 与网络结合，而最终的输出便是输入的概率。
-    - **metric** (str, 可选) - 量化忠诚度的特定指标。可选项："DeletionAUC"，"InsertionAUC"，"NaiveFaithfulness"。默认值："NaiveFaithfulness"。
-
-    **异常：**
-
-    - **TypeError** - 参数或输入类型错误。
+    异常：
+        - **TypeError** - 参数或输入类型错误。
 
     .. py:method:: evaluate(explainer, inputs, targets, saliency=None)
 
@@ -61,21 +56,18 @@ mindspore_xai.benchmark
         .. note::
             目前，每个调用仅支持单个样本（ :math:`N=1` ）。
 
-        **参数：**
+        参数：
+            - **explainer** (Explainer) - 要评估的解释器，请参见 `mindspore_xai.explainer` 。
+            - **inputs** (Tensor) - 数据样本，shape为 :math:`(N, C, H, W)` 的4D Tensor。
+            - **targets** (Tensor, int) - 目标分类，1D/Scalar Tensor或integer。如果 `targets` 是1D Tensor，其长度应为 :math:`N` 。
+            - **saliency** (Tensor, 可选) - 要评估的热力图，shape为 :math:`(N, 1, H, W)` 的4D Tensor。如果设置为 `None` ，解析后的 `explainer` 将生成具有 `inputs` 和 `targets` 的热力图，并继续评估。默认值：`None`。
 
-        - **explainer** (Explainer) - 要评估的解释器，请参见 `mindspore_xai.explainer` 。
-        - **inputs** (Tensor) - 数据样本，shape为 :math:`(N, C, H, W)` 的4D Tensor。
-        - **targets** (Tensor, int) - 目标分类，1D/Scalar Tensor或integer。如果 `targets` 是1D Tensor，其长度应为 :math:`N` 。
-        - **saliency** (Tensor, 可选) - 要评估的热力图，shape为 :math:`(N, 1, H, W)` 的4D Tensor。如果设置为 `None` ，解析后的 `explainer` 将生成具有 `inputs` 和 `targets` 的热力图，并继续评估。默认值：`None`。
+        返回：
+            numpy.ndarray，shape为 :math:`(N,)` 的1D数组，为 `explainer` 的忠实度评估结果。
 
-        **返回：**
-
-        numpy.ndarray，shape为 :math:`(N,)` 的1D数组，为 `explainer` 的忠实度评估结果。
-
-        **异常：**
-
-        - **TypeError** - 参数或输入类型错误。
-        - **ValueError** - :math:`N` 不是1。
+        异常：
+            - **TypeError** - 参数或输入类型错误。
+            - **ValueError** - :math:`N` 不是1。
 
 .. py:class:: mindspore_xai.benchmark.Localization(num_labels, metric="PointingGame")
 
@@ -87,14 +79,12 @@ mindspore_xai.benchmark
 
     "IoSR"指标是边界框和显着区域的相交面积除以显着区域面积。显着区域是指显着值高于 :math:`\theta * \max{saliency}`。
 
-    **参数：**
+    参数：
+        - **num_labels** （int） - 数据集中的类数。
+        - **metric** （str，可选） - 计算定位性能力的特定指标。可选项："PointingGame"和"IoSR"。默认值："PointingGame"。
 
-    - **num_labels** （int） - 数据集中的类数。
-    - **metric** （str，可选） - 计算定位性能力的特定指标。可选项："PointingGame"和"IoSR"。默认值："PointingGame"。
-
-    **异常：**
-
-    - **TypeError** - 参数或输入类型错误。
+    异常：
+        - **TypeError** - 参数或输入类型错误。
 
     .. py:method:: evaluate(explainer, inputs, targets, saliency=None, mask=None)
 
@@ -102,37 +92,32 @@ mindspore_xai.benchmark
 
         .. note::
 
-             目前，每个调用仅支持单个样本（ :math:`N=1` ）。
+            目前，每个调用仅支持单个样本（ :math:`N=1` ）。
 
-        **参数：**
+        参数：
+            - **explainer** (Explainer) - 要评估的解释器，请参见 `mindspore_xai.explainer` 。
+            - **inputs** (Tensor) - 数据样本，shape为 :math:`(N, C, H, W)` 的4D Tensor。
+            - **targets** (Tensor, int) - 目标分类，1D/Scalar Tensor或integer。如果 `targets` 是1D Tensor，其长度应为 :math:`N` 。
+            - **saliency** (Tensor, 可选) - 要评估的热力图，shape为 :math:`(N, 1, H, W)` 的4D Tensor。如果设置为 `None` ，解析后的 `explainer` 将生成具有 `inputs` 和 `targets` 的热力图，并继续评估。默认值： `None` 。
+            - **mask** (Tensor,numpy.ndarray) - 基于 `targets` 给于 `inputs` 的ground truth边界框/掩码，4D Tensor或shape为 :math:`(N, 1, H, W)` 的 `numpy.ndarray` 。默认值： `None` 。
 
-        - **explainer** (Explainer) - 要评估的解释器，请参见 `mindspore_xai.explainer` 。
-        - **inputs** (Tensor) - 数据样本，shape为 :math:`(N, C, H, W)` 的4D Tensor。
-        - **targets** (Tensor, int) - 目标分类，1D/Scalar Tensor或integer。如果 `targets` 是1D Tensor，其长度应为 :math:`N` 。
-        - **saliency** (Tensor, 可选) - 要评估的热力图，shape为 :math:`(N, 1, H, W)` 的4D Tensor。如果设置为 `None` ，解析后的 `explainer` 将生成具有 `inputs` 和 `targets` 的热力图，并继续评估。默认值： `None` 。
-        - **mask** (Tensor,numpy.ndarray) - 基于 `targets` 给于 `inputs` 的ground truth边界框/掩码，4D Tensor或shape为 :math:`(N, 1, H, W)` 的 `numpy.ndarray` 。默认值： `None` 。
+        返回：
+            numpy.ndarray，shape为 :math:`(N,)` 的1D数组，为 `explainer` 的定位性评估结果。
 
-        **返回：**
-
-        numpy.ndarray，shape为 :math:`(N,)` 的1D数组，为 `explainer` 的定位性评估结果。
-
-        **异常：**
-
-        - **TypeError** - 参数或输入类型错误。
-        - **ValueError** - :math:`(N,)` 不是1。
+        异常：
+            - **TypeError** - 参数或输入类型错误。
+            - **ValueError** - :math:`(N,)` 不是1。
 
 .. py:class:: mindspore_xai.benchmark.Robustness(num_labels, activation_fn)
 
     鲁棒性 (Robustness) 通过添加随机噪音来扰动输入，并从扰动中选择最大灵敏度作为评估分数。
 
-    **参数：**
+    参数：
+        - **num_labels** (int) - 数据集中的类数。
+        - **activation_fn** (Cell) - 将logits转换为预测概率的激活层。单标签分类任务通常使用 `nn.Softmax` ，而多标签分类任务较常使用 `nn.Sigmoid` 。用户也可以将自定义的 `activation_fn` 与网络结合，最终的输出便是输入的概率。
 
-    - **num_labels** (int) - 数据集中的类数。
-    - **activation_fn** (Cell) - 将logits转换为预测概率的激活层。单标签分类任务通常使用 `nn.Softmax` ，而多标签分类任务较常使用 `nn.Sigmoid` 。用户也可以将自定义的 `activation_fn` 与网络结合，最终的输出便是输入的概率。
-
-    **异常：**
-
-    - **TypeError** - 参数或输入类型错误。
+    异常：
+        - **TypeError** - 参数或输入类型错误。
 
     .. py:method:: evaluate(explainer, inputs, targets, saliency=None)
 
@@ -142,18 +127,15 @@ mindspore_xai.benchmark
 
             目前，每个调用仅支持单个样本（ :math:`N=1` ）。
 
-        **参数：**
+        参数：
+            - **explainer** (Explainer) - 要评估的解释器，请参见 `mindspore_xai.explainer` 。
+            - **inputs** (Tensor) - 数据样本，shape为 :math:`(N, C, H, W)` 的4D Tensor。
+            - **targets** (Tensor, int) - 目标分类，1D/Scalar Tensor或integer。如果 `targets` 是1D Tensor，其长度应为 :math:`N`。
+            - **saliency** (Tensor, 可选) - 要评估的热力图，shape为 :math:`(N, 1, H, W)` 的4D Tensor。如果设置为 `None` ，解析后的 `explainer` 将生成具有 `inputs` 和 `targets` 的热力图，并继续评估。默认值： `None` 。
 
-        - **explainer** (Explainer) - 要评估的解释器，请参见 `mindspore_xai.explainer` 。
-        - **inputs** (Tensor) - 数据样本，shape为 :math:`(N, C, H, W)` 的4D Tensor。
-        - **targets** (Tensor, int) - 目标分类，1D/Scalar Tensor或integer。如果 `targets` 是1D Tensor，其长度应为 :math:`N`。
-        - **saliency** (Tensor, 可选) - 要评估的热力图，shape为 :math:`(N, 1, H, W)` 的4D Tensor。如果设置为 `None` ，解析后的 `explainer` 将生成具有 `inputs` 和 `targets` 的热力图，并继续评估。默认值： `None` 。
+        返回：
+            numpy.ndarray，shape为 :math:`(N,)` 的1D数组，为 `explainer` 的鲁棒性评估结果。
 
-        **返回：**
-
-        numpy.ndarray，shape为 :math:`(N,)` 的1D数组，为 `explainer` 的鲁棒性评估结果。
-
-        **异常：**
-
-        - **TypeError** - 参数或输入类型错误。
-        - **ValueError** - :math:`N` 不是1。
+        异常：
+            - **TypeError** - 参数或输入类型错误。
+            - **ValueError** - :math:`N` 不是1。
