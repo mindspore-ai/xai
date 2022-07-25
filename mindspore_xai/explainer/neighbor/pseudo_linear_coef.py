@@ -19,6 +19,7 @@ import mindspore as ms
 from mindspore import nn
 from mindspore import ops
 from mindspore import ms_function
+import mindspore.numpy as mnp
 import numpy as np
 
 from mindspore_xai.tool.tab.neighbor import SimpleNN
@@ -124,18 +125,18 @@ class PseudoLinearCoef:
 
             \vec{S}(A,a,x)=\left\{\begin{matrix}
             \vec{0} & \text{if }f_A(x)\geq \xi \\
-            \sqrt{K}\cdot \frac{a-x}{\left \| a-x \right \|} & \text{if }f_A(\cdot )\text{ is a step function}\\
-            K\cdot \frac{(a-x)(f_{A}(a)-f_A(x))}{\left \| a-x \right \|^{2}\int_{0}^{1}h(f_A(u(t)))dt} & \text{else}
+            \frac{a-x}{\left \| a-x \right \|} & \text{if }f_A(\cdot )\text{ is a step function}\\
+            \frac{(a-x)(f_{A}(a)-f_A(x))}{\left \| a-x \right \|^{2}\int_{0}^{1}h(f_A(u(t)))dt} & \text{else}
             \end{matrix}\right.
 
             u(t)=ta+(1-t)x
 
             h(f_{A})=-f_{A}log_2(f_{A})-(1-f_A)log_2(1-f_A)
 
-        :math:`G` is the universal sample set, :math:`K` is the number of features, :math:`f_A(\cdot )` is the
-        predicted probability of class A, :math:`\xi ` is the decision threshold (usually 0.5). :math:`p_{\neg A}` and
-        :math:`p_{B}` are the PDF of sample's distribution of non A class(es) and class B representatively.
-        Beware that the ground truth labels take no part in PLC, a sample's classes are determined by the classifier.
+        :math:`G` is the universal sample set, :math:`f_A(\cdot )` is the predicted probability of class A,
+        :math:`\xi ` is the decision threshold (usually 0.5). :math:`p_{\neg A}` and :math:`p_{B}` are the PDF of
+        sample's distribution of non A class(es) and class B representatively. Beware that the ground truth labels take
+        no part in PLC, a sample's classes are determined by the classifier.
 
         Note:
             If `classifier` is a function, `stepwise` is `False` and it is running in graph mode then
@@ -145,8 +146,8 @@ class PseudoLinearCoef:
 
         Args:
             classifier (Cell, Callable): The classifier :math:`f(\cdot )` to be explained, it must take an input tensor
-            with shape :math:`(N, K)` and output a probability tensor with shape :math:`(N, L)`. Both input and output
-            tensors should has dtype `ms.float32`.
+            with shape :math:`(N, K)` and output a probability tensor with shape :math:`(N, L)`. :math:`K` is the
+            number of features,Both input and output tensors should has dtype `ms.float32`.
             num_classes (int): The number of classes :math:`L`.
             stepwise (bool): Set to `True` if `classifier` outputs 0s and 1s only. Default: `False`.
             threshold (float): Decision threshold :math:`\xi` of classification. Default: 0.5.
@@ -194,6 +195,8 @@ class PseudoLinearCoef:
             >>> explainer = PseudoLinearCoef(classifier, num_classes=3)
             >>> features = ms.Tensor(np.random.uniform(size=(10000, 5)), dtype=ms.float32)  # 5 features
             >>> plc, relative_plc = explainer(features)
+            >>> plc = PseudoLinearCoef.normalize(plc)
+            >>> relative_plc = PseudoLinearCoef.normalize(relative_plc, inner_vec=True)
             >>> print(str(plc.shape))
             (3, 5)
             >>> print(str(relative_plc.shape))
@@ -237,6 +240,34 @@ class PseudoLinearCoef:
 
         return plc, relative_plc
 
+    @classmethod
+    def normalize(cls, plc, inner_vec=False, eps=1e-9):
+        """
+        Normalize Pseudo Linear Coefficients to range [-1, 1].
+
+        Args:
+            plc (Tensor): The values to be normalized, can be any arbitrary slice of the output PLC or Relative PLC.
+            inner_vec (bool): Normalize within each PLC vector. Default: False.
+            eps (float): Epsilon. Default: 1e-9.
+
+        Returns:
+            Tensor, the normalized values.
+        """
+        if inner_vec:
+            shape = plc.shape[:-1]
+            vec_count = np.prod(shape)
+            normalized = ms.Tensor(plc)
+            for vec_idx in range(vec_count):
+                index = mnp.unravel_index(vec_idx, shape)
+                vec = plc[index]
+                normalized[index] = cls.normalize(vec, inner_vec=False, eps=eps)
+            return normalized
+
+        scale = plc.abs().max()
+        if scale > eps:
+            return plc / scale
+        return plc
+
     def _relative(self, target, view_point, features, nn_finder):
         """Compute Relative PLC."""
         vp_samples_count = nn_finder.sample_count(view_point)
@@ -249,7 +280,7 @@ class PseudoLinearCoef:
         nearests = nn_finder(queries, target)
 
         if self._stepwise:
-            return self._computer(queries, nearests) * np.sqrt(features.shape[1])
+            return self._computer(queries, nearests)
 
         plc_sum = _zeros(features.shape[1], ms.float32)
         target = ms.Tensor(target, dtype=ms.int32)
@@ -257,4 +288,4 @@ class PseudoLinearCoef:
                                    desc=f'Class {target} Relative to Class {view_point}'):
             plc_sum = self._computer(target, query, nearest, plc_sum)
 
-        return plc_sum * features.shape[1] / queries.shape[0]
+        return plc_sum / queries.shape[0]
