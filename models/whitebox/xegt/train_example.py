@@ -24,18 +24,19 @@ from mindspore import nn
 from mindspore import ops
 from sklearn.metrics import roc_auc_score, precision_recall_fscore_support
 
-from src.xegt import XEGT, LossNet, InputCompiler
+from src.xegt import XEGT, LossNet, TrainOneStepCellWithGradClipping, InputCompiler
 from src.graph import GraphTopo
 
 
 EPOCHS = 3
 NUM_NODE_FEAT = 16
-NUM_CLASSES = 8
+NUM_HIDDEN_DIM = 64
+NUM_CLASSES = 3
 BATCH_SIZE = 1000
 LR = 0.001
 
-graph = GraphTopo.random(num_nodes=10000,
-                         num_edges=50000,
+graph = GraphTopo.random(num_nodes=2000,
+                         num_edges=5000,
                          num_node_types=8,
                          num_edge_types=3)
 edge_lookup = graph.build_edge_lookup()
@@ -49,13 +50,13 @@ def train_xegt():
     xegt = XEGT(num_node_types=graph.num_node_types,
                 num_edge_types=graph.num_edge_types,
                 num_node_feat=NUM_NODE_FEAT,
-                hidden_size=64,
+                hidden_size=NUM_HIDDEN_DIM,
                 output_size=NUM_CLASSES)
     loss_net = LossNet(xegt)
     optimizer = nn.optim.AdamWeightDecay(xegt.trainable_params(), learning_rate=LR)
-    train_net = nn.TrainOneStepCell(loss_net, optimizer)
+    train_net = TrainOneStepCellWithGradClipping(loss_net, optimizer, clip_val=0.1)
 
-    compiler = InputCompiler(max_num_nodes=20000, max_per_type_num_edges=20000)
+    compiler = InputCompiler(max_num_nodes=2000, max_per_type_num_edges=2000)
     softmax = ops.Softmax()
 
     for epoch in range(EPOCHS):
@@ -72,7 +73,8 @@ def train_xegt():
             h = node_features[list(node_map.keys())]
             inputs = compiler.compile(h, subgraph, out_nidx)
 
-            last_loss = train_net(*inputs, ms.Tensor(ground_truths[centers]))
+            labels = ms.Tensor(ground_truths[centers])
+            last_loss = train_net(*inputs, labels)
 
         elapsed = time.time() - start
         print(f"train loss:{last_loss} elapsed: {elapsed}s")
@@ -99,14 +101,14 @@ def train_xegt():
         acc = (test_preds == test_truths).sum() / test_truths.shape[0]
         print(f"test accuracy:{acc}")
 
+        if NUM_CLASSES == 2:
+            test_probs = test_probs[:, 1]
         auc = roc_auc_score(test_truths, test_probs, multi_class='ovr')
         print(f"test roc auc:{auc}")
 
         pre, rec, f1, sup = precision_recall_fscore_support(test_truths, test_preds)
-        print(f"test precision:{pre}")
-        print(f"recall:{rec}")
-        print(f"f1-score:{f1}")
-        print(f"support:{sup}")
+        print(f"test precision:\n", pre, "\ntest recall:\n", rec,
+              "\ntest f1-score:\n", f1, "\ntest support:\n", sup)
 
 
 if __name__ == '__main__':

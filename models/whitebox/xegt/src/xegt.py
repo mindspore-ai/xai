@@ -13,9 +13,8 @@
 # limitations under the License.
 # ============================================================================
 """eXplainable Embedding Graph Transformer."""
-import math
-
 import mindspore as ms
+import mindspore.ops.functional as F
 from mindspore import nn, Tensor
 from mindspore.common.initializer import initializer
 from mindspore.common.initializer import XavierUniform
@@ -26,21 +25,9 @@ _EPS = 1e-9
 clip_grad = ms.ops.MultitypeFuncGraph("clip_grad")
 
 
-@clip_grad.register("Number", "Tensor")
+@clip_grad.register("Tensor", "Tensor")
 def _clip_grad(clip_value, grad):
-    """
-    Clip gradients.
-
-    Inputs:
-        clip_value (float): Specifies how much to clip.
-        grad (tuple[Tensor]): Gradients.
-
-    Outputs:
-        tuple[Tensor], clipped gradients.
-    """
-    dt = ms.ops.dtype(grad)
-    new_grad = ms.nn.ClipByNorm()(grad, ms.ops.cast(ms.ops.tuple_to_array((clip_value,)), dt))
-    return new_grad
+    return ms.ops.clip_by_value(grad, -clip_value, clip_value)
 
 
 class HomoHGTLayer(GNNCell):
@@ -48,7 +35,7 @@ class HomoHGTLayer(GNNCell):
 
     def __init__(self, n_heads, d_k):
         super().__init__()
-        gain = math.sqrt(2)
+        gain = np.sqrt(2)
         self.pri = ms.Parameter(ms.ops.Ones()((n_heads, 1), ms.float32))
         self.msg = ms.Parameter(initializer(XavierUniform(gain), [n_heads, d_k * d_k], ms.float32),
                                 name="relation_msg")
@@ -56,14 +43,14 @@ class HomoHGTLayer(GNNCell):
                                 name="relation_att")
         self.n_heads = n_heads
         self.d_k = d_k
-        self.sqrt_dk = math.sqrt(d_k)
+        self.sqrt_dk = np.sqrt(d_k)
         self.exp = ms.ops.Exp()
         self.reduce_sum = ms.ops.ReduceSum(keep_dims=True)
         self.reduce = ms.ops.ReduceMax(keep_dims=True)
         self.norm = ms.ops.Div()
 
     def construct(self, k, v, q, edge_mask, g: Graph):
-        """homo HGT layer forward"""
+        """homo HGT layer forward."""
         k_tran = ms.ops.Transpose()(ms.ops.BatchMatMul()(ms.ops.Transpose()(k, (1, 0, 2)),
                                                          ms.ops.Reshape()(self.att, (-1, self.d_k, self.d_k))),
                                     (1, 0, 2))
@@ -88,7 +75,7 @@ class HomoHGTLayer(GNNCell):
 
 
 class HeteroHGTLayer(nn.Cell):
-    """Hetero HGT layer"""
+    """Hetero HGT layer."""
 
     def __init__(self,
                  num_node_types: int,
@@ -166,7 +153,7 @@ class HeteroHGTLayer(nn.Cell):
                                      src_idx, dst_idx, num_nodes, num_edges)
             out += ret
 
-        new_h = ms.ops.Zeros()(ms.ops.Shape()(h), ms.float32)
+        new_h = ms.ops.Zeros()(h.shape, ms.float32)
 
         for ntype in range(self.num_ntypes):
             nidx = pt_nidx[ntype]
@@ -181,7 +168,7 @@ class HeteroHGTLayer(nn.Cell):
             else:
                 new_h[nidx] = trans_out
 
-        return h
+        return new_h
 
 
 class XEGT(nn.Cell):
@@ -246,8 +233,7 @@ class XEGT(nn.Cell):
         h_edge_nets = [ms.nn.Dense(emb_channels, emb_channels), relu,
                        ms.nn.Dense(emb_channels, 1)]
         self.h_edge_nets = ms.nn.SequentialCell(h_edge_nets)
-        self.one = Tensor(1.0, ms.float32)
-        self.zero = Tensor(0.0, ms.float32)
+        self.one_hot = ms.nn.OneHot(depth=num_edge_types)
 
     def construct(self, h, adj, etype, pt_nidx, pt_adj, pt_eidx, out_nidx):
         """Forward."""
@@ -276,11 +262,12 @@ class XEGT(nn.Cell):
         src_feat = h[src_idx]
         dst_feat = h[dst_idx]
 
-        one_hot = ms.ops.OneHot()
-        etype_onehot = one_hot(etype, pt_eidx.shape[0], self.one, self.zero)
+        etype_onehot = self.one_hot(etype)
         concat = ms.ops.Concat(1)
         edge_emb = concat((src_feat, dst_feat, etype_onehot))
         edge_mask = self.h_edge_nets(edge_emb)
+        # append a 0 for the dummy edge
+        edge_mask = ms.ops.Concat(0)((edge_mask.squeeze(), ms.ops.Zeros()((1, ), ms.float32)))
 
         # 2nd pass
         new_h = ms.ops.Zeros()((ms.ops.Shape()(h)[0], self.hidden_size), ms.float32)
@@ -293,7 +280,7 @@ class XEGT(nn.Cell):
             # another set of conv layer
             new_h = self.layers2[i](new_h, pt_nidx, pt_adj, edge_mask, pt_eidx)
 
-        out_h = self.gather(new_h, out_nidx, 0)
+        out_h = new_h[out_nidx]
         out = self.out(out_h)
 
         return out, h_atts, edge_mask
@@ -312,6 +299,25 @@ class LossNet(nn.Cell):
         predict, atts, edge_w = self.net(h, adj, etype, pt_nidx, pt_adj, pt_eidx, out_nidx)
         loss = self.loss_fn(predict, ground_truth)
         return loss
+
+
+class TrainOneStepCellWithGradClipping(ms.nn.TrainOneStepCell):
+    """Train one step with gradient clipping."""
+    def __init__(self, net, optimizer, clip_val=1.0):
+        super().__init__(net, optimizer)
+        self.clip_val = Tensor(clip_val, dtype=ms.float32)
+        self.hyper_map = ms.ops.HyperMap()
+        self.one = Tensor(1.0, dtype=ms.float32)
+
+    def construct(self, h, adj, etype, pt_nidx, pt_adj, pt_eidx, out_nidx, ground_truth):
+        weights = self.weights
+        loss = self.network(h, adj, etype, pt_nidx, pt_adj, pt_eidx, out_nidx, ground_truth)
+        grads = self.grad(self.network, weights)(h, adj, etype, pt_nidx, pt_adj, pt_eidx,
+                                                 out_nidx, ground_truth, self.one)
+        grads = self.hyper_map(F.partial(clip_grad, self.clip_val), grads)
+        grads = self.grad_reducer(grads)
+        succ = self.optimizer(grads)
+        return F.depend(loss, succ)
 
 
 class InputCompiler:
@@ -374,6 +380,7 @@ class InputCompiler:
         max_num_nodes = self.max_num_nodes
         max_per_type_num_edges = self.max_per_type_num_edges
         dum_node_idx = max_num_nodes
+        dum_edge_idx = edge_in_len * graph.num_edge_types
 
         self._nodes_trimmed = False
         self._edges_trimmed = False
@@ -393,9 +400,8 @@ class InputCompiler:
                 else:
                     assign_len = graph.per_type_num_nodes[i]
                 pt_nidx[i, 0:assign_len] = graph.per_type_node_idxs[i][0:assign_len]
-        if graph.num_nodes > max_num_nodes:
-            pt_nidx[pt_nidx >= max_num_nodes] = dum_node_idx
-        pt_nidx = ms.Tensor(pt_nidx, dtype=ms.int32)
+        pt_nidx[pt_nidx > dum_node_idx] = dum_node_idx
+        pt_nidx = Tensor(pt_nidx, dtype=ms.int32)
 
         pt_adj = np.full((graph.num_edge_types, 2, edge_in_len), dum_node_idx, dtype=np.int32)
         for i in range(graph.num_edge_types):
@@ -408,12 +414,10 @@ class InputCompiler:
                 else:
                     assign_len = edge_idxs.shape[0]
                 pt_adj[i, :, 0:assign_len] = graph.adj[:, edge_idxs]
-        if graph.num_nodes > max_num_nodes:
-            pt_adj[pt_adj >= max_num_nodes] = dum_node_idx
-        pt_adj = ms.Tensor(pt_adj, dtype=ms.int32)
+        pt_adj[pt_adj > dum_node_idx] = dum_node_idx
+        pt_adj = Tensor(pt_adj, dtype=ms.int32)
 
-        dummy_edge_idx = edge_in_len
-        pt_eidx = np.full((graph.num_edge_types, edge_in_len), dummy_edge_idx, dtype=np.int32)
+        pt_eidx = np.full((graph.num_edge_types, edge_in_len), dum_edge_idx, dtype=np.int32)
         for i, idxs in enumerate(graph.per_type_edge_idxs):
             if idxs.shape[0] > 0:
                 if edge_in_len < idxs.shape[0]:
@@ -423,33 +427,31 @@ class InputCompiler:
                     assign_len = idxs.shape[0]
                     edge_idxs = idxs[0:assign_len]
                 pt_eidx[i, 0:assign_len] = edge_idxs
-        if graph.num_nodes > max_num_nodes:
-            pt_eidx[pt_eidx >= max_num_nodes] = dum_node_idx
-        pt_eidx = ms.Tensor(pt_eidx, dtype=ms.int32)
+        pt_eidx[pt_eidx > dum_edge_idx] = dum_edge_idx
+        pt_eidx = Tensor(pt_eidx, dtype=ms.int32)
 
         if node_feat.shape[0] > max_num_nodes:
             node_feat = node_feat[0:max_num_nodes]
             self._nodes_trimmed = True
         h = np.concatenate((node_feat, np.zeros((node_in_len - node_feat.shape[0], node_feat.shape[1]))))
-        h = ms.Tensor(h, dtype=ms.float32)
+        h = Tensor(h, dtype=ms.float32)
 
         adj = np.full((2, edge_in_len * graph.num_edge_types), dum_node_idx, dtype=np.int32)
         size = min(adj.shape[1], graph.adj.shape[1])
         adj[:, 0:size] = graph.adj[:, 0:size]
-        if graph.num_nodes > max_num_nodes:
-            adj[adj >= max_num_nodes] = dum_node_idx
-        adj = ms.Tensor(adj, dtype=ms.int32)
+        adj[adj > dum_node_idx] = dum_node_idx
+        adj = Tensor(adj, dtype=ms.int32)
 
         etype = np.zeros(edge_in_len * graph.num_edge_types, dtype=np.int32)
         size = min(etype.shape[0], graph.edge_types.shape[0])
         etype[0:size] = graph.edge_types[0:size]
-        etype = ms.Tensor(etype, dtype=ms.int32)
+        etype = Tensor(etype, dtype=ms.int32)
 
-        if isinstance(out_node_idxs, ms.Tensor):
+        if isinstance(out_node_idxs, Tensor):
             out_nidx = out_node_idxs
         else:
             if not isinstance(out_node_idxs, (tuple, list, np.ndarray)):
                 out_node_idxs = (out_node_idxs,)
-            out_nidx = ms.Tensor(out_node_idxs, ms.int32)
+            out_nidx = Tensor(out_node_idxs, ms.int32)
 
         return h, adj, etype, pt_nidx, pt_adj, pt_eidx, out_nidx
