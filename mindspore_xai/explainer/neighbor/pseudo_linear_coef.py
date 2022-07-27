@@ -19,7 +19,6 @@ import mindspore as ms
 from mindspore import nn
 from mindspore import ops
 from mindspore import ms_function
-import mindspore.numpy as mnp
 import numpy as np
 
 from mindspore_xai.tool.tab.neighbor import SimpleNN
@@ -104,6 +103,8 @@ class PseudoLinearCoef:
         PLC is a global attribution method, it is a measure of feature sensitivities around the classifier's decision
         boundaries from the data distribution's point of view.
 
+        Authors: NG Ngai Fai, WANG Shendi, LI Xiaohui (2022 Huawei)
+
         PLC of class A:
 
         .. math::
@@ -161,12 +162,12 @@ class PseudoLinearCoef:
 
         Inputs:
             - **features** (Tensor) - The universal sample set :math:`G`. Practically, it is often the training set or
-            its random subset. The shape must be :math:`(|G|, K)`, :math:`|G|` is the total number of samples.
+              its random subset. The shape must be :math:`(|G|, K)`, :math:`|G|` is the total number of samples.
 
         Outputs:
             - **plc** (Tensor) - Pseudo Linear Coefficients in shape of :math:`(L, K)`.
-            - **relative plc** (Tensor) - Relative Pseudo Linear Coefficients in shape of :math:`(L, L, K)`. The
-            first :math:`L` axis is for the target classes and the second one is for the view point classes.
+            - **relative plc** (Tensor) - Relative Pseudo Linear Coefficients in shape of :math:`(L, L, K)`. The first
+              :math:`L` axis is for the target classes and the second one is for the view point classes.
 
         Raises:
             TypeError: Be raised for any argument or input type problem.
@@ -184,19 +185,17 @@ class PseudoLinearCoef:
             >>> from mindspore_xai.explainer import PseudoLinearCoef
             >>>
             >>> class Classifier(nn.Cell):
-            >>>     def construct(self, x):
-            >>>         y = ops.Zeros()((x.shape[0], 3), ms.float32)
-            >>>         y[:, 0] = -x[:, 0] + x[:, 1] + x[: ,2] - 0.5
-            >>>         y[:, 1] =  x[:, 0] - x[:, 1] + x[: ,2] - 0.5
-            >>>         y[:, 2] =  x[:, 0] + x[:, 1] - x[: ,2] - 0.5
-            >>>         return ops.Sigmoid()(y * 10)
+            ...     def construct(self, x):
+            ...         y = ops.Zeros()((x.shape[0], 3), ms.float32)
+            ...         y[:, 0] = -x[:, 0] + x[:, 1] + x[: ,2] - 0.5
+            ...         y[:, 1] =  x[:, 0] - x[:, 1] + x[: ,2] - 0.5
+            ...         y[:, 2] =  x[:, 0] + x[:, 1] - x[: ,2] - 0.5
+            ...         return ops.Sigmoid()(y * 10)
             >>>
             >>> classifier = Classifier()
             >>> explainer = PseudoLinearCoef(classifier, num_classes=3)
             >>> features = ms.Tensor(np.random.uniform(size=(10000, 5)), dtype=ms.float32)  # 5 features
             >>> plc, relative_plc = explainer(features)
-            >>> plc = PseudoLinearCoef.normalize(plc)
-            >>> relative_plc = PseudoLinearCoef.normalize(relative_plc, inner_vec=True)
             >>> print(str(plc.shape))
             (3, 5)
             >>> print(str(relative_plc.shape))
@@ -241,27 +240,42 @@ class PseudoLinearCoef:
         return plc, relative_plc
 
     @classmethod
-    def normalize(cls, plc, inner_vec=False, eps=1e-9):
-        """
+    def normalize(cls, plc, per_vec=False, eps=1e-9):
+        r"""
         Normalize Pseudo Linear Coefficients to range [-1, 1].
 
+        Warning:
+            Normalizing PLC from unnormalized features may lead to misleading results.
+
         Args:
-            plc (Tensor): The values to be normalized, can be any arbitrary slice of the output PLC or Relative PLC.
-            inner_vec (bool): Normalize within each PLC vector. Default: False.
+            plc (Tensor): The PLC or Relative PLC to be normalized.
+            per_vec (bool): Normalize within each :math:`\vec{R}` vector. Default: False.
             eps (float): Epsilon. Default: 1e-9.
 
         Returns:
             Tensor, the normalized values.
+
+        Examples:
+            >>> from mindspore import Tensor
+            >>> from mindspore_xai.explainer import PseudoLinearCoef
+            >>>
+            >>> plc = Tensor([[0.1, 0.6, 0.8], [-2, 0.2, 0.4], [0.4, 0.1, -0.1]])
+            >>> PseudoLinearCoef.normalize(plc)
+            [[ 0.05  0.3   0.4 ]
+             [-1.    0.1   0.2 ]
+             [ 0.2   0.05 -0.05]]
+            >>> PseudoLinearCoef.normalize(plc, per_vec=True)
+            [[ 0.125  0.75   1.   ]
+             [-1.     0.1    0.2  ]
+             [ 1.     0.25  -0.25 ]]
         """
-        if inner_vec:
-            shape = plc.shape[:-1]
-            vec_count = np.prod(shape)
-            normalized = ms.Tensor(plc)
-            for vec_idx in range(vec_count):
-                index = mnp.unravel_index(vec_idx, shape)
-                vec = plc[index]
-                normalized[index] = cls.normalize(vec, inner_vec=False, eps=eps)
-            return normalized
+        if not plc.shape:
+            return plc
+
+        if per_vec and plc.shape[-1] > 0:
+            scale = plc.abs().max(axis=-1, keepdims=True)
+            scale = scale.masked_fill(scale < eps, 1)
+            return plc / scale
 
         scale = plc.abs().max()
         if scale > eps:
