@@ -147,8 +147,8 @@ class PseudoLinearCoef:
 
         Args:
             classifier (Cell, Callable): The classifier :math:`f(\cdot )` to be explained, it must take an input tensor
-            with shape :math:`(N, K)` and output a probability tensor with shape :math:`(N, L)`. :math:`K` is the
-            number of features,Both input and output tensors should has dtype `ms.float32`.
+                with shape :math:`(N, K)` and output a probability tensor with shape :math:`(N, L)`. :math:`K` is the
+                number of features,Both input and output tensors should has dtype `ms.float32`.
             num_classes (int): The number of classes :math:`L`.
             stepwise (bool): Set to `True` if `classifier` outputs 0s and 1s only. Default: `False`.
             threshold (float): Decision threshold :math:`\xi` of classification. Default: 0.5.
