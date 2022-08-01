@@ -99,6 +99,12 @@ class GraphTopo:
         else:
             self.edge_types = np.array(edge_types, dtype=self._tdtype)
 
+        if self.node_types is not None and self.node_types.size == 0:
+            self.node_types = None
+
+        if self.edge_types is not None and self.edge_types.size == 0:
+            self.edge_types = None
+
         if num_nodes >= 0:
             self._num_nodes = num_nodes
         elif self.node_types is not None:
@@ -238,15 +244,16 @@ class GraphTopo:
                 if lookup_begins[node_idx] >= lookup_begins[node_idx + 1]:
                     continue
                 edges = lookup_idxs[lookup_begins[node_idx]:lookup_begins[node_idx + 1]]
-                edge_subsets.append(edges)
-                new_node_idxs.append(remote[edges])
-            node_idxs = np.concatenate(new_node_idxs)
-            if node_idxs.shape[0] == 0:
+                if edges.size:
+                    edge_subsets.append(edges)
+                    new_node_idxs.append(remote[edges])
+            if not new_node_idxs:
                 break
+            node_idxs = np.concatenate(new_node_idxs)
             node_subsets.append(node_idxs)
 
         node_subset = np.unique(np.concatenate(node_subsets))
-        edge_subset = np.unique(np.concatenate(edge_subsets))
+        edge_subset = np.unique(np.concatenate(edge_subsets)) if edge_subsets else np.array([], dtype=int)
 
         subgraph_adj = self.adj[:, edge_subset]
 

@@ -442,10 +442,13 @@ class InputCompiler:
         adj[adj > dum_node_idx] = dum_node_idx
         adj = Tensor(adj, dtype=ms.int32)
 
-        etype = np.zeros(edge_in_len * graph.num_edge_types, dtype=np.int32)
-        size = min(etype.shape[0], graph.edge_types.shape[0])
-        etype[0:size] = graph.edge_types[0:size]
-        etype = Tensor(etype, dtype=ms.int32)
+        if graph.edge_types is None:
+            etype = ms.ops.Zeros()(edge_in_len * graph.num_edge_types, ms.int32)
+        else:
+            etype = np.zeros(edge_in_len * graph.num_edge_types, dtype=np.int32)
+            size = min(etype.shape[0], graph.edge_types.shape[0])
+            etype[0:size] = graph.edge_types[0:size]
+            etype = Tensor(etype, dtype=ms.int32)
 
         if isinstance(out_node_idxs, Tensor):
             out_nidx = out_node_idxs
