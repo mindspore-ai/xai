@@ -29,10 +29,10 @@ class SHAPKernel(_SHAP):
     Uses the Kernel SHAP method to explain the output of any function.
 
     Args:
-        predictor (Callable): The black-box model to be explained, should be a callable function. For classification
-            model, it accepts a 2D array/tensor of shape :math:`(N, K)` as input and outputs a 2D array/tensor of
-            shape :math:`(N, L)`. For regression model, it accepts a 2D array/tensor of shape :math:`(N, K)` as input
-            and outputs a 1D array/tensor of shape :math:`(N)`.
+        predictor (Cell, Callable): The black-box model to be explained, should be a `Cell` object or function. For
+            classification model, it accepts a 2D array/tensor of shape :math:`(N, K)` as input and outputs a 2D
+            array/tensor of shape :math:`(N, L)`. For regression model, it accepts a 2D array/tensor of shape
+            :math:`(N, K)` as input and outputs a 1D array/tensor of shape :math:`(N)`.
         features (Tensor, numpy.ndarray): 2D tensor or 2D numpy array of shape :math:`(N, K)` (N being the number of
             samples, K being the number of features). The background dataset to use for integrating out features,
             accept (whole or part of) training dataset.
@@ -88,7 +88,7 @@ class SHAPKernel(_SHAP):
 
     def __init__(self, predictor, features, feature_names=None, class_names=None, num_neighbours=5000, max_features=10):
         if not callable(predictor):
-            raise ValueError("predictor must be callable.")
+            raise ValueError("predictor must be Cell object or function.")
         check_value_type("features", features, [ms.Tensor, np.ndarray])
         check_value_type("num_neighbours", num_neighbours, int)
         check_value_type("max_features", max_features, int)

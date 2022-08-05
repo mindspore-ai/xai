@@ -50,7 +50,7 @@ class OoDNet(nn.Cell):
     """
     Out of distribution network.
 
-    OoDNet takes a underlying classifier and outputs the out of distribution scores of samples.
+    OoDNet takes an underlying classifier and outputs the out of distribution scores of samples.
 
     Note:
         A training of OoDNet is required with the classifier's training dataset inorder to give the correct OoD scores.

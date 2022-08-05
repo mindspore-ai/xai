@@ -15,6 +15,7 @@
 """GradCAM."""
 
 from mindspore.ops import operations as op
+from mindspore import get_context, PYNATIVE_MODE
 
 from mindspore_xai.common.utils import ForwardProbe, retrieve_layer, unify_inputs, unify_targets
 from .backprop_utils import GradNet
@@ -89,6 +90,7 @@ class GradCAM(IntermediateLayerAttribution):
         >>> from mindspore_xai.explainer import GradCAM
         >>> from mindspore import set_context, PYNATIVE_MODE
         >>>
+        >>> # only PYNATIVE_MODE is supported
         >>> set_context(mode=PYNATIVE_MODE)
         >>> # The detail of LeNet5 is shown in model_zoo.official.cv.lenet.src.lenet.py
         >>> net = LeNet5(10, num_channel=3)
@@ -113,6 +115,9 @@ class GradCAM(IntermediateLayerAttribution):
         self._resize_mode = 'bilinear'
 
     def _hook_cell(self):
+        if get_context("mode") != PYNATIVE_MODE:
+            raise TypeError(f"Hook is not supported in graph mode currently, you can use"
+                            f"'set_context(mode=PYNATIVE_MODE)'to set pynative mode.")
         if self._saliency_cell:
             self._saliency_cell.register_backward_hook(self._cell_hook_fn)
             self._saliency_cell.enable_hook = True

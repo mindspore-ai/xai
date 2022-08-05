@@ -135,7 +135,7 @@ class PseudoLinearCoef:
             h(f_{A})=-f_{A}log_2(f_{A})-(1-f_A)log_2(1-f_A)
 
         :math:`G` is the universal sample set, :math:`f_A(\cdot )` is the predicted probability of class A,
-        :math:`\xi ` is the decision threshold (usually 0.5). :math:`p_{\neg A}` and :math:`p_{B}` are the PDF of
+        :math:`\xi` is the decision threshold (usually 0.5). :math:`p_{\neg A}` and :math:`p_{B}` are the PDF of
         sample's distribution of non A class(es) and class B representatively. Beware that the ground truth labels take
         no part in PLC, a sample's classes are determined by the classifier.
 
@@ -148,7 +148,7 @@ class PseudoLinearCoef:
         Args:
             classifier (Cell, Callable): The classifier :math:`f(\cdot )` to be explained, it must take an input tensor
                 with shape :math:`(N, K)` and output a probability tensor with shape :math:`(N, L)`. :math:`K` is the
-                number of features,Both input and output tensors should has dtype `ms.float32`.
+                number of features. Both input and output tensors should has dtype `ms.float32`.
             num_classes (int): The number of classes :math:`L`.
             stepwise (bool): Set to `True` if `classifier` outputs 0s and 1s only. Default: `False`.
             threshold (float): Decision threshold :math:`\xi` of classification. Default: 0.5.
@@ -249,7 +249,7 @@ class PseudoLinearCoef:
 
         Args:
             plc (Tensor): The PLC or Relative PLC to be normalized.
-            per_vec (bool): Normalize within each :math:`\vec{R}` vector. Default: False.
+            per_vec (bool): Normalize within each :math:`\vec{R}` vector. Default: `False`.
             eps (float): Epsilon. Default: 1e-9.
 
         Returns:
