@@ -37,7 +37,7 @@ def np_normalize_saliency(saliency):
         saliency(np.ndarray): numpy array of saliency map.
 
     Returns:
-        np.ndarray, normalized saliency map.
+        np.ndarray, normalized saliency map in shape of :math:`(H, W)` .
     """
     rng_min = saliency.min()
     rng_max = saliency.max()
@@ -51,14 +51,14 @@ def np_saliency_to_rgba(saliency, cm=None, alpha_factor=1.2, as_uint8=True, norm
     Convert the saliency numpy array to RGBA numpy array.
 
     Args:
-        saliency(np.ndarray): numpy array of saliency map in shape of (H, W).
-        cm(Callable, optional): Color map, viridis of matplotlib will be used if None is provided. Default None.
-        alpha_factor(float): Alpha channel multiplier. Default 1.2.
-        as_uint8(bool): Return as with UINT8 data type. Default True.
-        normalize(bool): Normalize the input saliency map. Default True.
+        saliency(np.ndarray): numpy array of saliency map in shape of :math:`(H, W)`.
+        cm(Callable, optional): Color map, viridis of matplotlib will be used if `None` is provided. Default: `None`.
+        alpha_factor(float): Alpha channel multiplier. Default: 1.2.
+        as_uint8(bool): Return as with UINT8 data type. Default: `True`.
+        normalize(bool): Normalize the input saliency map. Default: `True`.
 
     Returns:
-        np.ndarray, RGBA numpy array in shape of (H, W).
+        np.ndarray, RGBA numpy array in shape of :math:`(H, W, 4)` if `cm` was set to `None`.
     """
     if normalize:
         saliency = np_normalize_saliency(saliency)
@@ -79,14 +79,15 @@ def np_saliency_to_image(saliency, original=None, cm=None, normalize=True, with_
     Convert the saliency numpy array to PIL.Image.Image.
 
     Args:
-        saliency(np.ndarray): numpy array of saliency map in shape of (H, W).
-        original(PIL.Image.Image, optional): The original image.
-        cm(Callable, optional): Color map, viridis of matplotlib will be used if None is provided. Default None.
-        normalize(bool): Normalize the input saliency map. Default True.
-        with_alpha(bool): Add alpha channel to the returned image. Default False.
+        saliency(np.ndarray): numpy array of saliency map in shape of :math:`(H, W)`.
+        original(PIL.Image.Image, optional): The original image. Default: `None`.
+        cm(Callable, optional): Color map, viridis of matplotlib will be used if None is provided. Default: `None`.
+        normalize(bool): Normalize the input saliency map. Default: `True`.
+        with_alpha(bool): Add alpha channel to the returned image. Default: `False`.
 
     Returns:
-        PIL.Image.Image, the converted image object with RGB or RGBA (if with_alpha is True) channels.
+        PIL.Image.Image, the converted image object in size of :math:`(H, W)` with RGB or RGBA (if `with_alpha` is
+        `True`) channels.
     """
     pixels = np_saliency_to_rgba(saliency, cm=cm, as_uint8=True, normalize=normalize)
     saliency_img = Image.fromarray(pixels, mode="RGBA")
@@ -104,10 +105,20 @@ def normalize_saliency(saliency):
     Normalize the saliency map.
 
     Args:
-        saliency(Tensor, np.ndarray): Saliency map in shape of (H, W).
+        saliency(Tensor, np.ndarray): Saliency map in shape of :math:`(H, W)`.
 
     Returns:
-        np.ndarray, the normalized saliency map.
+        np.ndarray, the normalized saliency map in shape of :math:`(H, W)` .
+
+    Examples:
+        >>> import numpy as np
+        >>> from mindspore_xai.visual.cv import normalize_saliency
+        >>>
+        >>> # prepare the saliency map
+        >>> saliency_np = np.array([[0.4, 0.3, 0.1], [0.5, 0.9, 0.1]])
+        >>> output_img = normalize_saliency(saliency_np)
+        >>> print(output_img.shape)
+        (2, 3)
     """
     saliency = _unify_saliency(saliency)
     return np_normalize_saliency(saliency)
@@ -118,14 +129,24 @@ def saliency_to_rgba(saliency, cm=None, alpha_factor=1.2, as_uint8=True, normali
     Convert the saliency map to a RGBA numpy array.
 
     Args:
-        saliency(Tensor, np.ndarray): Saliency map in shape of (H, W).
-        cm(Callable, optional): Color map, viridis of matplotlib will be used if None is provided. Default None.
-        alpha_factor(float): Alpha channel multiplier. Default 1.2.
-        as_uint8(bool): Return as with UINT8 data type. Default True.
-        normalize(bool): Normalize the input saliency map. Default True.
+        saliency(Tensor, np.ndarray): Saliency map in shape of :math:`(H, W)`.
+        cm(Callable, optional): Color map, viridis of matplotlib will be used if `None` is provided. Default: `None`.
+        alpha_factor(float): Alpha channel multiplier. Default: 1.2.
+        as_uint8(bool): Return as with UINT8 data type. Default: `True`.
+        normalize(bool): Normalize the input saliency map. Default: `True`.
 
     Returns:
-        np.ndarray, the converted RGBA map in shape of (H, W).
+        np.ndarray, the converted RGBA map in shape of :math:`(H, W, 4)` if `cm` was set to `None`.
+
+    Examples:
+        >>> import numpy as np
+        >>> from mindspore_xai.visual.cv import saliency_to_rgba
+        >>>
+        >>> # prepare the saliency map
+        >>> saliency_np = np.array([[0.4, 0.3, 0.1], [0.5, 0.9, 0.1]])
+        >>> output_img = saliency_to_rgba(saliency_np)
+        >>> print(output_img.shape)
+        (2, 3, 4)
     """
     saliency = _unify_saliency(saliency)
     return np_saliency_to_rgba(saliency, cm, alpha_factor, as_uint8, normalize)
@@ -136,14 +157,29 @@ def saliency_to_image(saliency, original=None, cm=None, normalize=True, with_alp
     Convert the saliency map to a PIL.Image.Image object.
 
     Args:
-        saliency(Tensor, np.ndarray): Saliency map in shape of (H, W).
-        original(PIL.Image.Image, optional): The original image.
-        cm(Callable, optional): Color map, viridis of matplotlib will be used if None is provided. Default None.
-        normalize(bool): Normalize the input saliency map. Default True.
-        with_alpha(bool): Add alpha channel to the returned image. Default False.
+        saliency(Tensor, np.ndarray): Saliency map in shape of :math:`(H, W)`.
+        original(PIL.Image.Image, optional): The original image. Default: `None`.
+        cm(Callable, optional): Color map, viridis of matplotlib will be used if `None` is provided. Default: `None`.
+        normalize(bool): Normalize the input saliency map. Default: `True`.
+        with_alpha(bool): Add alpha channel to the returned image. Default: `False`.
 
     Returns:
-        PIL.Image.Image, the converted image object with RGB or RGBA (if with_alpha is True) channels.
+        PIL.Image.Image, the converted image object in size of :math:`(H, W)` with RGB or RGBA (if `with_alpha` is
+        `True`) channels.
+
+    Examples:
+        >>> import numpy as np
+        >>> from PIL import Image
+        >>> from mindspore_xai.visual.cv import saliency_to_image
+        >>>
+        >>> # prepare the original image
+        >>> img_array = np.random.randint(255, size=(400, 400), dtype=np.uint8)
+        >>> orig_img = Image.fromarray(img_array)
+        >>> # prepare the saliency map
+        >>> saliency_np = np.random.rand(400, 400)
+        >>> output_img = saliency_to_image(saliency_np, orig_img)
+        >>> print(output_img.size)
+        (400, 400)
     """
     saliency = _unify_saliency(saliency)
     return np_saliency_to_image(saliency, original, cm, normalize, with_alpha)

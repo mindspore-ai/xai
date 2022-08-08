@@ -16,6 +16,7 @@
 
 import mindspore.nn as nn
 import mindspore.ops.operations as op
+from mindspore import get_context, PYNATIVE_MODE
 
 from mindspore_xai.common.utils import (
     unify_inputs,
@@ -70,6 +71,9 @@ class ModifiedReLU(Gradient):
 
     def _hook_relu_backward(self):
         """Set backward hook for ReLU layers."""
+        if get_context("mode") != PYNATIVE_MODE:
+            raise TypeError(f"Hook is not supported in graph mode currently, you can use"
+                            f"'set_context(mode=PYNATIVE_MODE)'to set pynative mode.")
         for _, cell in self._backward_model.cells_and_names():
             if isinstance(cell, nn.ReLU):
                 cell.register_backward_hook(self._backward_hook)
@@ -128,6 +132,7 @@ class Deconvolution(ModifiedReLU):
         >>> from mindspore import set_context, PYNATIVE_MODE
         >>> from mindspore_xai.explainer import Deconvolution
         >>>
+        >>> # only PYNATIVE_MODE is supported
         >>> set_context(mode=PYNATIVE_MODE)
         >>> # The detail of LeNet5 is shown in model_zoo.official.cv.lenet.src.lenet.py
         >>> net = LeNet5(10, num_channel=3)
@@ -188,6 +193,7 @@ class GuidedBackprop(ModifiedReLU):
         >>> from mindspore_xai.explainer import GuidedBackprop
         >>> from mindspore import set_context, PYNATIVE_MODE
         >>>
+        >>> # only PYNATIVE_MODE is supported
         >>> set_context(mode=PYNATIVE_MODE)
         >>> # The detail of LeNet5 is shown in model_zoo.official.cv.lenet.src.lenet.py
         >>> net = LeNet5(10, num_channel=3)

@@ -12,4 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""Initialization of tests of xai.explainer."""
+"""Initialization of tests of saliency tool."""

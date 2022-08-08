@@ -153,7 +153,7 @@ mindspore_xai.explainer
     使用Kernel SHAP方法解释任何函数的输出。
 
     参数：
-        - **predictor** (Callable) - 要解释的黑盒模型，一个可调用的函数。分类模型接受shape为 :math:`(N, K)` 的2D 数组/Tensor作为输入，并输出shape为 :math:`(N, L)` 的2D数组/Tensor。而回归模型接受shape为 :math:`(N, K)` 的2D数组/Tensor作为输入，并输出shape为 :math:`(N)` 的1D数组/Tensor。
+        - **predictor** (Cell, Callable) - 要解释的黑盒模型，一个网络或函数。分类模型接受shape为 :math:`(N, K)` 的2D 数组/Tensor作为输入，并输出shape为 :math:`(N, L)` 的2D数组/Tensor。而回归模型接受shape为 :math:`(N, K)` 的2D数组/Tensor作为输入，并输出shape为 :math:`(N)` 的1D数组/Tensor。
         - **features** (Tensor, numpy.ndarray) - 2D Tensor或 :math:`(N, K)` 的2D numpy数组，N是样本数，而K是特征数。用于集成特征的背景数据集，接受全部或部分的训练数据集。
         - **feature_names** (list, 可选) - 训练数据中的列的名称（string）的list。默认值： `None` 。
         - **class_names** (list, 可选) - 类名的 list，排序根据分类器的类名排序。如果没有，类名会设为‘0’、‘1’、... 默认值： `None` 。
@@ -264,7 +264,7 @@ mindspore_xai.explainer
     解释表格（即矩阵）数据的预测。数值特征会根据训练数据中的平均值和标准差，从 Normal(0,1) 分布中采样并以逆向均值中心化和缩放来进行扰动。而分类特征会根据训练分布采样进行扰动，当采样值与被解释的样本相同时，将生成一个数值为1的二进制特征。
 
     参数：
-        - **predictor** (Callable) - 要解释的黑盒模型，一个可调用的函数。分类模型接受shape为 :math:`(N, K)` 的2D 数组/Tensor作为输入，并输出shape为 :math:`(N, L)` 的2D数组/Tensor。而回归模型接受shape为 :math:`(N, K)` 的2D 数组/Tensor作为输入，并输出shape为 :math:`(N)` 的1D数组/Tensor。
+        - **predictor** (Cell, Callable) - 要解释的黑盒模型，一个网络或函数。分类模型接受shape为 :math:`(N, K)` 的2D 数组/Tensor作为输入，并输出shape为 :math:`(N, L)` 的2D数组/Tensor。而回归模型接受shape为 :math:`(N, K)` 的2D 数组/Tensor作为输入，并输出shape为 :math:`(N)` 的1D数组/Tensor。
         - **train_feat_stats** (dict) - 含有训练数据统计详细信息的dict对象。统计信息可以使用静态方法 `LIMETabular.to_feat_stats(training_data)` 生成。
         - **feature_names** (list, 可选) - 训练数据中的名称（string）的list。默认值： `None` 。
         - **categorical_features_indexes** (list, 可选) - 分类列的索引（ints）的list，这些列中的值必须是integer。其他列将被视为连续的。默认值： `None` 。

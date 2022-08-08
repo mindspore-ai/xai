@@ -34,10 +34,10 @@ class LIMETabular:
     binary feature that is 1 when the value is the same as the instance being explained.
 
     Args:
-        predictor (Callable): The black-box model to be explained, should be a callable function. For classification
-            model, it accepts a 2D array/tensor of shape :math:`(N, K)` as input and outputs a 2D array/tensor of
-            shape :math:`(N, L)`. For regression model, it accepts a 2D array/tensor of shape :math:`(N, K)` as input
-            and outputs a 1D array/tensor of shape :math:`(N)`.
+        predictor (Cell, Callable): The black-box model to be explained, should be a `Cell` object or function. For
+            classification model, it accepts a 2D array/tensor of shape :math:`(N, K)` as input and outputs a 2D
+            array/tensor of shape :math:`(N, L)`. For regression model, it accepts a 2D array/tensor of shape
+            :math:`(N, K)` as input and outputs a 1D array/tensor of shape :math:`(N)`.
         train_feat_stats (dict): a dict object having the details of training data statistics. The stats can be
             generated using static method LIMETabular.to_feat_stats(training_data).
         feature_names (list, optional): list of names (strings) corresponding to the columns in the training data.
@@ -107,7 +107,7 @@ class LIMETabular:
                  num_perturbs=5000,
                  max_features=10):
         if not callable(predictor):
-            raise ValueError("predictor must be callable.")
+            raise ValueError("predictor must be a Cell object or function.")
         check_value_type("train_feat_stats", train_feat_stats, dict)
         check_value_type("feature_names", feature_names, [list, type(None)])
         check_value_type("categorical_features_indexes", categorical_features_indexes, [list, type(None)])

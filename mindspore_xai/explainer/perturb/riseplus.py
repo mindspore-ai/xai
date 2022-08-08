@@ -16,7 +16,7 @@
 import math
 
 import numpy as np
-from mindspore import Tensor
+from mindspore import Tensor, get_context, PYNATIVE_MODE
 from mindspore.ops import Reshape, ReduceMean
 from mindspore.train._utils import check_value_type
 
@@ -117,6 +117,7 @@ class RISEPlus(RISE):
         ...        x = self.fc3(x)
         ...        return x
         >>>
+        >>> # only PYNATIVE_MODE is supported
         >>> set_context(mode=PYNATIVE_MODE)
         >>> # prepare trained classifier
         >>> net = MyLeNet5(10, num_channel=3)
@@ -139,6 +140,9 @@ class RISEPlus(RISE):
                  network,
                  activation_fn,
                  perturbation_per_eval=32):
+        if get_context("mode") != PYNATIVE_MODE:
+            raise TypeError(f"It is not supported in graph mode currently, you can use"
+                            f"'set_context(mode=PYNATIVE_MODE)'to set pynative mode.")
         super(RISEPlus, self).__init__(network, activation_fn, perturbation_per_eval)
         check_value_type('ood_net', ood_net, OoDNet)
         self._ood_net = ood_net
