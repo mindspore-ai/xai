@@ -1,3 +1,8 @@
+mindspore_xai.visual
+=================================
+
+CV类可视化。
+
 .. py:function:: mindspore_xai.visual.cv.normalize_saliency(saliency)
 
     归一化热力图。
