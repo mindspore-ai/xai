@@ -37,7 +37,7 @@ mindspore_xai.explainer
 
     `Deconvolution` 解释方法。
 
-    `Deconvolution` 方法是梯度方法的改进版本，它把要解释的网络的 `ReLU` 传播规则由直接反向传播梯度修改为反向传播正梯度。
+    `Deconvolution` 方法是梯度方法的改进版本。它把要解释的网络的 `ReLU` 传播规则由直接反向传播梯度修改为反向传播正梯度。
 
     .. note::
 
@@ -48,7 +48,7 @@ mindspore_xai.explainer
 
     输入：
         - **inputs** (Tensor) - 要解释的输入数据，shape为 :math:`(N, C, H, W)` 的4D Tensor。
-        - **targets** (Tensor, int, tuple, list) - 目标分类，1D/Scalar Tensor、integer，或integer类型的tuple/list。如果是1D Tensor、tuple或list，其长度应与 `inputs` 一致。
+        - **targets** (Tensor, int, tuple, list) - 目标分类。1D/Scalar Tensor、integer，或integer类型的tuple/list。如果是1D Tensor、tuple或list，其长度应与 `inputs` 一致。
         - **ret** (str) - 返回对象的类型。'tensor'代表返回 Tensor，而'image'代表返回PIL.Image.Image的list。默认值： `tensor`。
         - **show** (bool, 可选) - 显示热力图， `None` 代表自动，只会在JupyterLab上显示。默认值： `None` 。
 
@@ -67,14 +67,14 @@ mindspore_xai.explainer
 
     .. note::
 
-        解析后的 `network` 将通过 `network.set_grad(False)` 和 `network.set_train(False)` 设为eval模式。如果想在之后训练 `network` ，请通过相反的方式将其重置为训练模式。要使用 `GuidedBackprop` 时，网络中的 `ReLU` 必须用 `mindspore.nn.Cell` 类来实现，而不是用 `mindspore.ops.Operations.ReLU` ，否则，将会导致错误结果。
+        解析后的 `network` 将通过 `network.set_grad(False)` 和 `network.set_train(False)` 设为eval模式。如果想在之后训练 `network` ，请通过相反的方式将其重置为训练模式。要使用 `GuidedBackprop` 时，网络中的 `ReLU` 必须用 `mindspore.nn.Cell` 类来实现，而不是用 `mindspore.ops.Operations.ReLU` 。否则，将会导致错误结果。
 
     参数：
         - **network** (Cell) - 要解释的黑盒模型。
 
     输入：
         - **inputs** (Tensor) - 要解释的输入数据，shape为 :math:`(N, C, H, W)` 的4D Tensor。
-        - **targets** (Tensor, int, tuple, list) - 目标分类，1D/Scalar Tensor、integer，或integer类型的tuple/list。如果是1D Tensor、tuple或list，其长度应为 :math:`N` 。
+        - **targets** (Tensor, int, tuple, list) - 目标分类。1D/Scalar Tensor、integer，或integer类型的tuple/list。如果是1D Tensor、tuple或list，其长度应为 :math:`N` 。
         - **ret** (str) - 返回对象的类型。'tensor'代表返回Tensor，而'image'代表返回PIL.Image.Image的list。默认值： `tensor`。
         - **show** (bool, 可选) - 显示热力图， `None` 代表自动，只会在JupyterLab上显示。默认值： `None` 。
 

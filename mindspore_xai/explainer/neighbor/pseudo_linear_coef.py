@@ -20,7 +20,9 @@ from mindspore import nn
 from mindspore import ops
 from mindspore import ms_function
 import numpy as np
+import matplotlib.pyplot as plt
 
+from mindspore_xai.common.utils import is_notebook
 from mindspore_xai.tool.tab.neighbor import SimpleNN
 
 
@@ -140,29 +142,37 @@ class PseudoLinearCoef:
         no part in PLC, a sample's classes are determined by the classifier.
 
         Note:
-            If `classifier` is a function, `stepwise` is `False` and it is running in graph mode then
-            `classifier` must complies with the
+            If `predictor` is a function, `stepwise` is `False` and it is running in graph mode then
+            `predictor` must complies with the
             `static graph syntax <https://mindspore.cn/docs/en/master/note/static_graph_syntax_support.html>`_. PLC may
             not be accurate if there are many samples classified to more than one class.
 
         Args:
-            classifier (Cell, Callable): The classifier :math:`f(\cdot )` to be explained, it must take an input tensor
+            predictor (Cell, Callable): The classifier :math:`f(\cdot )` to be explained, it must take an input tensor
                 with shape :math:`(N, K)` and output a probability tensor with shape :math:`(N, L)`. :math:`K` is the
                 number of features. Both input and output tensors should has dtype `ms.float32`.
             num_classes (int): The number of classes :math:`L`.
-            stepwise (bool): Set to `True` if `classifier` outputs 0s and 1s only. Default: `False`.
+            stepwise (bool): Set to `True` if `predictor` outputs 0s and 1s only. Default: `False`.
             threshold (float): Decision threshold :math:`\xi` of classification. Default: 0.5.
             monte_carlo (int): The number of Monte Carlo samples for computing the integrals :math:`\vec{R}`.
                 Default: 1000. Higher the number more lengthy and accurate the computation.
             riemann (int): The number of Riemann sum partitions for computing the integrals
                 :math:`\int_{0}^{1}h(f_A(u(t)))dt`. Default: 1000. Higher the number more lengthy and accurate the
                 computation.
-            batch_size(int): Batch size for `classifier` when finding nearest neighbors. Default: 2000.
+            batch_size(int): Batch size for `predictor` when finding nearest neighbors. Default: 2000.
             eps (float): Epsilon. Default: 1e-9.
 
         Inputs:
             - **features** (Tensor) - The universal sample set :math:`G`. Practically, it is often the training set or
               its random subset. The shape must be :math:`(|G|, K)`, :math:`|G|` is the total number of samples.
+            - **show** (bool, optional) - Show the explanation figures, `None` means automatically show the explanation
+              figures if it is running on JupyterLab. Default: `None`.
+            - **class_names** (list, optional) - List of class names, ordered according to whatever the classifier is
+              using. If not present, class names will be '0', '1', ... Default: `None`.
+            - **feature_names** (list, optional) - List of names (strings) corresponding to the columns in the training
+              data. If not present, feature names will be '0', '1', ... Default: `None`.
+            - **max_classes** (int, optional)- Maximum number of classes to be shown. Default: 5.
+            - **max_features** (int, optional) - Maximum number of features to be shown. Default: 5.
 
         Outputs:
             - **plc** (Tensor) - Pseudo Linear Coefficients in shape of :math:`(L, K)`.
@@ -201,9 +211,9 @@ class PseudoLinearCoef:
             >>> print(str(relative_plc.shape))
             (3, 3, 5)
     """
-    def __init__(self, classifier, num_classes, stepwise=False, threshold=0.5,
+    def __init__(self, predictor, num_classes, stepwise=False, threshold=0.5,
                  monte_carlo=1000, riemann=1000, batch_size=2000, eps=1e-9):
-        self._classifier = classifier
+        self._classifier = predictor
         self._num_classes = num_classes
         self._stepwise = stepwise
         self._threshold = threshold
@@ -213,11 +223,16 @@ class PseudoLinearCoef:
         if self._stepwise:
             self._computer = _StepwiseComputer(eps)
         else:
-            self._computer = _Computer(classifier, riemann, eps)
+            self._computer = _Computer(predictor, riemann, eps)
         self._computer.set_train(False)
 
-    def __call__(self, features):
+    def __call__(self, features, show=None, class_names=None, feature_names=None, max_classes=5, max_features=5):
         """Compute PLC and Relative PLC."""
+        self._check_names(self._num_classes, features.shape[1], class_names, feature_names)
+
+        if show is None:
+            show = is_notebook()
+
         nn_finder = SimpleNN(features, self._classifier, self._num_classes,
                              batch_size=self._batch_size, threshold=self._threshold)
 
@@ -237,7 +252,112 @@ class PseudoLinearCoef:
             vp_weight = vp_samples / total_vp_samples
             plc[target] += plc_ele * vp_weight
 
+        if show:
+            plc_cp = plc
+            if plc_cp.shape[0] > max_classes:
+                plc_cp = plc_cp[:max_classes]
+            plc_list = list(plc_cp.asnumpy())
+
+            for target in range(len(plc_list)):
+                sorted_plc, sorted_feat = self._sort_order(plc_list[target], feature_names)
+                features_left = 0
+                classes_left = 0
+                if len(sorted_plc) > max_features:
+                    features_left = len(sorted_plc) - max_features
+                    sorted_plc, sorted_feat = self._limit_feat(sorted_plc, sorted_feat, max_features)
+                if ((plc.shape[0] - max_classes) > 0) and (target == (max_classes-1)):
+                    classes_left = plc.shape[0] - max_classes
+                if class_names is not None:
+                    title = '{}'.format(class_names[target])
+                else:
+                    title = '{}'.format(target)
+                yaxis_label = ['{0} : {1:.5g}'.format(sorted_feat[x], float(sorted_plc[x]))
+                               for x in range(len(sorted_plc))]
+                self._display(sorted_plc, yaxis_label, title, classes_left, features_left)
         return plc, relative_plc
+
+    @staticmethod
+    def _check_names(num_classes, num_features, class_names, feature_names):
+        if (class_names is not None) and (num_classes != len(class_names)):
+            raise ValueError('The number of class names should be equal to {}'.format(num_classes))
+        if (feature_names is not None) and (num_features != len(feature_names)):
+            raise ValueError('The number of feature names should be equal to {}'.format(num_features))
+
+    @classmethod
+    def plot(cls, plc, title=None, feature_names=None, max_features=5):
+        r"""
+        Plot the specific bidirectional chart for a PLC or Relative PLC pair.
+
+        Args:
+            plc (Tensor): Pseudo Linear Coefficients or Relative Pseudo Linear Coefficients in shape of :math:`(K,).
+            title (str, optional): Chart title. If not present, chart title will not be displayed. Default: `None`.
+            feature_names (list, tuple, optional): Feature names. If not present, feature names will be '0', '1', ...
+                Default: `None`.
+            max_features (int, optional): Maximum number of features to be shown. Default: 5.
+
+        Raises:
+            ValueError: Be raised for any input value problem.
+
+        Examples:
+            >>> from mindspore import Tensor
+            >>> from mindspore_xai.explainer import PseudoLinearCoef
+            >>>
+            >>> plc = Tensor([[0.1, 0.6, 0.8], [-2, 0.2, 0.4], [0.4, 0.1, -0.1]])
+            >>> PseudoLinearCoef.plot(plc[0], title='Chart Title', feature_names=['f1','f2','f3'])
+            >>>
+            >>> relative_plc = Tensor([[[0., 0., 0.], [-2, 0.2, 0.4]], [[0.4, 0.1, -0.1], [0., 0., 0.]]])
+            >>> PseudoLinearCoef.plot(relative_plc[0, 1], title='Chart Title', feature_names=['f1','f2','f3'])
+        """
+        if (title is not None) and (isinstance(title, str)):
+            title = '{}'.format(title)
+        else:
+            title = None
+
+        if (feature_names is not None) and (len(plc) != len(feature_names)):
+            raise ValueError('The number of features names should be equal to {}'.format(len(plc)))
+
+        sorted_plc, sorted_feat = cls._sort_order(list(plc.asnumpy()), feature_names)
+        features_left = 0
+        if len(sorted_plc) > max_features:
+            features_left = len(sorted_plc) - max_features
+            sorted_plc, sorted_feat = cls._limit_feat(sorted_plc, sorted_feat, max_features)
+        yaxis_label = ['{0} : {1:.5g}'.format(sorted_feat[x], float(sorted_plc[x]))
+                       for x in range(len(sorted_plc))]
+        cls._display(sorted_plc, yaxis_label, title, features_left=features_left)
+
+    @staticmethod
+    def _limit_feat(sorted_plc, sorted_feat, max_features):
+        """Limit the number of features."""
+        sorted_plc = sorted_plc[-max_features:]
+        sorted_feat = sorted_feat[-max_features:]
+        return sorted_plc, sorted_feat
+
+    @staticmethod
+    def _sort_order(plc, feature_names):
+        """Arrange the value with their id in descending """
+        if feature_names is None:
+            feature_names = np.arange(len(plc))
+
+        sort_id = np.argsort(list(map(abs, plc)))
+        feature_names, plc = [np.take(x, sort_id) for x in [feature_names, plc]]
+        return plc, feature_names
+
+    @staticmethod
+    def _display(plc, yaxis_label, title, classes_left=0, features_left=0):
+        """Display the graph for the PLC and relative PLC."""
+        plt.figure(figsize=(10, ((len(plc)/2.0) + 0.5)))
+        colors = ['green' if x > 0 else 'red' for x in plc]
+        pos = np.arange(len(plc)) + .5
+        plt.barh(pos, plc, align='center', color=colors)
+        plt.yticks(pos, yaxis_label)
+        if title is not None:
+            plt.title(title)
+        if classes_left != 0 and features_left != 0:
+            plt.xlabel('{} more class(es) and {} more feature(s)... '.format(classes_left, features_left), loc='right')
+        elif classes_left != 0:
+            plt.xlabel('{} more class(es)... '.format(classes_left), loc='right')
+        elif features_left != 0:
+            plt.xlabel('{} more feature(s)... '.format(features_left), loc='right')
 
     @classmethod
     def normalize(cls, plc, per_vec=False, eps=1e-9):
