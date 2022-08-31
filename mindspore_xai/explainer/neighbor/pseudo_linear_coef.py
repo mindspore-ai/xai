@@ -167,9 +167,9 @@ class PseudoLinearCoef:
               its random subset. The shape must be :math:`(|G|, K)`, :math:`|G|` is the total number of samples.
             - **show** (bool, optional) - Show the explanation figures, `None` means automatically show the explanation
               figures if it is running on JupyterLab. Default: `None`.
-            - **class_names** (list, optional) - List of class names, ordered according to whatever the classifier is
-              using. If not present, class names will be '0', '1', ... Default: `None`.
-            - **feature_names** (list, optional) - List of names (strings) corresponding to the columns in the training
+            - **class_names** (list[str], optional) - List of class names, ordered according to whatever the classifier
+              is using. If not present, class names will be '0', '1', ... Default: `None`.
+            - **feature_names** (list[str], optional) - List of names corresponding to the columns in the training
               data. If not present, feature names will be '0', '1', ... Default: `None`.
             - **max_classes** (int, optional)- Maximum number of classes to be shown. Default: 5.
             - **max_features** (int, optional) - Maximum number of features to be shown. Default: 5.

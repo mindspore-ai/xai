@@ -313,3 +313,108 @@ mindspore_xai.explainer
 
         返回：
             dict，训练数据统计信息。
+
+.. py:class:: mindspore_xai.explainer.PseudoLinearCoef(predictor, num_classes, stepwise=False, threshold=0.5, monte_carlo=1000, riemann=1000, batch_size=2000, eps=1e-9)
+
+    分类器的伪线性系数（PLC）。
+
+    伪线性系数是一个全局归因方法，从数据分布的角度来看，它用来度量分类器决策边界周围的特征敏感度。
+
+    作者：NG Ngai Fai, WANG Shendi, LI Xiaohui (2022 Huawei)
+
+    A类的伪线性系数：
+
+    .. math::
+
+        \vec{R}(A)=\int \vec{S}(A,nearest_{A}(x),x))p_{\neg A}(x)dx
+
+    A类相对於B类的伪线性系数，称为相对伪线性系数:
+
+    .. math::
+
+        \vec{R}(A,B)=\int \vec{S}(A,nearest_{A}(x),x))p_{B}(x)dx
+
+    where:
+
+    .. math::
+
+        nearest_A(x):=\underset{g\in G}{argmin}(\left \| g-x \right \|)\text{ }s.t.\text{ } g\neq x,f_A(g)
+        \geq \xi
+
+        \vec{S}(A,a,x)=\left\{\begin{matrix}
+        \vec{0} & \text{if }f_A(x)\geq \xi \\
+        \frac{a-x}{\left \| a-x \right \|} & \text{if }f_A(\cdot )\text{ is a step function}\\
+        \frac{(a-x)(f_{A}(a)-f_A(x))}{\left \| a-x \right \|^{2}\int_{0}^{1}h(f_A(u(t)))dt} & \text{else}
+        \end{matrix}\right.
+
+        u(t)=ta+(1-t)x
+
+        h(f_{A})=-f_{A}log_2(f_{A})-(1-f_A)log_2(1-f_A)
+
+    :math:`G` 代表样本全集， :math:`f_A(\cdot )` 代表A类的预测概率， :math:`\xi` 代表决策阀值，通常设为0.5。
+    :math:`p_{\neg A}` 和 :math:`p_{B}` 分别代表非A类和B类的样本分布的概率密度函數。请注意在伪线性系数中样本的类别是由分类器决定，
+    而不是使用ground truth标签。
+
+    Note:
+        如果 `predictor` 是一个函数， `stepwise` 是 `False` 和在graph mode上运行， `predictor` 必须符合
+        `static graph syntax <https://mindspore.cn/docs/en/master/note/static_graph_syntax_support.html>`_ 的语法。
+        如果有很多样本被分类到多於一个类别，PLC可能会不准确。
+
+    参数：
+        - **predictor** (Cell, Callable) - 要解释的分类器 :math:`f(\cdot )` ，输入只接受一个shape为 :math:`(N, K)` 的Tensor，
+            并输出一个shape为 :math:`(N, L)` 的概率Tensor。 :math:`K` 是特征的数量，输入和输出的Tensor dtype都是 `ms.float32`。
+        - **num_classes** (int) - 类的数量 :math:`L`。
+        - **stepwise** (bool) - 如果 `classifier` 只输出0和1，请设置为 `True`。默认值： `False`。
+        - **threshold** (float) - 分类的决策阀值 :math:`\xi` 。默认值：0.5。
+        - **monte_carlo** (int) - 计算积分 :math:`\vec{R}` 的蒙特卡洛样本的数量。默认值：1000。数值越大，计算时间就越长和越准确。
+        - **riemann** (int) - 计算积分 :math:`\int_{0}^{1}h(f_A(u(t)))dt` 的黎曼和分割数量。默认值：1000。数值越大，
+            计算时间就越长和越准确。
+        - **batch_size** (int) - 寻找最近的样本时 `classifier` 的批量大小。默认值：2000。
+        - **eps** (float) - Epsilon。默认值：1e-9。
+
+    输入：
+        - **features** (Tensor) - 样本全集 :math:`G`。实际上，它通常是训练集或其随机子集，shape为 :math:`(|G|, K)`，
+          :math:`|G|` 是样本的总数。
+        - **show** (bool, 可选) - 显示解释图像，`None` 代表自动，只会在JupyterLab上显示。默认值： `None` 。
+        - **class_names** (list[str], 可选) - 类名的list，排序根据分类器的类名排序。如果没有，类名会设为'0'、'1'、... 默认值： `None` 。
+        - **feature_names** (list[str], 可选) - 训练数据中的名称的list。默认值： `None` 。
+        - **max_classes** (int, 可选)- 最多显示多少个类。默认值：5。
+        - **max_features** (int, 可选) - 最多显示多少个特征。默认值：5。
+
+    输出：
+        - **plc** (Tensor) - shape为 :math:`(L, K)` 的伪线性系数。
+        - **relative plc** (Tensor) - shape为 :math:`(L, L, K)` 的相对伪线性系数。 第一个 :math:`L` 轴代表目标类，
+            而第二个代表视点类。
+
+    异常：
+        - **TypeError** - 参数或输入类型错误。
+        - **ValueError** - 输入值错误。
+        - **AttributeError** - underlying缺少必需的属性。
+
+    .. py:method:: plot(plc, class_names=None, feat_names=None, max_feat=5)
+
+        显示指定的伪线性系数或相对伪线性系数向量的图表。
+
+        参数：
+            - **plc** (Tensor) - 要显示的伪线性系数或相对伪线性系数向量, shape 为 :math:`K`。
+            - **title** (str, 可选) - 图表标题。 如果没有，则不会显示图表标题。 默认值：`None` 。
+            - **feat_names** (list, tuple, 可选) - 特征名称。 如果没有，特征名称将为'0'、'1'、... 默认值：`None` 。
+            - **max_feat** (int, 可选) - 最多显示多少个特征。默认值：5。
+
+        异常：
+            - **ValueError** - 输入值错误。
+
+    .. py:method:: normalize(plc, per_vec=False, eps=1e-9)
+
+        归一化伪线性系数到[-1, 1]范围。
+
+        Warning:
+            把从未归一化特征产生的伪线性系数归一化可能会引致误导结果。
+
+        参数：
+            - **plc** (Tensor) - 要归一化的伪线性系数或相对伪线性系数。
+            - **per_vec** (bool) - 归一化 :math:`\vec{R}` 向量。默认值： `False`。
+            - **eps** (float) - Epsilon。默认值：1e-9。
+
+        返回：
+            Tensor, 归一化的数值。
