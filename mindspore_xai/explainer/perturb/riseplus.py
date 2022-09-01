@@ -128,7 +128,7 @@ class RISEPlus(RISE):
         >>> riseplus = RISEPlus(ood_net, net, activation_fn=activation_fn)
         >>> # given an instance of RISEPlus, saliency map can be generate
         >>> inputs = ms.Tensor(np.random.rand(2, 3, 32, 32), ms.float32)
-        >>> # when `targets` is an integer
+        >>> # when 'targets' is an integer
         >>> targets = 5
         >>> saliency = riseplus(inputs, targets)
         >>> print(saliency.shape)

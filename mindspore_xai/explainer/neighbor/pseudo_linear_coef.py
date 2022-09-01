@@ -289,7 +289,7 @@ class PseudoLinearCoef:
         Plot the specific bidirectional chart for a PLC or Relative PLC pair.
 
         Args:
-            plc (Tensor): Pseudo Linear Coefficients or Relative Pseudo Linear Coefficients in shape of :math:`(K,).
+            plc (Tensor): Pseudo Linear Coefficients or Relative Pseudo Linear Coefficients in shape of :math:`(K,)`.
             title (str, optional): Chart title. If not present, chart title will not be displayed. Default: `None`.
             feature_names (list, tuple, optional): Feature names. If not present, feature names will be '0', '1', ...
                 Default: `None`.
