@@ -84,12 +84,12 @@ class RISE(PerturbationAttribution):
         >>> rise = RISE(net, activation_fn=activation_fn)
         >>> # given an instance of RISE, saliency map can be generate
         >>> inputs = ms.Tensor(np.random.rand(2, 3, 32, 32), ms.float32)
-        >>> # when `targets` is an integer
+        >>> # when 'targets' is an integer
         >>> targets = 5
         >>> saliency = rise(inputs, targets)
         >>> print(saliency.shape)
         (2, 1, 32, 32)
-        >>> # `targets` can also be a 2D tensor
+        >>> # 'targets' can also be a 2D tensor
         >>> targets = ms.Tensor([[5], [1]], ms.int32)
         >>> saliency = rise(inputs, targets)
         >>> print(saliency.shape)
