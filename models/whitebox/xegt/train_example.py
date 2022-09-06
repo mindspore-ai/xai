@@ -24,7 +24,8 @@ from mindspore import nn
 from mindspore import ops
 from sklearn.metrics import roc_auc_score, precision_recall_fscore_support
 
-from src.xegt import XEGT, LossNet, TrainOneStepCellWithGradClipping, InputCompiler
+from src.xegt import XEGT, LossNet, TrainOneStepCellWithGradClipping
+from src.input_compiler import InputCompiler
 from src.graph import GraphTopo
 
 
