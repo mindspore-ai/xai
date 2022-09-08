@@ -20,8 +20,8 @@ CV类可视化。
     参数：
         - **saliency** (Tensor, np.ndarray) - shape为 :math:`(H, W)` 的热力图。
         - **cm** (Callable, optional) - 颜色图，如果为 `None` ，将使用matplotlib默认的viridis色带。默认值： `None` 。
-        - **alpha_factor** (float) - Alpha通道倍增器。 默认值：1.2。
-        - **as_uint8** (bool) - 返回UINT8数据类型。 默认值： `True` 。
+        - **alpha_factor** (float) - Alpha通道乘子。默认值：1.2。
+        - **as_uint8** (bool) - 返回UINT8数据类型。默认值： `True` 。
         - **normalize** (bool) - 归一化输入的热力图。默认值： `True` 。
 
     返回：
@@ -33,7 +33,7 @@ CV类可视化。
 
     参数：
         - **saliency** (Tensor, np.ndarray) - shape为 :math:`(H, W)` 的热力图。
-        - **original** (PIL.Image.Image, optional) - 原图。默认值： `None` 。
+        - **original** (`PIL.Image.Image <https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image>`_ , optional) - 原图。默认值： `None` 。
         - **cm** (Callable, optional) - 颜色图，如果为 `None` ，使用matplotlib默认的viridis色带。默认值： `None` 。
         - **normalize** (bool) - 归一化输入的热力图。默认值： `True` 。
         - **with_alpha** (bool) - 在返回的图像中加入alpha通道。默认值： `False` 。

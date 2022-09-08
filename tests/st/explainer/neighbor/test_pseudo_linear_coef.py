@@ -110,7 +110,7 @@ class TestPseudoLinearCoef:
     def test_plc_normalize_with_vec(self):
         """Test normalize function of PLC."""
         plc = Tensor([[0.1, 0.6, 0.8], [-2, 0.2, 0.4], [0.4, 0.1, -0.1]])
-        norm_plc = PseudoLinearCoef.normalize(plc, per_vec=True)
+        norm_plc = PseudoLinearCoef.normalize(plc, per_vector=True)
         assert isinstance(norm_plc, Tensor)
         assert plc.shape == norm_plc.shape
         assert np.array_equal(norm_plc, Tensor([[0.125, 0.75, 1.], [-1, 0.1, 0.2], [1., 0.25, -0.25]]))

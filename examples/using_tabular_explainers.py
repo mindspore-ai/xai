@@ -92,9 +92,9 @@ if __name__ == "__main__":
             print(exp, '\n')
 
     # initialize the explainer
-    plc_explainer = PseudoLinearCoef(predictor=net, num_classes=len(class_names))
+    plc_explainer = PseudoLinearCoef(net, len(class_names), class_names=class_names, feature_names=feature_names)
     # explain
-    plc, relative_plc = plc_explainer(data, class_names=class_names, feature_names=feature_names)
+    plc, relative_plc = plc_explainer(data)
 
     print("Pseudo Linear Coef.:")
     for target, target_name in enumerate(class_names):

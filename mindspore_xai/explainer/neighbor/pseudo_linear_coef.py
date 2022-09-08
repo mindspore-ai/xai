@@ -132,7 +132,11 @@ class PseudoLinearCoef:
             \frac{(a-x)(f_{A}(a)-f_A(x))}{\left \| a-x \right \|^{2}\int_{0}^{1}h(f_A(u(t)))dt} & \text{else}
             \end{matrix}\right.
 
+        .. math::
+
             u(t)=ta+(1-t)x
+
+        .. math::
 
             h(f_{A})=-f_{A}log_2(f_{A})-(1-f_A)log_2(1-f_A)
 
@@ -152,6 +156,10 @@ class PseudoLinearCoef:
                 with shape :math:`(N, K)` and output a probability tensor with shape :math:`(N, L)`. :math:`K` is the
                 number of features. Both input and output tensors should has dtype `ms.float32`.
             num_classes (int): The number of classes :math:`L`.
+            class_names (list[str], optional): List of class names, ordered according to whatever the classifier
+                is using. If not present, class names will be '0', '1', ... Default: `None`.
+            feature_names (list[str], optional): List of names corresponding to the columns in the training
+                data. If not present, feature names will be '0', '1', ... Default: `None`.
             stepwise (bool): Set to `True` if `predictor` outputs 0s and 1s only. Default: `False`.
             threshold (float): Decision threshold :math:`\xi` of classification. Default: 0.5.
             monte_carlo (int): The number of Monte Carlo samples for computing the integrals :math:`\vec{R}`.
@@ -165,14 +173,10 @@ class PseudoLinearCoef:
         Inputs:
             - **features** (Tensor) - The universal sample set :math:`G`. Practically, it is often the training set or
               its random subset. The shape must be :math:`(|G|, K)`, :math:`|G|` is the total number of samples.
-            - **show** (bool, optional) - Show the explanation figures, `None` means automatically show the explanation
-              figures if it is running on JupyterLab. Default: `None`.
-            - **class_names** (list[str], optional) - List of class names, ordered according to whatever the classifier
-              is using. If not present, class names will be '0', '1', ... Default: `None`.
-            - **feature_names** (list[str], optional) - List of names corresponding to the columns in the training
-              data. If not present, feature names will be '0', '1', ... Default: `None`.
             - **max_classes** (int, optional)- Maximum number of classes to be shown. Default: 5.
             - **max_features** (int, optional) - Maximum number of features to be shown. Default: 5.
+            - **show** (bool, optional) - Show the explanation figures, `None` means automatically show the explanation
+              figures if it is running on JupyterLab. Default: `None`.
 
         Outputs:
             - **plc** (Tensor) - Pseudo Linear Coefficients in shape of :math:`(L, K)`.
@@ -211,10 +215,14 @@ class PseudoLinearCoef:
             >>> print(str(relative_plc.shape))
             (3, 3, 5)
     """
-    def __init__(self, predictor, num_classes, stepwise=False, threshold=0.5,
+    def __init__(self, predictor, num_classes, class_names=None,
+                 feature_names=None, stepwise=False, threshold=0.5,
                  monte_carlo=1000, riemann=1000, batch_size=2000, eps=1e-9):
+        self._check_names('class', class_names, num_classes)
         self._classifier = predictor
         self._num_classes = num_classes
+        self._class_names = class_names
+        self._feature_names = feature_names
         self._stepwise = stepwise
         self._threshold = threshold
         self._monte_carlo = monte_carlo
@@ -226,9 +234,9 @@ class PseudoLinearCoef:
             self._computer = _Computer(predictor, riemann, eps)
         self._computer.set_train(False)
 
-    def __call__(self, features, show=None, class_names=None, feature_names=None, max_classes=5, max_features=5):
+    def __call__(self, features, max_classes=5, max_features=5, show=None):
         """Compute PLC and Relative PLC."""
-        self._check_names(self._num_classes, features.shape[1], class_names, feature_names)
+        self._check_names('feature', self._feature_names, features.shape[1])
 
         if show is None:
             show = is_notebook()
@@ -253,35 +261,45 @@ class PseudoLinearCoef:
             plc[target] += plc_ele * vp_weight
 
         if show:
-            plc_cp = plc
-            if plc_cp.shape[0] > max_classes:
-                plc_cp = plc_cp[:max_classes]
-            plc_list = list(plc_cp.asnumpy())
-
-            for target in range(len(plc_list)):
-                sorted_plc, sorted_feat = self._sort_order(plc_list[target], feature_names)
-                features_left = 0
-                classes_left = 0
-                if len(sorted_plc) > max_features:
-                    features_left = len(sorted_plc) - max_features
-                    sorted_plc, sorted_feat = self._limit_feat(sorted_plc, sorted_feat, max_features)
-                if ((plc.shape[0] - max_classes) > 0) and (target == (max_classes-1)):
-                    classes_left = plc.shape[0] - max_classes
-                if class_names is not None:
-                    title = '{}'.format(class_names[target])
+            plc_list = self._plc_display_format(plc, max_classes)
+            sorted_id = np.argsort(list(map(abs, plc_list[0])))
+            if self._feature_names is None:
+                self._feature_names = np.arange(len(plc_list[0]))
+            sorted_feat = [np.take(x, sorted_id) for x in [self._feature_names]]
+            sorted_feat = sorted_feat[0]
+            features_left = 0
+            classes_left = 0
+            if len(sorted_feat) > max_features:
+                features_left = len(sorted_feat) - max_features
+            for target, target_plc in enumerate(plc_list):
+                target_plc = [np.take(x, sorted_id) for x in [target_plc]]
+                target_plc = target_plc[0]
+                if max_features < len(self._feature_names):
+                    target_plc, sorted_feat = self._limit_feat(target_plc, sorted_feat, max_features)
+                if self._class_names is not None:
+                    title = self._class_names[target]
                 else:
-                    title = '{}'.format(target)
-                yaxis_label = ['{0} : {1:.5g}'.format(sorted_feat[x], float(sorted_plc[x]))
-                               for x in range(len(sorted_plc))]
-                self._display(sorted_plc, yaxis_label, title, classes_left, features_left)
+                    title = target
+                if self._num_classes > max_classes:
+                    classes_left = self._num_classes - target - 1
+                yaxis_label = ['{0} : {1:.5g}'.format(sorted_feat[x], float(target_plc[x]))
+                               for x in range(len(sorted_feat))]
+                self._display(target_plc, yaxis_label, title, classes_left, features_left)
         return plc, relative_plc
 
     @staticmethod
-    def _check_names(num_classes, num_features, class_names, feature_names):
-        if (class_names is not None) and (num_classes != len(class_names)):
-            raise ValueError('The number of class names should be equal to {}'.format(num_classes))
-        if (feature_names is not None) and (num_features != len(feature_names)):
-            raise ValueError('The number of feature names should be equal to {}'.format(num_features))
+    def _plc_display_format(plc, max_classes):
+        """Convert the plc format"""
+        if plc.shape[0] > max_classes:
+            plc = plc[:max_classes]
+        plc_list = list(plc.asnumpy())
+        return plc_list
+
+    @staticmethod
+    def _check_names(input_type, input_names, num_data):
+        """Check the feature names and class names."""
+        if (input_names is not None) and (num_data != len(input_names)):
+            raise ValueError('The number of {} names should be equal to {}'.format(input_type, num_data))
 
     @classmethod
     def plot(cls, plc, title=None, feature_names=None, max_features=5):
@@ -360,7 +378,7 @@ class PseudoLinearCoef:
             plt.xlabel('{} more feature(s)... '.format(features_left), loc='right')
 
     @classmethod
-    def normalize(cls, plc, per_vec=False, eps=1e-9):
+    def normalize(cls, plc, per_vector=False, eps=1e-9):
         r"""
         Normalize Pseudo Linear Coefficients to range [-1, 1].
 
@@ -369,7 +387,7 @@ class PseudoLinearCoef:
 
         Args:
             plc (Tensor): The PLC or Relative PLC to be normalized.
-            per_vec (bool): Normalize within each :math:`\vec{R}` vector. Default: `False`.
+            per_vector (bool): Normalize within each :math:`\vec{R}` vector. Default: `False`.
             eps (float): Epsilon. Default: 1e-9.
 
         Returns:
@@ -384,7 +402,7 @@ class PseudoLinearCoef:
             [[ 0.05  0.3   0.4 ]
              [-1.    0.1   0.2 ]
              [ 0.2   0.05 -0.05]]
-            >>> PseudoLinearCoef.normalize(plc, per_vec=True)
+            >>> PseudoLinearCoef.normalize(plc, per_vector=True)
             [[ 0.125  0.75   1.   ]
              [-1.     0.1    0.2  ]
              [ 1.     0.25  -0.25 ]]
@@ -392,7 +410,7 @@ class PseudoLinearCoef:
         if not plc.shape:
             return plc
 
-        if per_vec and plc.shape[-1] > 0:
+        if per_vector and plc.shape[-1] > 0:
             scale = plc.abs().max(axis=-1, keepdims=True)
             scale = scale.masked_fill(scale < eps, 1)
             return plc / scale

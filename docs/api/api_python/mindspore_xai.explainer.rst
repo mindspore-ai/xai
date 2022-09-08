@@ -24,7 +24,7 @@ mindspore_xai.explainer
         - **inputs** (Tensor) - 要解释的输入数据，shape为 :math:`(N, C, H, W)` 的4D Tensor。
         - **targets** (Tensor, int, tuple, list) - 目标分类，1D/Scalar Tensor或integer，或integer类型的tuple/list。如果是1D Tensor、tuple或list，其长度应为 :math:`N`。
         - **ret** (str) - 返回对象的类型。'tensor'表示返回Tensor ，而'image'代表返回PIL.Image.Image的list。默认值： `tensor`。
-        - **show** (bool, 可选) - 显示热力图， `None` 代表自动，只会在JupyterLab上显示。默认值： `None` 。
+        - **show** (bool, 可选) - 显示热力图， `None` 代表自动，只会在JupyterLab上显示。默认值： `None`。
 
     输出：
         Tensor，shape为 :math:`(N, 1, H, W)` 的4D Tensor，热力图。如果 `ret` 设为'image'，输出list[list[PIL.Image.Image]]，归一化热力图。
@@ -50,7 +50,7 @@ mindspore_xai.explainer
         - **inputs** (Tensor) - 要解释的输入数据，shape为 :math:`(N, C, H, W)` 的4D Tensor。
         - **targets** (Tensor, int, tuple, list) - 目标分类。1D/Scalar Tensor、integer，或integer类型的tuple/list。如果是1D Tensor、tuple或list，其长度应与 `inputs` 一致。
         - **ret** (str) - 返回对象的类型。'tensor'代表返回 Tensor，而'image'代表返回PIL.Image.Image的list。默认值： `tensor`。
-        - **show** (bool, 可选) - 显示热力图， `None` 代表自动，只会在JupyterLab上显示。默认值： `None` 。
+        - **show** (bool, 可选) - 显示热力图， `None` 代表自动，只会在JupyterLab上显示。默认值： `None`。
 
     输出：
         Tensor，shape为 :math:`(N, 1, H, W)` 的 4D Tensor。如果 `ret` 设为'image'，输出list[list[PIL.Image.Image]]，归一化热力图。
@@ -76,7 +76,7 @@ mindspore_xai.explainer
         - **inputs** (Tensor) - 要解释的输入数据，shape为 :math:`(N, C, H, W)` 的4D Tensor。
         - **targets** (Tensor, int, tuple, list) - 目标分类。1D/Scalar Tensor、integer，或integer类型的tuple/list。如果是1D Tensor、tuple或list，其长度应为 :math:`N` 。
         - **ret** (str) - 返回对象的类型。'tensor'代表返回Tensor，而'image'代表返回PIL.Image.Image的list。默认值： `tensor`。
-        - **show** (bool, 可选) - 显示热力图， `None` 代表自动，只会在JupyterLab上显示。默认值： `None` 。
+        - **show** (bool, 可选) - 显示热力图， `None` 代表自动，只会在JupyterLab上显示。默认值： `None`。
 
     输出：
         Tensor，shape为 :math:`(N, 1, H, W)` 的4D Tensor，热力图。如果 `ret` 设为'image'，输出list[list[PIL.Image.Image]]，归一化热力图。
@@ -111,7 +111,7 @@ mindspore_xai.explainer
         - **inputs** (Tensor) - 要解释的输入数据，shape为 :math:`(N, C, H, W)` 的4D Tensor。
         - **targets** (Tensor, int, tuple, list) - 目标分类，1D/Scalar Tensor、integer，或integer类型的tuple/list。如果是1D Tensor、tuple或list，其长度应为 :math:`N`。
         - **ret** (str) - 返回对象的类型。'tensor'代表返回Tensor，而'image'代表返回PIL.Image.Image的list。默认值： `tensor`。
-        - **show** (bool, 可选) - 显示热力图， `None` 代表自动，只会在JupyterLab上显示。默认值： `None` 。
+        - **show** (bool, 可选) - 显示热力图， `None` 代表自动，只会在JupyterLab上显示。默认值： `None`。
 
     输出：
         Tensor，shape为 :math:`(N, 1, H, W)` 的4D Tensor，热力图。如果 `ret` 设为'image'，输出list[list[PIL.Image.Image]]，归一化热力图。
@@ -133,15 +133,15 @@ mindspore_xai.explainer
     参数：
         - **network** (Cell) - 要解释的 MindSpore cell。分类模型接受shape为 :math:`(N, K)` 的2D Tensor作为输入，并输出shape为 :math:`(N, L)` 的2D Tensor。而回归模型接受shape为 :math:`(N, K)` 的2D Tensor作为输入，并输出shape为 :math:`(N)` 的1D Tensor。
         - **features** (Tensor) - shape为 :math:`(N, K)` 的2DTensor，N是样本数，而K是特征数。用于集成特征的背景数据集，接受全部或部分的训练数据集。
-        - **feature_names** (list, 可选) - 训练数据中的列的名称（string）的list。默认值： `None` 。
-        - **class_names** (list, 可选) - 类名的list，排序根据分类器的类名排序。如果没有，类名会设为'0'、'1'、... 默认值： `None` 。
+        - **feature_names** (list, 可选) - 训练数据中的列的名称（string）的list。默认值： `None`。
+        - **class_names** (list, 可选) - 类名的list，排序根据分类器的类名排序。如果没有，类名会设为'0'、'1'、...。默认值： `None`。
         - **num_neighbours** (int, 可选) - 用于估计shap数值的子集数。默认值：200。
         - **max_features** (int, 可选) - 最多解释多少个特征。默认值：10。
 
     输入：
         - **inputs** (Tensor) - 要解释的输入数据，shape为 :math:`(N, K)` 的 2D float Tensor。
         - **targets** (Tensor, numpy.ndarray, list, int, 可选) - 要解释的目标分类。当 `target` 是integer时，生成该目标的归因图(attribution map)。而当 `targets` 为Tensor、numpy数组或list时，shape会是 :math:`(N, L)` ，L是每个样本的标签数量， :math:`(N,)` 或者 :math:`()` 。默认值：0。
-        - **show** (bool, 可选) - 显示解释图像，`None` 代表自动，只会在JupyterLab上显示。默认值： `None` 。
+        - **show** (bool, 可选) - 显示解释图像，`None` 代表自动，只会在JupyterLab上显示。默认值： `None`。
 
     输出：
         Tensor，shape为 :math:`(N, L, K)` 的3D Tensor。第一个维度代表输入。第二个维度代表目标。第三个维度代表特征的权重。
@@ -155,15 +155,15 @@ mindspore_xai.explainer
     参数：
         - **predictor** (Cell, Callable) - 要解释的黑盒模型，一个网络或函数。分类模型接受shape为 :math:`(N, K)` 的2D 数组/Tensor作为输入，并输出shape为 :math:`(N, L)` 的2D数组/Tensor。而回归模型接受shape为 :math:`(N, K)` 的2D数组/Tensor作为输入，并输出shape为 :math:`(N)` 的1D数组/Tensor。
         - **features** (Tensor, numpy.ndarray) - 2D Tensor或 :math:`(N, K)` 的2D numpy数组，N是样本数，而K是特征数。用于集成特征的背景数据集，接受全部或部分的训练数据集。
-        - **feature_names** (list, 可选) - 训练数据中的列的名称（string）的list。默认值： `None` 。
-        - **class_names** (list, 可选) - 类名的 list，排序根据分类器的类名排序。如果没有，类名会设为‘0’、‘1’、... 默认值： `None` 。
+        - **feature_names** (list, 可选) - 训练数据中的列的名称（string）的list。默认值： `None`。
+        - **class_names** (list, 可选) - 类名的 list，排序根据分类器的类名排序。如果没有，类名会设为‘0’、‘1’、...。默认值： `None`。
         - **num_neighbours** (int, 可选) - 用于估计shap数值的子集数。默认值：5000。
         - **max_features** (int, 可选) - 最多解释多少个特征。默认值：10。
 
     输入：
         - **inputs** (Tensor, numpy.ndarray) - 要解释的输入数据，2D float Tensor或shape为 :math:`(N, K)` 的2D float numpy数组。
         - **targets** (Tensor, numpy.ndarray, list, int, 可选) - 要解释的目标分类。当 `targets` 是integer时，生成该目标的归因图。而当 `target` 是一个Tensor、numpy数组或list时，shape会是 :math:`(N, L)` ，L是每个样本的标签数量， :math:`(N,)` 或者 :math:`()` 。默认值：0。
-        - **show** (bool, 可选) - 显示解释图像，`None` 代表自动，只会在JupyterLab上显示。默认值：`None` 。
+        - **show** (bool, 可选) - 显示解释图像，`None` 代表自动，只会在JupyterLab上显示。默认值：`None`。
 
     输出：
         Tensor，shape为 :math:`(N, L, K)` 的3D Tensor。第一个维度代表输入。第二个维度代表目标。第三个维度代表特征的权重。
@@ -189,7 +189,7 @@ mindspore_xai.explainer
         - **inputs** (Tensor) - 要解释的输入数据，shape为 :math:`(N, C, H, W)` 的4D Tensor 。
         - **targets** (Tensor, int, tuple, list) - 目标分类，1D/Scalar Tensor、integer或integer的tuple/list。如果是1D Tensor、tuple 或 list，其长度应为 :math:`N`。
         - **ret** (str) - 返回对象类型。'tensor'代表返回Tensor，而'image'代表返回PIL.Image.Image的list。默认值： `tensor`。
-        - **show** (bool, 可选) - 显示热力图， `None` 代表自动，只会在JupyterLab上显示。默认值： `None` 。
+        - **show** (bool, 可选) - 显示热力图， `None` 代表自动，只会在JupyterLab上显示。默认值： `None`。
 
     输出：
         Tensor，shape为 :math:`(N, 1, H, W)` 的4D Tensor，热力图。如果 `ret` 设为'image'，输出list[list[PIL.Image.Image]]，归一化热力图。
@@ -218,7 +218,7 @@ mindspore_xai.explainer
         - **inputs** (Tensor) - 要解释的输入数据，shape为 :math:`(N, C, H, W)` 的 4D Tensor。
         - **targets** (Tensor, int) - 目标分类。当 `targets` 是integer时，生成该目标的归因图。而当 `targets` 是Tensor时，shape会是 :math:`(N, L)` ，L是每个样本的标签数量，或 :math:`(N,)` :math:`()`。
         - **ret** (str) - 返回对象类型。'tensor'代表返回Tensor，'image'代表返回PIL.Image.Image的list。默认值： `tensor`。
-        - **show** (bool, 可选) - 显示热力图， `None` 代表自动，只会在JupyterLab上显示。默认值： `None` 。
+        - **show** (bool, 可选) - 显示热力图， `None` 代表自动，只会在JupyterLab上显示。默认值： `None`。
 
     输出：
         Tensor，4D Tensor，当目标是shape为 :math:`(N, L)` 的Tensor时，输出的shape便会是 :math:`(N, L, H, W)` ，否则会是 :math:`(N, 1, H, W)` ，热力图。如果 `ret` 设为'image'，输出 list[list[PIL.Image.Image]]，归一化热力图。
@@ -248,7 +248,7 @@ mindspore_xai.explainer
         - **inputs** (Tensor) - 要解释的输入数据，shape为 :math:`(N, C, H, W)` 的4D Tensor。
         - **targets** (Tensor, int) - 要解释的目标分类。当 `targets` 是integer时，生成该目标的归因图。而当 `targets` 是Tensor时，shape为 :math:`(N, L)` ，L是每个样本的标签数量，或 :math:`(N,)` :math:`()`。
         - **ret** (str) - 返回对象类型。'tensor'代表返回Tensor，'image'代表返回PIL.Image.Image的list。默认值： `tensor`。
-        - **show** (bool, 可选) - 显示热力图， `None` 代表自动，只会在JupyterLab上显示。默认值： `None` 。
+        - **show** (bool, 可选) - 显示热力图， `None` 代表自动，只会在JupyterLab上显示。默认值： `None`。
 
     输出：
         Tensor，4D Tensor，当目标是shape为 :math:`(N, L)` 的Tensor时，输出的shape便会是 :math:`(N, L, H, W)`，否则会是 :math:`(N, 1, H, W)`，热力图。如果 `ret` 设为'image'，输出list[list[PIL.Image.Image]]，归一化热力图。
@@ -266,16 +266,16 @@ mindspore_xai.explainer
     参数：
         - **predictor** (Cell, Callable) - 要解释的黑盒模型，一个网络或函数。分类模型接受shape为 :math:`(N, K)` 的2D 数组/Tensor作为输入，并输出shape为 :math:`(N, L)` 的2D数组/Tensor。而回归模型接受shape为 :math:`(N, K)` 的2D 数组/Tensor作为输入，并输出shape为 :math:`(N)` 的1D数组/Tensor。
         - **train_feat_stats** (dict) - 含有训练数据统计详细信息的dict对象。统计信息可以使用静态方法 `LIMETabular.to_feat_stats(training_data)` 生成。
-        - **feature_names** (list, 可选) - 训练数据中的名称（string）的list。默认值： `None` 。
-        - **categorical_features_indexes** (list, 可选) - 分类列的索引（ints）的list，这些列中的值必须是integer。其他列将被视为连续的。默认值： `None` 。
-        - **class_names** (list, 可选) - 类名的list，排序根据分类器的类名排序。如果没有，类名会设为'0'、'1'、... 默认值： `None` 。
+        - **feature_names** (list, 可选) - 训练数据中的名称（string）的list。默认值： `None`。
+        - **categorical_features_indexes** (list, 可选) - 分类列的索引（ints）的list，这些列中的值必须是integer。其他列将被视为连续的。默认值： `None`。
+        - **class_names** (list, 可选) - 类名的list，排序根据分类器的类名排序。如果没有，类名会设为'0'、'1'、...。默认值： `None`。
         - **num_perturbs** (int, 可选) - 学习线性模型的邻域大小。默认值：5000。
         - **max_features** (int, 可选) - 最多解释多少个特征。默认值：10。
 
     输入：
         - **inputs** (Tensor, numpy.ndarray) - 要解释的输入数据，2D float Tensor或shape为 :math:`(N, K)` 的2D float numpy 数组。
         - **targets** (Tensor, numpy.ndarray, list, int, 可选) - 要解释的目标分类。当 `targets` 是integer时，生成该目标的归因图。而当 `targets` 是Tensor、numpy数组或list时，shape会是 :math:`(N, L)`，L是每个样本的标签数量， :math:`(N,)`或者 :math:`()`。对于回归模型，此参数将被忽略。默认值：0。
-        - **show** (bool, 可选) - 显示解释图像，`None` 代表自动，只会在JupyterLab上显示。默认值： `None` 。
+        - **show** (bool, 可选) - 显示解释图像，`None` 代表自动，只会在JupyterLab上显示。默认值： `None`。
 
     输出：
         list[list[list[(str, float)]]]，一个tuple类的3D list。第一个维度代表输入。第二个维度代表目标。第三个维度代表特征。tuple代表特征的描述和权重。
@@ -308,13 +308,13 @@ mindspore_xai.explainer
 
         参数：
             - **features** (Tensor, numpy.ndarray) - 训练数据。
-            - **feature_names** (list, 可选) - 特征名称。默认值： `None` 。
-            - **categorical_features_indexes** (list, 可选) - 分类列的索引（ints）的list，这些列中的值必须是integer。其他列将被视为连续的。默认值：`None` 。
+            - **feature_names** (list, 可选) - 特征名称。默认值： `None`。
+            - **categorical_features_indexes** (list, 可选) - 分类列的索引（ints）的list，这些列中的值必须是integer。其他列将被视为连续的。默认值：`None`。
 
         返回：
             dict，训练数据统计信息。
 
-.. py:class:: mindspore_xai.explainer.PseudoLinearCoef(predictor, num_classes, stepwise=False, threshold=0.5, monte_carlo=1000, riemann=1000, batch_size=2000, eps=1e-9)
+.. py:class:: mindspore_xai.explainer.PseudoLinearCoef(predictor, num_classes, class_names=None, feature_names=None, stepwise=False, threshold=0.5, monte_carlo=1000, riemann=1000, batch_size=2000, eps=1e-9)
 
     分类器的伪线性系数（PLC）。
 
@@ -328,7 +328,7 @@ mindspore_xai.explainer
 
         \vec{R}(A)=\int \vec{S}(A,nearest_{A}(x),x))p_{\neg A}(x)dx
 
-    A类相对於B类的伪线性系数，称为相对伪线性系数:
+    A类（目标类）相对于B类（视点类）的伪线性系数，称为相对伪线性系数:
 
     .. math::
 
@@ -347,7 +347,11 @@ mindspore_xai.explainer
         \frac{(a-x)(f_{A}(a)-f_A(x))}{\left \| a-x \right \|^{2}\int_{0}^{1}h(f_A(u(t)))dt} & \text{else}
         \end{matrix}\right.
 
+    .. math::
+
         u(t)=ta+(1-t)x
+
+    .. math::
 
         h(f_{A})=-f_{A}log_2(f_{A})-(1-f_A)log_2(1-f_A)
 
@@ -355,66 +359,63 @@ mindspore_xai.explainer
     :math:`p_{\neg A}` 和 :math:`p_{B}` 分别代表非A类和B类的样本分布的概率密度函數。请注意在伪线性系数中样本的类别是由分类器决定，
     而不是使用ground truth标签。
 
-    Note:
+    .. note::
         如果 `predictor` 是一个函数， `stepwise` 是 `False` 和在graph mode上运行， `predictor` 必须符合
         `static graph syntax <https://mindspore.cn/docs/en/master/note/static_graph_syntax_support.html>`_ 的语法。
-        如果有很多样本被分类到多於一个类别，PLC可能会不准确。
+        如果有很多样本被分类到多于一个类别，PLC可能会不准确。
 
     参数：
-        - **predictor** (Cell, Callable) - 要解释的分类器 :math:`f(\cdot )` ，输入只接受一个shape为 :math:`(N, K)` 的Tensor，
-            并输出一个shape为 :math:`(N, L)` 的概率Tensor。 :math:`K` 是特征的数量，输入和输出的Tensor dtype都是 `ms.float32`。
+        - **predictor** (Cell, Callable) - 要解释的分类器 :math:`f(\cdot )` ，输入只接受一个shape为 :math:`(N, K)` 的Tensor，并输出一个shape为 :math:`(N, L)` 的概率Tensor。 :math:`K` 是特征的数量，输入和输出的Tensor dtype都是 `ms.float32`。
         - **num_classes** (int) - 类的数量 :math:`L`。
+        - **class_names** (list[str], 可选) - 类名的list，排序根据分类器的类名排序。如果没有，类名会设为'0'、'1'、...。默认值： `None`。
+        - **feature_names** (list[str], 可选) - 训练数据中的名称的list。如果没有，类名会设为'0'、'1'、...。默认值： `None`。
         - **stepwise** (bool) - 如果 `classifier` 只输出0和1，请设置为 `True`。默认值： `False`。
         - **threshold** (float) - 分类的决策阀值 :math:`\xi` 。默认值：0.5。
         - **monte_carlo** (int) - 计算积分 :math:`\vec{R}` 的蒙特卡洛样本的数量。默认值：1000。数值越大，计算时间就越长和越准确。
-        - **riemann** (int) - 计算积分 :math:`\int_{0}^{1}h(f_A(u(t)))dt` 的黎曼和分割数量。默认值：1000。数值越大，
-            计算时间就越长和越准确。
+        - **riemann** (int) - 计算积分 :math:`\int_{0}^{1}h(f_A(u(t)))dt` 的黎曼和分割数量。默认值：1000。数值越大，计算时间就越长和越准确。
         - **batch_size** (int) - 寻找最近的样本时 `classifier` 的批量大小。默认值：2000。
         - **eps** (float) - Epsilon。默认值：1e-9。
 
     输入：
         - **features** (Tensor) - 样本全集 :math:`G`。实际上，它通常是训练集或其随机子集，shape为 :math:`(|G|, K)`，
           :math:`|G|` 是样本的总数。
-        - **show** (bool, 可选) - 显示解释图像，`None` 代表自动，只会在JupyterLab上显示。默认值： `None` 。
-        - **class_names** (list[str], 可选) - 类名的list，排序根据分类器的类名排序。如果没有，类名会设为'0'、'1'、... 默认值： `None` 。
-        - **feature_names** (list[str], 可选) - 训练数据中的名称的list。默认值： `None` 。
-        - **max_classes** (int, 可选)- 最多显示多少个类。默认值：5。
+        - **max_classes** (int, 可选) - 最多显示多少个类。默认值：5。
         - **max_features** (int, 可选) - 最多显示多少个特征。默认值：5。
+        - **show** (bool, 可选) - 显示解释图像，`None` 代表自动，只会在JupyterLab上显示。默认值： `None`。
 
     输出：
         - **plc** (Tensor) - shape为 :math:`(L, K)` 的伪线性系数。
-        - **relative plc** (Tensor) - shape为 :math:`(L, L, K)` 的相对伪线性系数。 第一个 :math:`L` 轴代表目标类，
-            而第二个代表视点类。
+        - **relative plc** (Tensor) - shape为 :math:`(L, L, K)` 的相对伪线性系数。第一个 :math:`L` 轴代表目标类，而第二个代表视点类。
 
     异常：
         - **TypeError** - 参数或输入类型错误。
         - **ValueError** - 输入值错误。
         - **AttributeError** - underlying缺少必需的属性。
 
-    .. py:method:: plot(plc, class_names=None, feat_names=None, max_feat=5)
-
-        显示指定的伪线性系数或相对伪线性系数向量的图表。
-
-        参数：
-            - **plc** (Tensor) - 要显示的伪线性系数或相对伪线性系数向量, shape 为 :math:`K`。
-            - **title** (str, 可选) - 图表标题。 如果没有，则不会显示图表标题。 默认值：`None` 。
-            - **feat_names** (list, tuple, 可选) - 特征名称。 如果没有，特征名称将为'0'、'1'、... 默认值：`None` 。
-            - **max_feat** (int, 可选) - 最多显示多少个特征。默认值：5。
-
-        异常：
-            - **ValueError** - 输入值错误。
-
-    .. py:method:: normalize(plc, per_vec=False, eps=1e-9)
+    .. py:method:: normalize(plc, per_vector=False, eps=1e-9)
 
         归一化伪线性系数到[-1, 1]范围。
 
-        Warning:
+        .. warning::
             把从未归一化特征产生的伪线性系数归一化可能会引致误导结果。
 
         参数：
             - **plc** (Tensor) - 要归一化的伪线性系数或相对伪线性系数。
-            - **per_vec** (bool) - 归一化 :math:`\vec{R}` 向量。默认值： `False`。
+            - **per_vector** (bool) - 归一化 :math:`\vec{R}` 向量。默认值： `False`。
             - **eps** (float) - Epsilon。默认值：1e-9。
 
         返回：
             Tensor, 归一化的数值。
+
+    .. py:method:: plot(cls, plc, title=None, feature_names=None, max_features=5)
+
+        显示指定的伪线性系数或相对伪线性系数向量的图表。
+
+        参数：
+            - **plc** (Tensor) - 要显示的伪线性系数或相对伪线性系数向量，shape 为 :math:`K`。
+            - **title** (str, 可选) - 图表标题。如果没有，则不会显示图表标题。 默认值：`None`。
+            - **feature_names** (list, tuple, 可选) - 特征名称。如果没有，特征名称将为'0'、'1'、...。默认值：`None`。
+            - **max_features** (int, 可选) - 最多显示多少个特征。默认值：5。
+
+        异常：
+            - **ValueError** - 输入值错误。
