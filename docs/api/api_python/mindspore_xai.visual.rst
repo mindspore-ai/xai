@@ -33,7 +33,7 @@ CV类可视化。
 
     参数：
         - **saliency** (Tensor, np.ndarray) - shape为 :math:`(H, W)` 的热力图。
-        - **original** (`PIL.Image.Image <https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image>`_ , optional) - 原图。默认值： `None` 。
+        - **original** (PIL.Image.Image, optional) - 原图。默认值： `None` 。
         - **cm** (Callable, optional) - 颜色图，如果为 `None` ，使用matplotlib默认的viridis色带。默认值： `None` 。
         - **normalize** (bool) - 归一化输入的热力图。默认值： `True` 。
         - **with_alpha** (bool) - 在返回的图像中加入alpha通道。默认值： `False` 。
