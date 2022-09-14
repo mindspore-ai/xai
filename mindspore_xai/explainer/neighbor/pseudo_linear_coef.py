@@ -157,9 +157,9 @@ class PseudoLinearCoef:
                 number of features. Both input and output tensors should has dtype `ms.float32`.
             num_classes (int): The number of classes :math:`L`.
             class_names (list[str], optional): List of class names, ordered according to whatever the classifier
-                is using. If not present, class names will be '0', '1', ... Default: `None`.
+                is using. If not present, class names will be 'Class 0', 'Class 1', ... Default: `None`.
             feature_names (list[str], optional): List of names corresponding to the columns in the training
-                data. If not present, feature names will be '0', '1', ... Default: `None`.
+                data. If not present, feature names will be 'feature 0', 'feature 1', ... Default: `None`.
             stepwise (bool): Set to `True` if `predictor` outputs 0s and 1s only. Default: `False`.
             threshold (float): Decision threshold :math:`\xi` of classification. Default: 0.5.
             monte_carlo (int): The number of Monte Carlo samples for computing the integrals :math:`\vec{R}`.
@@ -261,35 +261,27 @@ class PseudoLinearCoef:
             plc[target] += plc_ele * vp_weight
 
         if show:
-            plc_list = self._plc_display_format(plc, max_classes)
+            plc_list = self._plc_to_list(plc, max_classes)
             sorted_id = np.argsort(list(map(abs, plc_list[0])))
             if self._feature_names is None:
-                self._feature_names = np.arange(len(plc_list[0]))
-            sorted_feat = [np.take(x, sorted_id) for x in [self._feature_names]]
-            sorted_feat = sorted_feat[0]
-            features_left = 0
-            classes_left = 0
-            if len(sorted_feat) > max_features:
-                features_left = len(sorted_feat) - max_features
+                self._feature_names = ['feature {}'.format(x) for x in range(len(plc_list[0]))]
+            sorted_feat = [np.take(x, sorted_id) for x in [self._feature_names]][0]
             for target, target_plc in enumerate(plc_list):
-                target_plc = [np.take(x, sorted_id) for x in [target_plc]]
-                target_plc = target_plc[0]
+                target_plc = [np.take(x, sorted_id) for x in [target_plc]][0]
                 if max_features < len(self._feature_names):
                     target_plc, sorted_feat = self._limit_feat(target_plc, sorted_feat, max_features)
-                if self._class_names is not None:
-                    title = self._class_names[target]
+                title, yaxis_label = self._display_format(self._class_names, target,
+                                                          sorted_feat, target_plc)
+                if target == len(plc_list)-1:
+                    self._display(target_plc, yaxis_label, title, self._num_classes-max_classes,
+                                  features.shape[1]-max_features)
                 else:
-                    title = target
-                if self._num_classes > max_classes:
-                    classes_left = self._num_classes - target - 1
-                yaxis_label = ['{0} : {1:.5g}'.format(sorted_feat[x], float(target_plc[x]))
-                               for x in range(len(sorted_feat))]
-                self._display(target_plc, yaxis_label, title, classes_left, features_left)
+                    self._display(target_plc, yaxis_label, title, 0, 0)
         return plc, relative_plc
 
     @staticmethod
-    def _plc_display_format(plc, max_classes):
-        """Convert the plc format"""
+    def _plc_to_list(plc, max_classes):
+        """Convert the plc tensor to list."""
         if plc.shape[0] > max_classes:
             plc = plc[:max_classes]
         plc_list = list(plc.asnumpy())
@@ -301,6 +293,18 @@ class PseudoLinearCoef:
         if (input_names is not None) and (num_data != len(input_names)):
             raise ValueError('The number of {} names should be equal to {}'.format(input_type, num_data))
 
+    @staticmethod
+    def _display_format(class_names, target, sorted_feat, target_plc):
+        """Create title and labels for the graph."""
+        if class_names is not None:
+            title = class_names[target]
+        else:
+            title = 'Class {}'.format(target)
+
+        yaxis_label = ['{0} : {1:.5g}'.format(sorted_feat[x], float(target_plc[x]))
+                       for x in range(len(sorted_feat))]
+        return title, yaxis_label
+
     @classmethod
     def plot(cls, plc, title=None, feature_names=None, max_features=5):
         r"""
@@ -309,8 +313,8 @@ class PseudoLinearCoef:
         Args:
             plc (Tensor): Pseudo Linear Coefficients or Relative Pseudo Linear Coefficients in shape of :math:`(K,)`.
             title (str, optional): Chart title. If not present, chart title will not be displayed. Default: `None`.
-            feature_names (list, tuple, optional): Feature names. If not present, feature names will be '0', '1', ...
-                Default: `None`.
+            feature_names (list, tuple, optional): Feature names. If not present, feature names will be 'feature 0',
+                'feature 1', ... Default: `None`.
             max_features (int, optional): Maximum number of features to be shown. Default: 5.
 
         Raises:
@@ -326,22 +330,18 @@ class PseudoLinearCoef:
             >>> relative_plc = Tensor([[[0., 0., 0.], [-2, 0.2, 0.4]], [[0.4, 0.1, -0.1], [0., 0., 0.]]])
             >>> PseudoLinearCoef.plot(relative_plc[0, 1], title='Chart Title', feature_names=['f1','f2','f3'])
         """
-        if (title is not None) and (isinstance(title, str)):
-            title = '{}'.format(title)
-        else:
-            title = None
+        if (title is not None) and not isinstance(title, str):
+            raise ValueError('The input data type of title should be str.')
 
         if (feature_names is not None) and (len(plc) != len(feature_names)):
             raise ValueError('The number of features names should be equal to {}'.format(len(plc)))
 
         sorted_plc, sorted_feat = cls._sort_order(list(plc.asnumpy()), feature_names)
-        features_left = 0
         if len(sorted_plc) > max_features:
-            features_left = len(sorted_plc) - max_features
             sorted_plc, sorted_feat = cls._limit_feat(sorted_plc, sorted_feat, max_features)
         yaxis_label = ['{0} : {1:.5g}'.format(sorted_feat[x], float(sorted_plc[x]))
                        for x in range(len(sorted_plc))]
-        cls._display(sorted_plc, yaxis_label, title, features_left=features_left)
+        cls._display(sorted_plc, yaxis_label, title, 0, len(sorted_plc) - max_features)
 
     @staticmethod
     def _limit_feat(sorted_plc, sorted_feat, max_features):
@@ -352,16 +352,15 @@ class PseudoLinearCoef:
 
     @staticmethod
     def _sort_order(plc, feature_names):
-        """Arrange the value with their id in descending """
+        """Arrange the value with their id in descending order."""
         if feature_names is None:
-            feature_names = np.arange(len(plc))
-
+            feature_names = ['feature {}'.format(x) for x in range(len(plc))]
         sort_id = np.argsort(list(map(abs, plc)))
         feature_names, plc = [np.take(x, sort_id) for x in [feature_names, plc]]
         return plc, feature_names
 
     @staticmethod
-    def _display(plc, yaxis_label, title, classes_left=0, features_left=0):
+    def _display(plc, yaxis_label, title, classes_left, features_left):
         """Display the graph for the PLC and relative PLC."""
         plt.figure(figsize=(10, ((len(plc)/2.0) + 0.5)))
         colors = ['green' if x > 0 else 'red' for x in plc]
@@ -370,11 +369,11 @@ class PseudoLinearCoef:
         plt.yticks(pos, yaxis_label)
         if title is not None:
             plt.title(title)
-        if classes_left != 0 and features_left != 0:
+        if classes_left > 0 and features_left > 0:
             plt.xlabel('{} more class(es) and {} more feature(s)... '.format(classes_left, features_left), loc='right')
-        elif classes_left != 0:
+        elif classes_left > 0:
             plt.xlabel('{} more class(es)... '.format(classes_left), loc='right')
-        elif features_left != 0:
+        elif features_left > 0:
             plt.xlabel('{} more feature(s)... '.format(features_left), loc='right')
 
     @classmethod
