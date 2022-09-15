@@ -77,7 +77,7 @@ class RISE(PerturbationAttribution):
         >>> from mindspore import set_context, PYNATIVE_MODE
         >>>
         >>> set_context(mode=PYNATIVE_MODE)
-        >>> # The detail of LeNet5 is shown in model_zoo.official.cv.lenet.src.lenet.py
+        >>> # The detail of LeNet5 is shown in models.official.cv.lenet.src.lenet.py
         >>> net = LeNet5(10, num_channel=3)
         >>> # initialize RISE explainer with the pretrained model and activation function
         >>> activation_fn = ms.nn.Softmax() # softmax layer is applied to transform logits to probabilities

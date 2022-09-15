@@ -92,7 +92,7 @@ class GradCAM(IntermediateLayerAttribution):
         >>>
         >>> # only PYNATIVE_MODE is supported
         >>> set_context(mode=PYNATIVE_MODE)
-        >>> # The detail of LeNet5 is shown in model_zoo.official.cv.lenet.src.lenet.py
+        >>> # The detail of LeNet5 is shown in models.official.cv.lenet.src.lenet.py
         >>> net = LeNet5(10, num_channel=3)
         >>> # specify a layer name to generate explanation, usually the layer can be set as the last conv layer.
         >>> layer_name = 'conv2'

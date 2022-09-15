@@ -44,7 +44,7 @@ class TestPseudoLinearCoef:
         """Compute PLC, Relative PLC and test their outputs."""
         num_classes = 3
         num_samples = 1000
-        num_features = 5
+        num_features = 3
         explainer = PseudoLinearCoef(classifier_input, num_classes=num_classes)
         features = Tensor(np.random.uniform(size=(num_samples, num_features)), dtype=ms.float32)
         plc, relative_plc = explainer(features)
@@ -52,6 +52,14 @@ class TestPseudoLinearCoef:
         assert plc.shape == (num_classes, num_features)
         assert isinstance(relative_plc, Tensor)
         assert relative_plc.shape == (num_classes, num_classes, num_features)
+
+        assert (plc[0, 0] < 0 < plc[0, 1]) and (plc[0, 2] > 0)
+        assert (plc[1, 0] > 0) and (plc[1, 1] < 0 < plc[1, 2])
+        assert (plc[2, 0] > 0) and (plc[2, 1] > 0 > plc[2, 2])
+
+        assert (relative_plc[0, 1, 0] < 0) and (relative_plc[0, 2, 0] < 0)
+        assert (relative_plc[1, 0, 1] < 0) and (relative_plc[1, 2, 1] < 0)
+        assert (relative_plc[2, 0, 2] < 0) and (relative_plc[2, 1, 2] < 0)
 
     @pytest.mark.level0
     @pytest.mark.platform_x86_ascend_training

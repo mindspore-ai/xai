@@ -69,7 +69,7 @@ class Gradient(Attribution):
         >>> from mindspore_xai.explainer import Gradient
         >>>
         >>> set_context(mode=PYNATIVE_MODE)
-        >>> # The detail of LeNet5 is shown in model_zoo.official.cv.lenet.src.lenet.py
+        >>> # The detail of LeNet5 is shown in models.official.cv.lenet.src.lenet.py
         >>> net = LeNet5(10, num_channel=3)
         >>> gradient = Gradient(net)
         >>> inputs = ms.Tensor(np.random.rand(1, 3, 32, 32), ms.float32)
@@ -116,7 +116,7 @@ class Gradient(Attribution):
         Args:
             inputs (Tensor): The inputs to be explained.
             targets (Tensor, int): The label of interest. It should be a 1D or 0D tensor, or an integer.
-          If it is a 1D tensor, its length should be the same as `inputs`.
+                If it is a 1D tensor, its length should be the same as `inputs`.
         """
         check_value_type('inputs', inputs, Tensor)
         if len(inputs.shape) != 4:
