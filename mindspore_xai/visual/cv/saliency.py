@@ -80,8 +80,8 @@ def np_saliency_to_image(saliency, original=None, cm=None, normalize=True, with_
 
     Args:
         saliency(np.ndarray): numpy array of saliency map in shape of :math:`(H, W)`.
-        original(`PIL.Image.Image <https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image>`_ ,
-            optional): The original image. Default: `None`.
+        original(PIL.Image.Image, optional): `The original image
+            <https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image>`_ . Default: `None`.
         cm(Callable, optional): Color map, viridis of matplotlib will be used if None is provided. Default: `None`.
         normalize(bool): Normalize the input saliency map. Default: `True`.
         with_alpha(bool): Add alpha channel to the returned image. Default: `False`.
@@ -159,8 +159,8 @@ def saliency_to_image(saliency, original=None, cm=None, normalize=True, with_alp
 
     Args:
         saliency(Tensor, np.ndarray): Saliency map in shape of :math:`(H, W)`.
-        original(`PIL.Image.Image <https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image>`_ ,
-            optional): The original image. Default: `None`.
+        original(PIL.Image.Image, optional): `The original image
+            <https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image>`_ . Default: `None`.
         cm(Callable, optional): Color map, viridis of matplotlib will be used if `None` is provided. Default: `None`.
         normalize(bool): Normalize the input saliency map. Default: `True`.
         with_alpha(bool): Add alpha channel to the returned image. Default: `False`.
