@@ -183,7 +183,7 @@ mindspore_xai.explainer
     参数：
         - **network** (Cell) - 要解释的黑盒模型。
         - **activation_fn** (Cell) - 将logits转换为预测概率的激活层。单标签分类任务通常使用 `nn.Softmax` ，而多标签分类任务较常使用 `nn.Sigmoid` 。用户也可以将自定义的 `activation_fn` 与网络结合，最终输出便是输入的概率。
-        - **perturbation_per_eval** （int，可选） - 在推理扰动样本期间，每次推理的扰动数。在内存容许情况下，通常此数字越大，便越快得到解释。默认值：32。
+        - **perturbation_per_eval** (int, 可选) - 在推理扰动样本期间，每次推理的扰动数。在内存容许情况下，通常此数字越大，便越快得到解释。默认值：32。
 
     输入：
         - **inputs** (Tensor) - 要解释的输入数据，shape为 :math:`(N, C, H, W)` 的4D Tensor 。

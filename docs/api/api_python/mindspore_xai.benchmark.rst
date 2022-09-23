@@ -81,7 +81,7 @@ mindspore_xai.benchmark
 
     参数：
         - **num_labels** （int） - 数据集中的类数。
-        - **metric** （str，可选） - 计算定位性能力的特定指标。可选项："PointingGame"和"IoSR"。默认值："PointingGame"。
+        - **metric** (str，可选) - 计算定位性能力的特定指标。可选项："PointingGame"和"IoSR"。默认值："PointingGame"。
 
     异常：
         - **TypeError** - 参数或输入类型错误。
@@ -99,7 +99,7 @@ mindspore_xai.benchmark
             - **inputs** (Tensor) - 数据样本，shape为 :math:`(N, C, H, W)` 的4D Tensor。
             - **targets** (Tensor, int) - 目标分类，1D/Scalar Tensor或integer。如果 `targets` 是1D Tensor，其长度应为 :math:`N` 。
             - **saliency** (Tensor, 可选) - 要评估的热力图，shape为 :math:`(N, 1, H, W)` 的4D Tensor。如果设置为 `None` ，解析后的 `explainer` 将生成具有 `inputs` 和 `targets` 的热力图，并继续评估。默认值： `None` 。
-            - **mask** (Tensor,numpy.ndarray) - 基于 `targets` 给于 `inputs` 的ground truth边界框/掩码，4D Tensor或shape为 :math:`(N, 1, H, W)` 的 `numpy.ndarray` 。默认值： `None` 。
+            - **mask** (Tensor, numpy.ndarray) - 基于 `targets` 给于 `inputs` 的ground truth边界框/掩码，4D Tensor或shape为 :math:`(N, 1, H, W)` 的 `numpy.ndarray` 。默认值： `None` 。
 
         返回：
             numpy.ndarray，shape为 :math:`(N,)` 的1D数组，为 `explainer` 的定位性评估结果。
