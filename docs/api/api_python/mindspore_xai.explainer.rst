@@ -369,11 +369,11 @@ mindspore_xai.explainer
         - **num_classes** (int) - 类的数量 :math:`L`。
         - **class_names** (list[str], 可选) - 类名的list，排序根据分类器的类名排序。如果没有，类名会设为'Class 0'、'Class 1'、...。默认值： `None`。
         - **feature_names** (list[str], 可选) - 训练数据中的名称的list。如果没有，类名会设为'feature 0'、'feature 1'、...。默认值： `None`。
-        - **stepwise** (bool) - 如果 `classifier` 只输出0和1，请设置为 `True`。默认值： `False`。
+        - **stepwise** (bool) - 如果 `predictor` 只输出0和1，请设置为 `True`。默认值： `False`。
         - **threshold** (float) - 分类的决策阀值 :math:`\xi` 。默认值：0.5。
         - **monte_carlo** (int) - 计算积分 :math:`\vec{R}` 的蒙特卡洛样本的数量。默认值：1000。数值越大，计算时间就越长和越准确。
         - **riemann** (int) - 计算积分 :math:`\int_{0}^{1}h(f_A(u(t)))dt` 的黎曼和分割数量。默认值：1000。数值越大，计算时间就越长和越准确。
-        - **batch_size** (int) - 寻找最近的样本时 `classifier` 的批量大小。默认值：2000。
+        - **batch_size** (int) - 寻找最近的样本时 `predictor` 的批量大小。默认值：2000。
         - **eps** (float) - Epsilon。默认值：1e-9。
 
     输入：
