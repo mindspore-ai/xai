@@ -86,7 +86,7 @@ CV类工具。
             - **epoch** (int, 可选) - 训练时的epoch数量。默认值：90。
             - **optimizer** (Optimizer, 可选) - 优化器。如果设置为 `None` ，将使用 `prepare_train()` 预定义的参数。默认值： `None` 。
             - **scheduler** (LearningRateScheduler, 可选) - 学习率调度器。如果设置为 `None` ，将使用 `prepare_train()` 预定义的参数。默认值： `None` 。
-            - ****kwargs** (any, 可选) - 在 `prepare_train()` 定义的关键参数。
+            - **\*\*kwargs** (any, 可选) - 在 `prepare_train()` 定义的关键参数。
 
     .. py:method:: underlying
         :property:
