@@ -19,11 +19,24 @@ from mindspore import ParameterTuple
 from mindspore.ops import operations as P
 from mindspore.ops import functional as F
 from mindspore.ops import composite as C
+import mindspore.common.dtype as mstype
+from mindspore.common.api import ms_function
+from mindspore.common.tensor import Tensor
 from mindspore.parallel._utils import _get_device_num, _get_parallel_mode, _get_gradients_mean
 from mindspore.context import ParallelMode
 from mindspore.nn.wrap.grad_reducer import DistributedGradReducer
 
 from .embedding import EmbeddingMatrix
+
+
+_grad_scale = C.MultitypeFuncGraph("grad_scale")
+op_mul = P.Mul()
+
+
+@_grad_scale.register("Tensor", "Tensor")
+def tensor_grad_scale_with_tensor(scale, grad):
+    """Get grad with scale."""
+    return op_mul(grad, F.cast(scale, F.dtype(grad)))
 
 
 class TBNet(nn.Cell):
@@ -283,12 +296,13 @@ class TrainStepWrapCell(nn.Cell):
                                  learning_rate=self.lr,
                                  beta1=0.9,
                                  beta2=0.999,
-                                 eps=1e-8,
-                                 loss_scale=sens)
+                                 eps=1e-8)
 
         self.hyper_map = C.HyperMap()
         self.grad = C.GradOperation(get_by_list=True, sens_param=True)
         self.sens = sens
+        self.reciprocal_sens = Tensor(1.0 / self.sens, mstype.float32)
+        self.enable_tuple_broaden = True
 
         self.reducer_flag = False
         self.grad_reducer = None
@@ -306,12 +320,19 @@ class TrainStepWrapCell(nn.Cell):
         loss = self.network(item, rl1, ref, rl2, hist_item, label)
         sens = P.Fill()(P.DType()(loss), P.Shape()(loss), self.sens)
         grads = self.grad(self.network, weights)(item, rl1, ref, rl2, hist_item, label, sens)
+        grads = self.scale_grads(grads)
 
         if self.reducer_flag:
             # apply grad reducer on grads
             grads = self.grad_reducer(grads)
 
         return F.depend(loss, self.optimizer(grads))
+
+    @ms_function
+    def scale_grads(self, grads):
+        if self.sens != 1.0:
+            return self.hyper_map(F.partial(_grad_scale, self.reciprocal_sens), grads)
+        return grads
 
 
 class EvalNet(nn.Cell):
