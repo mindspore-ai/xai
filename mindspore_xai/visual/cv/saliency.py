@@ -17,12 +17,19 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 import mindspore as ms
+from mindspore.train._utils import check_value_type
 
 
 def _unify_saliency(saliency):
     """Unify the saliency input."""
+    check_value_type("saliency", saliency, [ms.Tensor, np.ndarray])
     if isinstance(saliency, ms.Tensor):
+        if not ((saliency.dtype == ms.float32) or (saliency.dtype == ms.float64)):
+            raise ValueError("saliency should have dtype ms.float32 or ms.float64.")
         saliency = saliency.asnumpy()
+    else:
+        if not ((saliency.dtype == np.float32) or (saliency.dtype == np.float64)):
+            raise ValueError("saliency should have dtype np.float32 or np.float64.")
     saliency = np.squeeze(saliency)
     if len(saliency.shape) != 2:
         raise ValueError(f"The squeezed saliency shape({saliency.shape}) length is not 2.")
@@ -60,6 +67,12 @@ def np_saliency_to_rgba(saliency, cm=None, alpha_factor=1.2, as_uint8=True, norm
     Returns:
         np.ndarray, RGBA numpy array in shape of :math:`(H, W, 4)` if `cm` was set to `None`.
     """
+    if not ((cm is None) or callable(cm)):
+        raise ValueError("cm should be function or Nonetype.")
+    check_value_type("alpha_factor", alpha_factor, float)
+    check_value_type("as_uint8", as_uint8, bool)
+    check_value_type("normalize", normalize, bool)
+
     if normalize:
         saliency = np_normalize_saliency(saliency)
 
@@ -109,7 +122,7 @@ def normalize_saliency(saliency):
         saliency(Tensor, np.ndarray): Saliency map in shape of :math:`(H, W)`.
 
     Returns:
-        np.ndarray, the normalized saliency map in shape of :math:`(H, W)` .
+        np.ndarray, the normalized saliency map in shape of :math:`(H, W)`.
 
     Examples:
         >>> import numpy as np
@@ -132,9 +145,9 @@ def saliency_to_rgba(saliency, cm=None, alpha_factor=1.2, as_uint8=True, normali
     Args:
         saliency(Tensor, np.ndarray): Saliency map in shape of :math:`(H, W)`.
         cm(Callable, optional): Color map, viridis of matplotlib will be used if `None` is provided. Default: `None`.
-        alpha_factor(float): Alpha channel multiplier. Default: 1.2.
-        as_uint8(bool): Return as with UINT8 data type. Default: `True`.
-        normalize(bool): Normalize the input saliency map. Default: `True`.
+        alpha_factor(float, optional): Alpha channel multiplier. Default: 1.2.
+        as_uint8(bool, optional): Return as with UINT8 data type. Default: `True`.
+        normalize(bool, optional): Normalize the input saliency map. Default: `True`.
 
     Returns:
         np.ndarray, the converted RGBA map in shape of :math:`(H, W, 4)` if `cm` was set to `None`.
@@ -149,6 +162,8 @@ def saliency_to_rgba(saliency, cm=None, alpha_factor=1.2, as_uint8=True, normali
         >>> print(output_img.shape)
         (2, 3, 4)
     """
+    if (saliency < 0).any() or (saliency > 1).any():
+        raise ValueError("The value range in saliency should be between 0 and 1.")
     saliency = _unify_saliency(saliency)
     return np_saliency_to_rgba(saliency, cm, alpha_factor, as_uint8, normalize)
 
@@ -162,8 +177,8 @@ def saliency_to_image(saliency, original=None, cm=None, normalize=True, with_alp
         original(PIL.Image.Image, optional): `The original image
             <https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image>`_ . Default: `None`.
         cm(Callable, optional): Color map, viridis of matplotlib will be used if `None` is provided. Default: `None`.
-        normalize(bool): Normalize the input saliency map. Default: `True`.
-        with_alpha(bool): Add alpha channel to the returned image. Default: `False`.
+        normalize(bool, optional): Normalize the input saliency map. Default: `True`.
+        with_alpha(bool, optional): Add alpha channel to the returned image. Default: `False`.
 
     Returns:
         PIL.Image.Image, the converted image object in size of :math:`(H, W)` with RGB or RGBA (if `with_alpha` is
@@ -183,5 +198,7 @@ def saliency_to_image(saliency, original=None, cm=None, normalize=True, with_alp
         >>> print(output_img.size)
         (400, 400)
     """
+    check_value_type("original", original, [Image.Image, type(None)])
+    check_value_type("with_alpha", with_alpha, bool)
     saliency = _unify_saliency(saliency)
     return np_saliency_to_image(saliency, original, cm, normalize, with_alpha)

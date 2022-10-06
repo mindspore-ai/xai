@@ -56,8 +56,8 @@ class RISEPlus(RISE):
         - **targets** (Tensor, int) - The labels of interest to be explained. When `targets` is an integer,
           all of the inputs will generates attribution map w.r.t this integer. When `targets` is a tensor, it
           should be of shape :math:`(N, L)` (L being the number of labels for each sample) or :math:`(N,)` :math:`()`.
-        - **ret** (str): The return object type. 'tensor' means returns a Tensor object, 'image' means return a
-          PIL.Image.Image list. Default: `tensor`.
+        - **ret** (str, optional): The return object type. 'tensor' means returns a Tensor object, 'image' means return
+          a PIL.Image.Image list. Default: `tensor`.
         - **show** (bool, optional): Show the saliency images, `None` means automatically show the saliency images if it
           is running on JupyterLab. Default: `None`.
 

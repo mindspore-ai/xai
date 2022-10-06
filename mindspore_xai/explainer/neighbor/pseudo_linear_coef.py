@@ -19,6 +19,7 @@ import mindspore as ms
 from mindspore import nn
 from mindspore import ops
 from mindspore import ms_function
+from mindspore.train._utils import check_value_type
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -154,25 +155,26 @@ class PseudoLinearCoef:
         Args:
             predictor (Cell, Callable): The classifier :math:`f(\cdot )` to be explained, it must take an input tensor
                 with shape :math:`(N, K)` and output a probability tensor with shape :math:`(N, L)`. :math:`K` is the
-                number of features. Both input and output tensors should has dtype `ms.float32`.
+                number of features. Both input and output tensors should have dtype `ms.float32` or `ms.float64` .
             num_classes (int): The number of classes :math:`L`.
-            class_names (list[str], optional): List of class names, ordered according to whatever the classifier
-                is using. If not present, class names will be 'Class 0', 'Class 1', ... Default: `None`.
-            feature_names (list[str], optional): List of names corresponding to the columns in the training
-                data. If not present, feature names will be 'feature 0', 'feature 1', ... Default: `None`.
-            stepwise (bool): Set to `True` if `predictor` outputs 0s and 1s only. Default: `False`.
-            threshold (float): Decision threshold :math:`\xi` of classification. Default: 0.5.
-            monte_carlo (int): The number of Monte Carlo samples for computing the integrals :math:`\vec{R}`.
+            class_names (list[str], tuple[str], optional): List/tuple of class names, ordered according to whatever the
+                classifier is using. If not present, class names will be 'Class 0', 'Class 1', ... Default: `None`.
+            feature_names (list[str], tuple[str], optional): List/tuple of feature names corresponding to the columns in
+                the training data. If not present, feature names will be 'feature 0', 'feature 1', ... Default: `None`.
+            stepwise (bool, optional): Set to `True` if `predictor` outputs 0s and 1s only. Default: `False`.
+            threshold (float, optional): Decision threshold :math:`\xi` of classification. Default: 0.5.
+            monte_carlo (int, optional): The number of Monte Carlo samples for computing the integrals :math:`\vec{R}`.
                 Default: 1000. Higher the number more lengthy and accurate the computation.
-            riemann (int): The number of Riemann sum partitions for computing the integrals
+            riemann (int, optional): The number of Riemann sum partitions for computing the integrals
                 :math:`\int_{0}^{1}h(f_A(u(t)))dt`. Default: 1000. Higher the number more lengthy and accurate the
                 computation.
-            batch_size(int): Batch size for `predictor` when finding nearest neighbors. Default: 2000.
-            eps (float): Epsilon. Default: 1e-9.
+            batch_size(int, optional): Batch size for `predictor` when finding nearest neighbors. Default: 2000.
+            eps (float, optional): Epsilon. Default: 1e-9.
 
         Inputs:
             - **features** (Tensor) - The universal sample set :math:`G`. Practically, it is often the training set or
-              its random subset. The shape must be :math:`(|G|, K)`, :math:`|G|` is the total number of samples.
+              its random subset. The shape must be :math:`(|G|, K)`, :math:`|G|` is the total number of samples. The
+              input tensor should have dtype `ms.float32` or `ms.float64` .
             - **max_classes** (int, optional)- Maximum number of classes to be shown. Default: 5.
             - **max_features** (int, optional) - Maximum number of features to be shown. Default: 5.
             - **show** (bool, optional) - Show the explanation figures, `None` means automatically show the explanation
@@ -218,7 +220,28 @@ class PseudoLinearCoef:
     def __init__(self, predictor, num_classes, class_names=None,
                  feature_names=None, stepwise=False, threshold=0.5,
                  monte_carlo=1000, riemann=1000, batch_size=2000, eps=1e-9):
-        self._check_names('class', class_names, num_classes)
+        if not (callable(predictor) or isinstance(predictor, nn.Cell)):
+            raise ValueError("predictor must be Cell object or function.")
+        check_value_type("num_classes", num_classes, int)
+        check_value_type("class_names", class_names, [list, tuple, type(None)])
+        if not((class_names is None) or all(isinstance(n, str) for n in class_names)):
+            raise ValueError("The elements in class_names should be str.")
+        self._check_names("class_names", class_names, num_classes)
+        check_value_type("feature_names", feature_names, [list, tuple, type(None)])
+        if not((feature_names is None) or all(isinstance(n, str) for n in feature_names)):
+            raise ValueError("The elements in feature_names should be str.")
+        check_value_type("stepwise", stepwise, bool)
+        check_value_type("threshold", threshold, float)
+        self._check_values("threshold", threshold)
+        check_value_type("monte_carlo", monte_carlo, int)
+        self._check_values("monte_carlo", monte_carlo)
+        check_value_type("riemann", riemann, int)
+        self._check_values("riemann", riemann)
+        check_value_type("batch_size", batch_size, int)
+        self._check_values("batch_size", batch_size)
+        check_value_type("eps", eps, float)
+        self._check_values("eps", eps)
+
         self._classifier = predictor
         self._num_classes = num_classes
         self._class_names = class_names
@@ -236,7 +259,15 @@ class PseudoLinearCoef:
 
     def __call__(self, features, max_classes=5, max_features=5, show=None):
         """Compute PLC and Relative PLC."""
-        self._check_names('feature', self._feature_names, features.shape[1])
+        check_value_type("features", features, ms.Tensor)
+        if not ((features.dtype == ms.float32) or (features.dtype == ms.float64)):
+            raise ValueError("The features tensor should have dtype ms.float32 or ms.float64.")
+        self._check_names("feature_names", self._feature_names, features.shape[1])
+        check_value_type("max_classes", max_classes, int)
+        self._check_values("max_classes", max_classes)
+        check_value_type("max_features", max_features, int)
+        self._check_values("max_features", max_features)
+        check_value_type("show", show, [bool, type(None)])
 
         if show is None:
             show = is_notebook()
@@ -288,10 +319,16 @@ class PseudoLinearCoef:
         return plc_list
 
     @staticmethod
-    def _check_names(input_type, input_names, num_data):
-        """Check the feature names and class names."""
-        if (input_names is not None) and (num_data != len(input_names)):
-            raise ValueError('The number of {} names should be equal to {}'.format(input_type, num_data))
+    def _check_names(var_name, input_names, num_data):
+        """Check the length of the feature names and class names."""
+        if not((input_names is None) or (num_data == len(input_names))):
+            raise ValueError('The length of {} should be equal to {}'.format(var_name, num_data))
+
+    @staticmethod
+    def _check_values(var_name, value):
+        """Check the values."""
+        if value <= 0:
+            raise ValueError('The value of {} should be greater than 0.'.format(var_name))
 
     @staticmethod
     def _display_format(class_names, target, sorted_feat, target_plc):
@@ -313,8 +350,8 @@ class PseudoLinearCoef:
         Args:
             plc (Tensor): Pseudo Linear Coefficients or Relative Pseudo Linear Coefficients in shape of :math:`(K,)`.
             title (str, optional): Chart title. If not present, chart title will not be displayed. Default: `None`.
-            feature_names (list, tuple, optional): Feature names. If not present, feature names will be 'feature 0',
-                'feature 1', ... Default: `None`.
+            feature_names (list[str], tuple[str], optional): Feature names. If not present, feature names will be
+                'feature 0', 'feature 1', ... Default: `None`.
             max_features (int, optional): Maximum number of features to be shown. Default: 5.
 
         Raises:
@@ -330,11 +367,16 @@ class PseudoLinearCoef:
             >>> relative_plc = Tensor([[[0., 0., 0.], [-2, 0.2, 0.4]], [[0.4, 0.1, -0.1], [0., 0., 0.]]])
             >>> PseudoLinearCoef.plot(relative_plc[0, 1], title='Chart Title', feature_names=['f1','f2','f3'])
         """
-        if (title is not None) and not isinstance(title, str):
-            raise ValueError('The input data type of title should be str.')
-
-        if (feature_names is not None) and (len(plc) != len(feature_names)):
-            raise ValueError('The number of features names should be equal to {}'.format(len(plc)))
+        check_value_type("plc", plc, ms.Tensor)
+        if not ((plc.dtype == ms.float32) or (plc.dtype == ms.float64)):
+            raise ValueError("The plc tensor should have dtype ms.float32 or ms.float64.")
+        check_value_type("title", title, [str, type(None)])
+        check_value_type("feature_names", feature_names, [list, tuple, type(None)])
+        if not((feature_names is None) or all(isinstance(n, str) for n in feature_names)):
+            raise ValueError("The elements in feature_names should be str.")
+        cls._check_names("feature_names", feature_names, len(plc))
+        check_value_type("max_features", max_features, int)
+        cls._check_values("max_features", max_features)
 
         sorted_plc, sorted_feat = cls._sort_order(list(plc.asnumpy()), feature_names)
         if len(sorted_plc) > max_features:
@@ -386,8 +428,8 @@ class PseudoLinearCoef:
 
         Args:
             plc (Tensor): The PLC or Relative PLC to be normalized.
-            per_vector (bool): Normalize within each :math:`\vec{R}` vector. Default: `False`.
-            eps (float): Epsilon. Default: 1e-9.
+            per_vector (bool, optional): Normalize within each :math:`\vec{R}` vector. Default: `False`.
+            eps (float, optional): Epsilon. Default: 1e-9.
 
         Returns:
             Tensor, the normalized values.
@@ -397,15 +439,22 @@ class PseudoLinearCoef:
             >>> from mindspore_xai.explainer import PseudoLinearCoef
             >>>
             >>> plc = Tensor([[0.1, 0.6, 0.8], [-2, 0.2, 0.4], [0.4, 0.1, -0.1]])
-            >>> PseudoLinearCoef.normalize(plc)
+            >>> print(PseudoLinearCoef.normalize(plc))
             [[ 0.05  0.3   0.4 ]
              [-1.    0.1   0.2 ]
              [ 0.2   0.05 -0.05]]
-            >>> PseudoLinearCoef.normalize(plc, per_vector=True)
+            >>> print(PseudoLinearCoef.normalize(plc, per_vector=True))
             [[ 0.125  0.75   1.   ]
              [-1.     0.1    0.2  ]
              [ 1.     0.25  -0.25 ]]
         """
+        check_value_type("plc", plc, ms.Tensor)
+        if not((plc.dtype == ms.float32) or (plc.dtype == ms.float64)):
+            raise ValueError("The plc tensor should have dtype ms.float32 or ms.float64.")
+        check_value_type("per_vector", per_vector, bool)
+        check_value_type("eps", eps, float)
+        cls._check_values("eps", eps)
+
         if not plc.shape:
             return plc
 
