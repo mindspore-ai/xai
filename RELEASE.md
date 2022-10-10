@@ -1,4 +1,11 @@
-# XAI 1.8.1
+# XAI 2.0.0
+
+## XAI 2.0.0 Release Notes
+
+### Major Features and Improvements
+
+- [BETA] Adds PseudoLinearCoef global explainer.
+- [BETA] Adds mindspore_xai.visual.cv saliency visualizations.
 
 ## XAI 1.8.1 Release Notes
 
