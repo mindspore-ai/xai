@@ -39,7 +39,7 @@ CV类工具。
         获取训练参数。
 
         参数：
-            - **train_underlying** (bool) - 如需包含下游分类器的参数，请设置为 `True` 。默认值： `False` 。
+            - **train_underlying** (bool, 可选) - 如需包含下游分类器的参数，请设置为 `True` 。默认值： `False` 。
 
         返回：
             list[Parameter]，训练参数。
@@ -57,12 +57,12 @@ CV类工具。
         准备训练参数。
 
         参数：
-            - **learning_rate** (float) - 优化器的学习率。默认值：0.1。
-            - **momentum** (float) - 优化器的Momentum。默认值：0.9。
-            - **weight_decay** (float) - 优化器的权重衰减。默认值：0.0001。
-            - **lr_base_factor** (float) - 学习率调度器的基本比例因子。默认值：0.1。
-            - **lr_epoch_denom** (int) - 学习率调度器的epoch分母。默认值：30。
-            - **train_underlying** (bool) - 如需训练下游分类器，请设置为 `True` 。默认值：`False`。
+            - **learning_rate** (float, 可选) - 优化器的学习率。默认值：0.1。
+            - **momentum** (float, 可选) - 优化器的Momentum。默认值：0.9。
+            - **weight_decay** (float, 可选) - 优化器的权重衰减。默认值：0.0001。
+            - **lr_base_factor** (float, 可选) - 学习率调度器的基本比例因子。默认值：0.1。
+            - **lr_epoch_denom** (int, 可选) - 学习率调度器的epoch分母。默认值：30。
+            - **train_underlying** (bool, 可选) - 如需训练下游分类器，请设置为 `True` 。默认值：`False`。
 
         返回：
             - Optimizer，优化器。
@@ -73,7 +73,7 @@ CV类工具。
         选择训练模式。
 
         参数：
-            - **mode** (bool) - 训练模式。默认值： `True` 。
+            - **mode** (bool, 可选) - 训练模式。默认值： `True` 。
 
     .. py:method:: train(dataset, loss_fn, callbacks=None, epoch=90, optimizer=None, scheduler=None, **kwargs)
 
