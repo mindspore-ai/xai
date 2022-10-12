@@ -104,8 +104,8 @@ class Localization(LabelSensitiveMetric):
             saliency (Tensor, optional): The saliency map to be evaluated, a 4D tensor of shape :math:`(N, 1, H, W)`.
                 If it is None, the parsed `explainer` will generate the saliency map with `inputs` and `targets` and
                 continue the evaluation. Default: `None`.
-            mask (Tensor, numpy.ndarray): Ground truth bounding box/masks for the `inputs` w.r.t `targets`, a 4D tensor
-                or numpy.ndarray of shape :math:`(N, 1, H, W)`. Default: `None`.
+            mask (Tensor, numpy.ndarray, optional): Ground truth bounding box/masks for the `inputs` w.r.t `targets`,
+                a 4D tensor or numpy.ndarray of shape :math:`(N, 1, H, W)`. Default: `None`.
 
         Returns:
             numpy.ndarray, 1D array of shape :math:`(N,)`, result of localization evaluated on `explainer`.
