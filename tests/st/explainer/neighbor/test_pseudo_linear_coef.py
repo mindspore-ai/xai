@@ -43,7 +43,7 @@ class TestPseudoLinearCoef:
     def compute_plc(self, classifier_input):
         """Compute PLC, Relative PLC and test their outputs."""
         num_classes = 3
-        num_samples = 1000
+        num_samples = 100
         num_features = 3
         explainer = PseudoLinearCoef(classifier_input, num_classes=num_classes)
         features = Tensor(np.random.uniform(size=(num_samples, num_features)), dtype=ms.float32)
@@ -62,6 +62,7 @@ class TestPseudoLinearCoef:
         assert (relative_plc[2, 0, 2] < 0) and (relative_plc[2, 1, 2] < 0)
 
     @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
     @pytest.mark.platform_x86_ascend_training
     @pytest.mark.platform_x86_gpu_training
     @pytest.mark.env_onecard
@@ -71,6 +72,7 @@ class TestPseudoLinearCoef:
         self.compute_plc(net)
 
     @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
     @pytest.mark.platform_x86_ascend_training
     @pytest.mark.platform_x86_gpu_training
     @pytest.mark.env_onecard
@@ -81,6 +83,7 @@ class TestPseudoLinearCoef:
         set_context(mode=PYNATIVE_MODE)
 
     @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
     @pytest.mark.platform_x86_ascend_training
     @pytest.mark.platform_x86_gpu_training
     @pytest.mark.env_onecard
@@ -90,6 +93,7 @@ class TestPseudoLinearCoef:
         self.compute_plc(classifier_fn)
 
     @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
     @pytest.mark.platform_x86_ascend_training
     @pytest.mark.platform_x86_gpu_training
     @pytest.mark.env_onecard
@@ -100,6 +104,7 @@ class TestPseudoLinearCoef:
         set_context(mode=PYNATIVE_MODE)
 
     @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
     @pytest.mark.platform_x86_ascend_training
     @pytest.mark.platform_x86_gpu_training
     @pytest.mark.env_onecard
@@ -112,6 +117,7 @@ class TestPseudoLinearCoef:
         assert np.array_equal(norm_plc, Tensor([[0.05, 0.3, 0.4], [-1, 0.1, 0.2], [0.2, 0.05, -0.05]]))
 
     @pytest.mark.level0
+    @pytest.mark.platform_arm_ascend_training
     @pytest.mark.platform_x86_ascend_training
     @pytest.mark.platform_x86_gpu_training
     @pytest.mark.env_onecard

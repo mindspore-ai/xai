@@ -104,7 +104,7 @@ class SimpleNN(NearestNeighbor):
     def __call__(self, queries, class_id):
         """Find the nearest neighbor."""
         samples = self._classes_samples[class_id]
-        min_idxs = _zeros(queries.shape[0], ms.int32)
+        min_idxs = [0] * queries.shape[0]
         for i, query in tqdm(enumerate(queries), total=queries.shape[0], leave=False, desc='Find Nearest Neighbors'):
-            min_idxs[i] = _simple_nn_idx(query, samples)
-        return samples[min_idxs]
+            min_idxs[i] = int(_simple_nn_idx(query, samples))
+        return ops.gather(samples, ms.Tensor(min_idxs, dtype=ms.int32), 0)
