@@ -41,7 +41,7 @@ mindspore_xai.explainer
 
     .. note::
 
-        解析后的 `network` 将通过 `network.set_grad(False)` 和 `network.set_train(False)` 设为eval模式。如果想在之后训练 `network` ，请通过相反的方式将其重置为训练模式。在使用 `Deconvolution` 时，网络中的 `ReLU` 必须用 `mindspore.nn.Cell` 类来实现，而不是用 `mindspore.ops.Operations.ReLU` ，否则，将会导致错误结果。
+        解析后的 `network` 将通过 `network.set_grad(False)` 和 `network.set_train(False)` 设为eval模式。如果想在之后训练 `network` ，请通过相反的方式将其重置为训练模式。在使用 `Deconvolution` 时，网络中的 `ReLU` 必须用 `mindspore.nn.Cell` 类来实现，而不是用 `mindspore.ops.Operations.ReLU` 。否则，将会导致错误结果。
 
     参数：
         - **network** (Cell) - 要解释的黑盒模型。
@@ -367,8 +367,8 @@ mindspore_xai.explainer
     参数：
         - **predictor** (Cell, Callable) - 要解释的分类器 :math:`f(\cdot )` ，输入只接受一个shape为 :math:`(N, K)` 的Tensor，并输出一个shape为 :math:`(N, L)` 的概率Tensor。 :math:`K` 是特征的数量，输入和输出的Tensor dtype只能是 `ms.float32` 或 `ms.float64`。
         - **num_classes** (int) - 类的数量 :math:`L`。
-        - **class_names** (list[str], 可选) - 类名的list，排序根据分类器的类名排序。如果没有，类名会设为'Class 0'、'Class 1'、...。默认值： `None`。
-        - **feature_names** (list[str], 可选) - 训练数据中的名称的list。如果没有，类名会设为'feature 0'、'feature 1'、...。默认值： `None`。
+        - **class_names** (list[str], tuple[str], 可选) - 类名的list，排序根据分类器的类名排序。如果没有，类名会设为'Class 0'、'Class 1'、...。默认值： `None`。
+        - **feature_names** (list[str], tuple[str], 可选) - 训练数据中的名称的list。如果没有，类名会设为'feature 0'、'feature 1'、...。默认值： `None`。
         - **stepwise** (bool, 可选) - 如果 `predictor` 只输出0和1，请设置为 `True`。默认值： `False`。
         - **threshold** (float, 可选) - 分类的决策阀值 :math:`\xi` 。默认值：0.5。
         - **monte_carlo** (int, 可选) - 计算积分 :math:`\vec{R}` 的蒙特卡洛样本的数量。默认值：1000。数值越大，计算时间就越长和越准确。
@@ -413,8 +413,8 @@ mindspore_xai.explainer
 
         参数：
             - **plc** (Tensor) - 要显示的伪线性系数或相对伪线性系数向量，shape为 :math:`(K,)`。
-            - **title** (str, 可选) - 图表标题。如果没有，则不会显示图表标题。 默认值：`None`。
-            - **feature_names** (list, tuple, 可选) - 特征名称。如果没有，特征名称将为'feature 0'、'feature 1'、...。默认值：`None`。
+            - **title** (str, 可选) - 图表标题。如果没有，则不会显示图表标题。默认值：`None`。
+            - **feature_names** (list[str], tuple[str], 可选) - 特征名称。如果没有，特征名称将为'feature 0'、'feature 1'、...。默认值：`None`。
             - **max_features** (int, 可选) - 最多显示多少个特征。默认值：5。
 
         异常：

@@ -33,7 +33,7 @@ from tbnet_config import TBNetConfig
 class MyLossMonitor(Callback):
     """My loss monitor definition."""
 
-    def epoch_end(self, run_context):
+    def on_train_epoch_end(self, run_context):
         """Print loss at each epoch end."""
         cb_params = run_context.original_args()
         loss = cb_params.net_outputs
@@ -45,6 +45,9 @@ class MyLossMonitor(Callback):
         if isinstance(loss, Tensor) and isinstance(loss.asnumpy(), np.ndarray):
             loss = np.mean(loss.asnumpy())
         print('loss:' + str(loss))
+
+    def on_eval_epoch_end(self, run_context):
+        self.on_train_epoch_end(run_context)
 
 
 def get_args():

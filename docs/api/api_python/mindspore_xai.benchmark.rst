@@ -80,7 +80,7 @@ mindspore_xai.benchmark
     "IoSR"指标是边界框和显着区域的相交面积除以显着区域面积。显着区域是指显着值高于 :math:`\theta * \max{saliency}`。
 
     参数：
-        - **num_labels** （int） - 数据集中的类数。
+        - **num_labels** (int) - 数据集中的类数。
         - **metric** (str，可选) - 计算定位性能力的特定指标。可选项："PointingGame"和"IoSR"。默认值："PointingGame"。
 
     异常：
