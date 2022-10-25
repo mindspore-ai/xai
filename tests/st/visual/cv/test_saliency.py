@@ -35,6 +35,7 @@ class TestVisualization:
     def test_normalize_saliency_input_tensor(self):
         """Test for normalize saliency function with a tensor input."""
         # Saliency with Tensor type
+        ms.set_seed(123)
         saliency_t = ms.Tensor(np.random.rand(H, W), ms.float32)
         normalized_t = normalize_saliency(saliency_t)
         assert isinstance(normalized_t, np.ndarray)
@@ -48,6 +49,7 @@ class TestVisualization:
     def test_saliency_to_rgba_input_tensor(self):
         """Test for saliency to rgba function with a tensor input."""
         # Saliency with Tensor type
+        ms.set_seed(123)
         saliency_t = ms.Tensor(np.random.rand(H, W), ms.float32)
         rgb_map_t = saliency_to_rgba(saliency_t)
         assert isinstance(rgb_map_t, np.ndarray)
@@ -61,6 +63,7 @@ class TestVisualization:
     def test_saliency_to_image_input_tensor(self):
         """Test for saliency to image function with a tensor input."""
         # Saliency with Tensor type
+        ms.set_seed(123)
         saliency_t = ms.Tensor(np.random.rand(H, W), ms.float32)
         image_t = saliency_to_image(saliency_t)
         assert isinstance(image_t, PIL.Image.Image)
@@ -74,6 +77,7 @@ class TestVisualization:
     def test_normalize_saliency_input_np(self):
         """Test for normalize saliency function with a np.ndarray input."""
         # Saliency with np.array type
+        ms.set_seed(123)
         saliency_np = np.random.rand(H, W)
         normalized_np = normalize_saliency(saliency_np)
         assert isinstance(normalized_np, np.ndarray)
@@ -87,6 +91,7 @@ class TestVisualization:
     def test_saliency_to_rgba_input_np(self):
         """Test for saliency to rgba function with a np.ndarray input."""
         # Saliency with np.array type
+        ms.set_seed(123)
         saliency_np = np.random.rand(H, W)
         rgb_map_np = saliency_to_rgba(saliency_np)
         assert isinstance(rgb_map_np, np.ndarray)
@@ -100,6 +105,7 @@ class TestVisualization:
     def test_saliency_to_image_input_np(self):
         """Test for saliency to image function with a np.ndarray input."""
         # Saliency with np.array type
+        ms.set_seed(123)
         saliency_np = np.random.rand(H, W)
         image_np = saliency_to_image(saliency_np)
         assert isinstance(image_np, PIL.Image.Image)

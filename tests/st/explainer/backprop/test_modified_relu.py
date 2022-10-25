@@ -57,6 +57,7 @@ class TestModifiedReLU:
     @pytest.mark.env_onecard
     def test_deconvolution(self):
         """Test deconvolution attribution."""
+        ms.set_seed(123)
         data = (ms.Tensor(np.random.random(size=(1, 1, 4, 4)),
                           ms.float32) - 0.5) * 2
         deconv = Deconvolution(self.net)
@@ -72,6 +73,7 @@ class TestModifiedReLU:
 
     def test_guided_backprop(self):
         """Test deconvolution attribution."""
+        ms.set_seed(123)
         data = (ms.Tensor(np.random.random(size=(1, 1, 4, 4)),
                           ms.float32) - 0.5) * 2
         explainer = GuidedBackprop(self.net)
