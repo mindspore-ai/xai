@@ -162,8 +162,6 @@ def saliency_to_rgba(saliency, cm=None, alpha_factor=1.2, as_uint8=True, normali
         >>> print(output_img.shape)
         (2, 3, 4)
     """
-    if (saliency < 0).any() or (saliency > 1).any():
-        raise ValueError("The value range in saliency should be between 0 and 1.")
     saliency = _unify_saliency(saliency)
     return np_saliency_to_rgba(saliency, cm, alpha_factor, as_uint8, normalize)
 

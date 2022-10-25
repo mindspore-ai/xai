@@ -106,8 +106,6 @@ class PseudoLinearCoef:
         PLC is a global attribution method, it is a measure of feature sensitivities around the classifier's decision
         boundaries from the data distribution's point of view.
 
-        Authors: NG Ngai Fai, WANG Shendi, LI Xiaohui (2022 Huawei)
-
         PLC of class A:
 
         .. math::
@@ -169,7 +167,7 @@ class PseudoLinearCoef:
                 :math:`\int_{0}^{1}h(f_A(u(t)))dt`. Default: 1000. Higher the number more lengthy and accurate the
                 computation.
             batch_size(int, optional): Batch size for `predictor` when finding nearest neighbors. Default: 2000.
-            eps (float, optional): Epsilon. Default: 1e-9.
+            eps (float, optional): Degree of tolerance. This value must be greater than 0. Default: 1e-9.
 
         Inputs:
             - **features** (Tensor) - The universal sample set :math:`G`. Practically, it is often the training set or
@@ -429,7 +427,7 @@ class PseudoLinearCoef:
         Args:
             plc (Tensor): The PLC or Relative PLC to be normalized.
             per_vector (bool, optional): Normalize within each :math:`\vec{R}` vector. Default: `False`.
-            eps (float, optional): Epsilon. Default: 1e-9.
+            eps (float, optional): Degree of tolerance. This value must be greater than 0. Default: 1e-9.
 
         Returns:
             Tensor, the normalized values.
