@@ -100,6 +100,7 @@ def test_retrieve_layer_by_name_no_name():
 @pytest.mark.env_onecard
 def test_forward_probe():
     """Test case for ForwardProbe."""
+    ms.set_seed(123)
     model = CustomNet()
     model.set_grad()
     inputs = np.random.random((1, 10))

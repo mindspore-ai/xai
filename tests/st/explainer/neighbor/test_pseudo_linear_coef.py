@@ -42,6 +42,7 @@ class TestPseudoLinearCoef:
 
     def compute_plc(self, classifier_input):
         """Compute PLC, Relative PLC and test their outputs."""
+        ms.set_seed(123)
         num_classes = 3
         num_samples = 100
         num_features = 3
