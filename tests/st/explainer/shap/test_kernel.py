@@ -92,6 +92,7 @@ class TestSHAPKernel:
     def test_network_sklearn_classifier(self, training_data_np):
         """sklearn.ensemble.RandomForestClassifier."""
         # labels_train has 3 classes
+        ms.set_seed(123)
         labels_train = np.zeros(NUM_TRAINING_DATA)
         for i in range(NUM_TRAINING_DATA):
             labels_train[i] = i % NUM_CLASSES
@@ -113,6 +114,7 @@ class TestSHAPKernel:
     @pytest.mark.env_onecard
     def test_network_sklearn_regressor(self, training_data_np):
         """sklearn.ensemble.RandomForestRegressor."""
+        ms.set_seed(123)
         labels_train = np.random.rand(NUM_TRAINING_DATA)
         model = sklearn.ensemble.RandomForestRegressor(n_estimators=10)
         model.fit(training_data_np, labels_train)

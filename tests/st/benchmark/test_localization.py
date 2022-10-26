@@ -27,6 +27,7 @@ from mindspore_xai.explainer import Gradient
 set_context(mode=PYNATIVE_MODE)
 
 H, W = 4, 4
+ms.set_seed(123)
 SALIENCY = ms.Tensor(np.random.rand(1, 1, H, W), ms.float32)
 
 
@@ -46,6 +47,7 @@ class TestLocalization:
 
     def setup_method(self):
         """Setup the testcase."""
+        ms.set_seed(123)
         self.net = CustomNet()
         self.data = ms.Tensor(np.random.rand(1, 1, H, W), ms.float32)
         self.target = 1

@@ -65,6 +65,7 @@ def fixture_regression_net():
 @pytest.fixture(scope='package', name="training_data_np")
 def fixture_training_data_np():
     """fixture training data in numpy array format."""
+    ms.set_seed(123)
     return np.random.rand(NUM_TRAINING_DATA, NUM_FEATURES)
 
 
@@ -77,4 +78,5 @@ def fixture_training_data_tensor(training_data_np):
 @pytest.fixture(scope='package', name="inputs")
 def fixture_inputs():
     """fixture inputs."""
+    ms.set_seed(123)
     return ms.Tensor(np.random.rand(NUM_INPUTS, NUM_FEATURES), ms.float32)

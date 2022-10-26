@@ -53,6 +53,7 @@ class TestGradCAM:
     """Test GradCAM."""
 
     def setup_method(self):
+        ms.set_seed(123)
         self.net = SimpleAvgLinear()
         self.data = ms.Tensor(np.random.random(size=(1, 1, 4, 4)), ms.float32)
 

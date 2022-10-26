@@ -57,6 +57,7 @@ class TestGradient:
     @pytest.mark.env_onecard
     def test_gradient(self):
         """Test gradient __call__ function."""
+        ms.set_seed(123)
         data = (ms.Tensor(np.random.random(size=(1, 1, 4, 4)),
                           ms.float32) - 0.5) * 2
         explainer = Gradient(self.net)
