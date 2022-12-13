@@ -114,6 +114,9 @@ class GradCAM(IntermediateLayerAttribution):
         self._aggregation_fn = _gradcam_aggregation
         self._resize_mode = 'bilinear'
 
+        self._grad_net = GradNet(self._backward_model)
+        self._hook_cell()
+
     def _hook_cell(self):
         if get_context("mode") != PYNATIVE_MODE:
             raise TypeError(f"Hook is not supported in graph mode currently, you can use"
@@ -137,16 +140,13 @@ class GradCAM(IntermediateLayerAttribution):
         self._verify_data(inputs, targets)
         self._verify_other_args(ret, show)
 
-        self._hook_cell()
-
         with ForwardProbe(self._saliency_cell) as probe:
 
             inputs = unify_inputs(inputs)
             targets = unify_targets(inputs[0].shape[0], targets)
 
             weights = self._get_bp_weights(inputs, targets)
-            grad_net = GradNet(self._backward_model)
-            gradients = grad_net(*inputs, weights)
+            gradients = self._grad_net(*inputs, weights)
             # get intermediate activation
             activation = (probe.value,)
 
