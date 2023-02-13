@@ -80,6 +80,8 @@ class TestGradCAM:
                 intermediate_grad = self.net.fc2.weight.data[x]
                 reshaped = reshape(intermediate_grad, (1, 1, 2, 2))
                 gap_grad = self.net.avgpool(reshaped)
+                # manually broadcast
+                gap_grad = op.Tile()(gap_grad, (1, 1, *activation.shape[2:]))
                 res = aggregation(gap_grad * activation)
                 assert np.allclose(res.asnumpy(), attribution.asnumpy(), atol=1e-5, rtol=1e-3)
 

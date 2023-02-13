@@ -273,7 +273,7 @@ class PseudoLinearCoef:
         nn_finder = SimpleNN(features, self._classifier, self._num_classes,
                              batch_size=self._batch_size, threshold=self._threshold)
 
-        plc = _zeros((self._num_classes, features.shape[1]), ms.float32)
+        plc = np.zeros((self._num_classes, features.shape[1]), dtype=np.float32)
         relative_plc = _zeros((self._num_classes, self._num_classes, features.shape[1]), ms.float32)
 
         # may different from features.shape[0]
@@ -287,7 +287,7 @@ class PseudoLinearCoef:
             plc_ele = self._relative(target, view_point, features, nn_finder)
             relative_plc[target, view_point] = plc_ele
             vp_weight = vp_samples / total_vp_samples
-            plc[target] += plc_ele * vp_weight
+            plc[target] += (plc_ele * vp_weight).asnumpy()
 
         if show:
             plc_list = self._plc_to_list(plc, max_classes)
@@ -306,7 +306,7 @@ class PseudoLinearCoef:
                                   features.shape[1]-max_features)
                 else:
                     self._display(target_plc, yaxis_label, title, 0, 0)
-        return plc, relative_plc
+        return ms.Tensor(plc), relative_plc
 
     @staticmethod
     def _plc_to_list(plc, max_classes):

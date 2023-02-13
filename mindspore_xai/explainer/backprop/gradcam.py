@@ -32,9 +32,10 @@ def _gradcam_aggregation(attributions):
     Returns:
         Tensor: the attribution with channel dimension aggregated.
     """
-    sum_ = op.ReduceSum(keep_dims=True)
+    sum_ = op.ReduceSum(keep_dims=False)
     relu_ = op.ReLU()
     attributions = relu_(sum_(attributions, 1))
+    attributions = op.Reshape()(attributions, (attributions.shape[0], 1, *attributions.shape[1:]))
     return attributions
 
 
@@ -161,8 +162,14 @@ class GradCAM(IntermediateLayerAttribution):
                 raise ValueError("Gradient for intermediate layer is not "
                                  "obtained")
             mul = op.Mul()
-            attribution = self._aggregation_fn(
-                mul(*intermediate_grad, *activation))
+
+            if len(intermediate_grad) != 1 or len(activation) != 1:
+                raise ValueError("Length of `intermediate_grad` and `activation` must be 1.")
+
+            # manually braodcast
+            intermediate_grad = op.Tile()(intermediate_grad[0], (1, 1, *activation[0].shape[2:]))
+            attribution = self._aggregation_fn(mul(intermediate_grad, activation[0]))
+
             if self._resize:
                 attribution = self._resize_fn(attribution, *inputs,
                                               mode=self._resize_mode)
