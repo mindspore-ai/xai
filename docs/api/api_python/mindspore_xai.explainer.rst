@@ -324,13 +324,13 @@ mindspore_xai.explainer
 
     .. math::
 
-        \vec{R}(A)=\int \vec{S}(A,nearest_{A}(x),x))p_{\neg A}(x)dx
+        \vec{R}(A)=\int \vec{S}(A,nearest_{A}(x),x)p_{\neg A}(x)dx
 
     A类（目标类）相对于B类（视点类）的伪线性系数，称为相对伪线性系数:
 
     .. math::
 
-        \vec{R}(A,B)=\int \vec{S}(A,nearest_{A}(x),x))p_{B}(x)dx
+        \vec{R}(A,B)=\int \vec{S}(A,nearest_{A}(x),x)p_{B}(x)dx
 
     where:
 

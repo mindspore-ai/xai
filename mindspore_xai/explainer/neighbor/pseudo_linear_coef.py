@@ -110,13 +110,13 @@ class PseudoLinearCoef:
 
         .. math::
 
-            \vec{R}(A)=\int \vec{S}(A,nearest_{A}(x),x))p_{\neg A}(x)dx
+            \vec{R}(A)=\int \vec{S}(A,nearest_{A}(x),x)p_{\neg A}(x)dx
 
         PLC of class A (target class) relative to class B (view point class), it is called Relative PLC:
 
         .. math::
 
-            \vec{R}(A,B)=\int \vec{S}(A,nearest_{A}(x),x))p_{B}(x)dx
+            \vec{R}(A,B)=\int \vec{S}(A,nearest_{A}(x),x)p_{B}(x)dx
 
         Where:
 
