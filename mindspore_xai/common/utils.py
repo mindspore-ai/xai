@@ -55,7 +55,8 @@ def abs_max(gradients):
         Tensor, saliency map integrated from gradients.
     """
     gradients = op.Abs()(gradients)
-    saliency = op.ReduceMax(keep_dims=True)(gradients, axis=1)
+    saliency = op.ReduceMax(keep_dims=False)(gradients, axis=1)
+    saliency = op.Reshape()(saliency, (saliency.shape[0], 1, *saliency.shape[1:]))
     return saliency
 
 
