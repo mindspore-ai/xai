@@ -106,7 +106,7 @@ mindspore_xai.benchmark
 
         异常：
             - **TypeError** - 参数或输入类型错误。
-            - **ValueError** - :math:`(N,)` 不是1。
+            - **ValueError** - :math:`N` 不是1。
 
 .. py:class:: mindspore_xai.benchmark.Robustness(num_labels, activation_fn)
 
