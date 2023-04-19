@@ -332,7 +332,7 @@ mindspore_xai.explainer
 
         \vec{R}(A,B)=\int \vec{S}(A,nearest_{A}(x),x)p_{B}(x)dx
 
-    where:
+    其中:
 
     .. math::
 
