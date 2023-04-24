@@ -42,22 +42,22 @@ class Localization(LabelSensitiveMetric):
     r"""
     Provides evaluation on the localization capability of XAI methods.
 
-    Two specific metrics to obtain quantified results are supported: "PointingGame", and "IoSR"
+    Two specific metrics to obtain quantified results are supported: ``PointingGame``, and ``IoSR``
     (Intersection over Salient Region).
 
-    For metric "PointingGame", the localization capability is calculated as the ratio of data in which the max position
-    of their saliency maps lies within the bounding boxes. Specifically, for a single datum, given the saliency map and
-    its bounding box, if the max point of its saliency map lies within the bounding box, the evaluation result is 1
-    otherwise 0.
+    For metric ``PointingGame``, the localization capability is calculated as the ratio of data in which the
+    max position of their saliency maps lies within the bounding boxes. Specifically, for a single datum,
+    given the saliency map and its bounding box, if the max point of its saliency map lies within the
+    bounding box, the evaluation result is 1 otherwise 0.
 
-    For metric "IoSR" (Intersection over Salient Region), the localization capability is calculated as the intersection
-    of the bounding box and the salient region over the area of the salient region. The salient region is defined as
-    the region whose value exceeds :math:`\theta * \max{saliency}`.
+    For metric ``IoSR`` (Intersection over Salient Region), the localization capability is calculated as
+    the intersection of the bounding box and the salient region over the area of the salient region.
+    The salient region is defined as the region whose value exceeds :math:`\theta * \max{saliency}`.
 
     Args:
         num_labels (int): Number of classes in the dataset.
         metric (str, optional): Specific metric to calculate localization capability.
-            Options: "PointingGame", "IoSR". Default: "PointingGame".
+            Options: ``"PointingGame"``, ``"IoSR"``. Default: ``"PointingGame"``.
 
     Raises:
         TypeError: Be raised for any argument type problem.
@@ -103,9 +103,9 @@ class Localization(LabelSensitiveMetric):
                 If `targets` is a 1D tensor, its length should be :math:`N`.
             saliency (Tensor, optional): The saliency map to be evaluated, a 4D tensor of shape :math:`(N, 1, H, W)`.
                 If it is None, the parsed `explainer` will generate the saliency map with `inputs` and `targets` and
-                continue the evaluation. Default: `None`.
+                continue the evaluation. Default: ``None``.
             mask (Tensor, numpy.ndarray, optional): Ground truth bounding box/masks for the `inputs` w.r.t `targets`,
-                a 4D tensor or numpy.ndarray of shape :math:`(N, 1, H, W)`. Default: `None`.
+                a 4D tensor or numpy.ndarray of shape :math:`(N, 1, H, W)`. Default: ``None``.
 
         Returns:
             numpy.ndarray, 1D array of shape :math:`(N,)`, result of localization evaluated on `explainer`.

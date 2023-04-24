@@ -62,20 +62,20 @@ class Occlusion(PerturbationAttribution):
             as when combining this function with network, the final output is the probability of the input.
         perturbation_per_eval (int, optional): Number of perturbations for each inference during inferring the
             perturbed samples. Within the memory capacity, usually the larger this number is, the faster the
-            explanation is obtained. Default: 32.
+            explanation is obtained. Default: ``32``.
 
     Inputs:
         - **inputs** (Tensor) - The input data to be explained, a 4D tensor of shape :math:`(N, C, H, W)`.
         - **targets** (Tensor, int, tuple, list) - The label of interest. It should be a 1D or scalar tensor, or an
           integer, or a tuple/list of integers. If it is a 1D tensor, tuple or list, its length should be :math:`N`.
-        - **ret** (str, optional): The return object type. 'tensor' means returns a Tensor object, 'image' means return
-          a PIL.Image.Image list. Default: `tensor`.
-        - **show** (bool, optional): Show the saliency images, `None` means automatically show the saliency images if it
-          is running on JupyterLab. Default: `None`.
+        - **ret** (str, optional): The return object type. ``'tensor'`` means returns a Tensor object, ``'image'``
+          means return a PIL.Image.Image list. Default: ``'tensor'``.
+        - **show** (bool, optional): Show the saliency images, ``None`` means automatically show the saliency images
+          if it is running on JupyterLab. Default: ``None``.
 
     Outputs:
         Tensor, a 4D tensor of shape :math:`(N, 1, H, W)`, saliency maps. Or list[list[PIL.Image.Image]], the
-        normalized saliency images if `ret` was set to 'image'.
+        normalized saliency images if `ret` was set to ``'image'``.
 
     Raises:
         TypeError: Be raised for any argument or input type problem.

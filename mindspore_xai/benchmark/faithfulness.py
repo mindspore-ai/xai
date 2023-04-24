@@ -341,23 +341,23 @@ class Faithfulness(LabelSensitiveMetric):
     """
     Provides evaluation on faithfulness on XAI explanations.
 
-    Three specific metrics to obtain quantified results are supported: "NaiveFaithfulness", "DeletionAUC", and
-    "InsertionAUC".
+    Three specific metrics to obtain quantified results are supported: ``NaiveFaithfulness``, ``DeletionAUC``, and
+    ``InsertionAUC``.
 
-    For metric "NaiveFaithfulness", a series of perturbed images are created by modifying pixels
+    For metric ``NaiveFaithfulness``, a series of perturbed images are created by modifying pixels
     on original image. Then the perturbed images will be fed to the model and a series of output probability drops can
     be obtained. The faithfulness is then quantified as the correlation between the probability drops and the saliency
     map values on the same pixels (we normalize the correlation further to make them in range of [0, 1]).
 
-    For metric "DeletionAUC", a series of perturbed images are created by accumulatively modifying pixels of the
+    For metric ``DeletionAUC``, a series of perturbed images are created by accumulatively modifying pixels of the
     original image to a base value (e.g. a constant). The perturbation starts from pixels with high saliency values
     to pixels with low saliency values. Feeding the perturbed images into the model in order, an output probability
-    drop curve can be obtained. "DeletionAUC" is then obtained as the area under this probability drop curve.
+    drop curve can be obtained. ``DeletionAUC`` is then obtained as the area under this probability drop curve.
 
-    For metric "InsertionAUC", a series of perturbed images are created by accumulatively inserting pixels of the
+    For metric ``InsertionAUC``, a series of perturbed images are created by accumulatively inserting pixels of the
     original image to a reference image (e.g. a black image). The insertion starts from pixels with high saliency
     values to pixels with low saliency values. Feeding the perturbed images into the model in order, an output
-    probability increase curve can be obtained. "InsertionAUC" is then obtained as the area under this curve.
+    probability increase curve can be obtained. ``InsertionAUC`` is then obtained as the area under this curve.
 
     For all the three metrics, higher value indicates better faithfulness.
 
@@ -368,8 +368,8 @@ class Faithfulness(LabelSensitiveMetric):
             tasks, `nn.Sigmoid` is usually be applied. Users can also pass their own customized `activation_fn` as long
             as when combining this function with network, the final output is the probability of the input.
         metric (str, optional): The specific metric to quantify faithfulness.
-            Options: "DeletionAUC", "InsertionAUC", "NaiveFaithfulness".
-            Default: 'NaiveFaithfulness'.
+            Options: ``"DeletionAUC"``, ``"InsertionAUC"``, ``"NaiveFaithfulness"``.
+            Default: ``"NaiveFaithfulness"``.
 
     Raises:
         TypeError: Be raised for any argument type problem.
@@ -412,7 +412,7 @@ class Faithfulness(LabelSensitiveMetric):
                 If `targets` is a 1D tensor, its length should be :math:`N`.
             saliency (Tensor, optional): The saliency map to be evaluated, a 4D tensor of shape :math:`(N, 1, H, W)`.
                 If it is None, the parsed `explainer` will generate the saliency map with `inputs` and `targets` and
-                continue the evaluation. Default: `None`.
+                continue the evaluation. Default: ``None``.
 
         Returns:
             numpy.ndarray, 1D array of shape :math:`(N,)`, result of faithfulness evaluated on `explainer`.
