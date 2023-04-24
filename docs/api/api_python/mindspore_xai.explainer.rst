@@ -274,7 +274,7 @@ mindspore_xai.explainer
 
     输入：
         - **inputs** (Tensor, numpy.ndarray) - 要解释的输入数据，2D float Tensor或shape为 :math:`(N, K)` 的2D float numpy 数组。
-        - **targets** (Tensor, numpy.ndarray, list, int, 可选) - 要解释的目标分类。当 `targets` 是integer时，生成该目标的归因图。而当 `targets` 是Tensor、numpy数组或list时，shape会是 :math:`(N, L)`，L是每个样本的标签数量， :math:`(N,)`或者 :math:`()`。对于回归模型，此参数将被忽略。默认值：0。
+        - **targets** (Tensor, numpy.ndarray, list, int, 可选) - 要解释的目标分类。当 `targets` 是integer时，生成该目标的归因图。而当 `targets` 是Tensor、numpy数组或list时，shape会是 :math:`(N, L)`，L是每个样本的标签数量， :math:`(N,)` 或者 :math:`()`。对于回归模型，此参数将被忽略。默认值：0。
         - **show** (bool, 可选) - 显示解释图像，`None` 代表自动，只会在JupyterLab上显示。默认值： `None`。
 
     输出：
@@ -359,8 +359,7 @@ mindspore_xai.explainer
 
     .. note::
         如果 `predictor` 是一个函数， `stepwise` 是 `False` 和在graph mode上运行， `predictor` 必须符合
-        `static graph syntax <https://mindspore.cn/docs/en/master/note/static_graph_syntax_support.html>`_ 的语法。
-        如果有很多样本被分类到多于一个类别，PLC可能会不准确。
+        `static graph syntax <https://mindspore.cn/docs/en/master/note/static_graph_syntax_support.html>`_ 的语法。如果有很多样本被分类到多于一个类别，PLC可能会不准确。
 
     参数：
         - **predictor** (Cell, Callable) - 要解释的分类器 :math:`f(\cdot )` ，输入只接受一个shape为 :math:`(N, K)` 的Tensor，并输出一个shape为 :math:`(N, L)` 的概率Tensor。 :math:`K` 是特征的数量，输入和输出的Tensor dtype只能是 `ms.float32` 或 `ms.float64`。
