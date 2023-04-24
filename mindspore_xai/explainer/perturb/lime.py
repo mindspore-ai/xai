@@ -41,13 +41,13 @@ class LIMETabular:
         train_feat_stats (dict): a dict object having the details of training data statistics. The stats can be
             generated using static method LIMETabular.to_feat_stats(training_data).
         feature_names (list, optional): list of names (strings) corresponding to the columns in the training data.
-            Default: `None`.
+            Default: ``None``.
         categorical_features_indexes (list, optional): list of indices (ints) corresponding to the categorical columns,
-            their values MUST be integers. Other columns will be considered continuous. Default: `None`.
+            their values MUST be integers. Other columns will be considered continuous. Default: ``None``.
         class_names (list, optional): list of class names, ordered according to whatever the classifier is using. If
-            not present, class names will be '0', '1', ... Default: `None`.
-        num_perturbs (int, optional): size of the neighborhood to learn the linear model. Default: 5000.
-        max_features (int, optional): Maximum number of features present in explanation. Default: 10.
+            not present, class names will be '0', '1', ... Default: ``None``.
+        num_perturbs (int, optional): size of the neighborhood to learn the linear model. Default: ``5000``.
+        max_features (int, optional): Maximum number of features present in explanation. Default: ``10``.
 
     Inputs:
         - **inputs** (Tensor, numpy.ndarray) - The input data to be explained, a 2D float tensor or 2D float
@@ -55,9 +55,9 @@ class LIMETabular:
         - **targets** (Tensor, numpy.ndarray, list, int, optional) - The labels of interest to be explained. When
           `targets` is an integer, all the inputs will generate attribution map w.r.t this integer. When `targets` is a
           tensor, numpy array or list, it should be of shape :math:`(N, L)` (L being the number of labels for each
-          sample), :math:`(N,)` or :math:`()`. For regression model, this parameter will be ignored. Default: 0.
-        - **show** (bool, optional): Show the explanation figures, `None` means automatically show the explanation
-          figures if it is running on JupyterLab. Default: `None`.
+          sample), :math:`(N,)` or :math:`()`. For regression model, this parameter will be ignored. Default: ``0``.
+        - **show** (bool, optional): Show the explanation figures, ``None`` means automatically show the explanation
+          figures if it is running on JupyterLab. Default: ``None``.
 
     Outputs:
         list[list[list[(str, float)]]], a 3-dimension list of tuple. The first dimension represents inputs.
@@ -171,9 +171,9 @@ class LIMETabular:
 
         Args:
             features (Tensor, numpy.ndarray): training data.
-            feature_names (list, optional): feature names. Default: `None`.
+            feature_names (list, optional): feature names. Default: ``None``.
             categorical_features_indexes (list, optional): list of indices (ints) corresponding to the categorical
-                columns, their values MUST be integers. Other columns will be considered continuous. Default: `None`.
+                columns, their values MUST be integers. Other columns will be considered continuous. Default: ``None``.
 
         Returns:
             dict, training data stats

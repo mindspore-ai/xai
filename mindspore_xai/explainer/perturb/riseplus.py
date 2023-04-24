@@ -49,22 +49,22 @@ class RISEPlus(RISE):
             long as when combining this function with network, the final output is the probability of the input.
         perturbation_per_eval (int, optional): Number of perturbations for each inference during inferring the
             perturbed samples. Within the memory capacity, usually the larger this number is, the faster the
-            explanation is obtained. Default: 32.
+            explanation is obtained. Default: ``32``.
 
     Inputs:
         - **inputs** (Tensor) - The input data to be explained, a 4D tensor of shape :math:`(N, C, H, W)`.
         - **targets** (Tensor, int) - The labels of interest to be explained. When `targets` is an integer,
           all of the inputs will generates attribution map w.r.t this integer. When `targets` is a tensor, it
           should be of shape :math:`(N, L)` (L being the number of labels for each sample) or :math:`(N,)` :math:`()`.
-        - **ret** (str, optional): The return object type. 'tensor' means returns a Tensor object, 'image' means return
-          a PIL.Image.Image list. Default: `tensor`.
-        - **show** (bool, optional): Show the saliency images, `None` means automatically show the saliency images if it
-          is running on JupyterLab. Default: `None`.
+        - **ret** (str, optional): The return object type. ``'tensor'`` means returns a Tensor object, ``'image'``
+          means return a PIL.Image.Image list. Default: ``'tensor'``.
+        - **show** (bool, optional): Show the saliency images, ``None`` means automatically show the saliency images
+          if it is running on JupyterLab. Default: ``None``.
 
     Outputs:
         Tensor, a 4D tensor of shape :math:`(N, L, H, W)` when `targets` is a tensor of shape :math:`(N, L)`, otherwise
         a tensor of shape :math:`(N, 1, H, W)`, saliency maps. Or list[list[PIL.Image.Image]], the normalized saliency
-        images if `ret` was set to 'image'.
+        images if `ret` was set to ``'image'``.
 
     Raises:
         TypeError: Be raised for any argument or input type problem.

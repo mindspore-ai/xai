@@ -37,11 +37,11 @@ class SHAPKernel(_SHAP):
             samples, K being the number of features). The background dataset to use for integrating out features,
             accept (whole or part of) training dataset.
         feature_names (list, optional): list of names (strings) corresponding to the columns in the training data.
-            Default: `None`.
+            Default: ``None``.
         class_names (list, optional): list of class names, ordered according to whatever the classifier is using. If
-            not present, class names will be '0', '1', ... Default: `None`.
-        num_neighbours (int, optional): Number of subsets used for the estimation of the shap values. Default: 5000.
-        max_features (int, optional): Maximum number of features present in explanation. Default: 10.
+            not present, class names will be '0', '1', ... Default: ``None``.
+        num_neighbours (int, optional): Number of subsets used for the estimation of the shap values. Default: ``5000``.
+        max_features (int, optional): Maximum number of features present in explanation. Default: ``10``.
 
     Inputs:
         - **inputs** (Tensor, numpy.ndarray) - The input data to be explained, a 2D float tensor or 2D float numpy
@@ -49,9 +49,9 @@ class SHAPKernel(_SHAP):
         - **targets** (Tensor, numpy.ndarray, list, int, optional) - The labels of interest to be explained. When
           `targets` is an integer, all the inputs will generate attribution map w.r.t this integer. When `targets` is a
           tensor or numpy array or list, it should be of shape :math:`(N, L)` (L being the number of labels for each
-          sample), :math:`(N,)` or :math:`()`. Default: 0.
-        - **show** (bool, optional): Show the explanation figures, `None` means automatically show the explanation
-          figures if it is running on JupyterLab. Default: `None`.
+          sample), :math:`(N,)` or :math:`()`. Default: ``0``.
+        - **show** (bool, optional): Show the explanation figures, ``None`` means automatically show the explanation
+          figures if it is running on JupyterLab. Default: ``None``.
 
     Outputs:
         Tensor, a 3D tensor of shape :math:`(N, L, K)`. The first dimension represents inputs.

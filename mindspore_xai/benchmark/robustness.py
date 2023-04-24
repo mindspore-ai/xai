@@ -66,7 +66,7 @@ class Robustness(LabelSensitiveMetric):
                 If `targets` is a 1D tensor, its length should be :math:`N`.
             saliency (Tensor, optional): The saliency map to be evaluated, a 4D tensor of shape :math:`(N, 1, H, W)`.
                 If it is None, the parsed `explainer` will generate the saliency map with `inputs` and `targets` and
-                continue the evaluation. Default: `None`.
+                continue the evaluation. Default: ``None``.
 
         Returns:
             numpy.ndarray, 1D array of shape :math:`(N,)`, result of robustness evaluated on `explainer`.

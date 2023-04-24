@@ -156,27 +156,28 @@ class PseudoLinearCoef:
                 number of features. Both input and output tensors should have dtype `ms.float32` or `ms.float64` .
             num_classes (int): The number of classes :math:`L`.
             class_names (list[str], tuple[str], optional): List/tuple of class names, ordered according to whatever the
-                classifier is using. If not present, class names will be 'Class 0', 'Class 1', ... Default: `None`.
+                classifier is using. If not present, class names will be 'Class 0', 'Class 1', ... Default: ``None``.
             feature_names (list[str], tuple[str], optional): List/tuple of feature names corresponding to the columns in
-                the training data. If not present, feature names will be 'feature 0', 'feature 1', ... Default: `None`.
-            stepwise (bool, optional): Set to `True` if `predictor` outputs 0s and 1s only. Default: `False`.
-            threshold (float, optional): Decision threshold :math:`\xi` of classification. Default: 0.5.
+                the training data. If not present, feature names will be 'feature 0', 'feature 1', ...
+                Default: ``None``.
+            stepwise (bool, optional): Set to ``True`` if `predictor` outputs 0s and 1s only. Default: `False`.
+            threshold (float, optional): Decision threshold :math:`\xi` of classification. Default: ``0.5``.
             monte_carlo (int, optional): The number of Monte Carlo samples for computing the integrals :math:`\vec{R}`.
-                Default: 1000. Higher the number more lengthy and accurate the computation.
+                Default: ``1000``. Higher the number more lengthy and accurate the computation.
             riemann (int, optional): The number of Riemann sum partitions for computing the integrals
-                :math:`\int_{0}^{1}h(f_A(u(t)))dt`. Default: 1000. Higher the number more lengthy and accurate the
+                :math:`\int_{0}^{1}h(f_A(u(t)))dt`. Default: ``1000``. Higher the number more lengthy and accurate the
                 computation.
-            batch_size(int, optional): Batch size for `predictor` when finding nearest neighbors. Default: 2000.
-            eps (float, optional): Degree of tolerance. This value must be greater than 0. Default: 1e-9.
+            batch_size(int, optional): Batch size for `predictor` when finding nearest neighbors. Default: ``2000``.
+            eps (float, optional): Degree of tolerance. This value must be greater than 0. Default: ``1e-9``.
 
         Inputs:
             - **features** (Tensor) - The universal sample set :math:`G`. Practically, it is often the training set or
               its random subset. The shape must be :math:`(|G|, K)`, :math:`|G|` is the total number of samples. The
               input tensor should have dtype `ms.float32` or `ms.float64` .
-            - **max_classes** (int, optional)- Maximum number of classes to be shown. Default: 5.
-            - **max_features** (int, optional) - Maximum number of features to be shown. Default: 5.
-            - **show** (bool, optional) - Show the explanation figures, `None` means automatically show the explanation
-              figures if it is running on JupyterLab. Default: `None`.
+            - **max_classes** (int, optional)- Maximum number of classes to be shown. Default: ``5``.
+            - **max_features** (int, optional) - Maximum number of features to be shown. Default: ``5``.
+            - **show** (bool, optional) - Show the explanation figures, ``None`` means automatically show
+              the explanation figures if it is running on JupyterLab. Default: ``None``.
 
         Outputs:
             - **plc** (Tensor) - Pseudo Linear Coefficients in shape of :math:`(L, K)`.
@@ -347,10 +348,10 @@ class PseudoLinearCoef:
 
         Args:
             plc (Tensor): Pseudo Linear Coefficients or Relative Pseudo Linear Coefficients in shape of :math:`(K,)`.
-            title (str, optional): Chart title. If not present, chart title will not be displayed. Default: `None`.
+            title (str, optional): Chart title. If not present, chart title will not be displayed. Default: ``None``.
             feature_names (list[str], tuple[str], optional): Feature names. If not present, feature names will be
-                'feature 0', 'feature 1', ... Default: `None`.
-            max_features (int, optional): Maximum number of features to be shown. Default: 5.
+                'feature 0', 'feature 1', ... Default: ``None``.
+            max_features (int, optional): Maximum number of features to be shown. Default: ``5``.
 
         Raises:
             ValueError: Be raised for any input value problem.
@@ -426,8 +427,8 @@ class PseudoLinearCoef:
 
         Args:
             plc (Tensor): The PLC or Relative PLC to be normalized.
-            per_vector (bool, optional): Normalize within each :math:`\vec{R}` vector. Default: `False`.
-            eps (float, optional): Degree of tolerance. This value must be greater than 0. Default: 1e-9.
+            per_vector (bool, optional): Normalize within each :math:`\vec{R}` vector. Default: ``False``.
+            eps (float, optional): Degree of tolerance. This value must be greater than 0. Default: ``1e-9``.
 
         Returns:
             Tensor, the normalized values.
