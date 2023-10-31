@@ -42,7 +42,7 @@ Please refer to [Downloading Data Package](https://www.mindspore.cn/xai/docs/en/
     - [MindSpore XAI](https://www.mindspore.cn/xai/docs/en/master/index.html)
 - For more information, please check the resources below：
     - [MindSpore Tutorials](https://www.mindspore.cn/tutorials/en/master/index.html)
-    - [MindSpore Python API](https://www.mindspore.cn/docs/api/en/master/index.html)
+    - [MindSpore Python API](https://www.mindspore.cn/docs/en/master/index.html)
 
 # [Quick Start](#contents)
 
